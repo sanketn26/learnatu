@@ -6,7 +6,6 @@ You use apps every day at work — email, chat, document editors, and increasing
 
 ## Pages in this section
 
-- [Employees overview](index.md) — this page
 - [What you may paste into ChatGPT](what-to-paste.md) — a risk table for common work information types
 
 ---
