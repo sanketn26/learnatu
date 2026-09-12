@@ -1,0 +1,123 @@
+site_name: Learnatu
+site_url: https://learnatu.com/
+site_description: Learn to use apps and the internet safely. Free. No jargon.
+site_author: Sanket Naik
+repo_url: https://github.com/sanketn26/learnatu
+repo_name: sanketn26/learnatu
+
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: teal
+      accent: teal
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+
+plugins:
+  - search
+  - i18n:
+      docs_structure: folder
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: en
+          name: English
+          default: true
+          build: true
+        - locale: hi
+          name: हिन्दी
+          build: true
+          nav_translations:
+            Home: होम
+            Start here: शुरुआत यहाँ से
+            Guiding principles: मार्गदर्शक सिद्धांत
+            Everyday basics: रोज़ाना की बातें
+            What to share (and never share): क्या साझा करें (क्या नहीं)
+            Passwords: पासवर्ड
+            OTP, UPI, and money: OTP, UPI और पैसा
+            Apps on your phone: फ़ोन पर ऐप्स
+            WhatsApp: WhatsApp
+            Fake links and fake apps: नकली लिंक और नकली ऐप्स
+            By situation: आपकी स्थिति के अनुसार
+            Parents: माता-पिता
+            Parents overview: माता-पिता — परिचय
+            Homework help: होमवर्क में मदद
+            Deepfakes and harmful content: डीपफेक और नुकसानदेह सामग्री
+            Children's privacy: बच्चों की निजता
+            Employees: कर्मचारी
+            Employees overview: कर्मचारी — परिचय
+            What you may paste into ChatGPT: ChatGPT में क्या पेस्ट करें
+            Seniors: बुज़ुर्ग
+            Seniors overview: बुज़ुर्ग — परिचय
+            Fake calls and messages: नकली कॉल और संदेश
+            Fabricated medical advice: झूठी चिकित्सा सलाह
+            Small business: छोटा व्यवसाय
+            Business overview: व्यवसाय — परिचय
+            Customer data: ग्राहक डेटा
+            Contracts and marketing: अनुबंध और मार्केटिंग
+            Students: विद्यार्थी
+            Students overview: विद्यार्थी — परिचय
+            Hallucinations, citations, plagiarism: भ्रामक जवाब, संदर्भ, नकल
+            After a mistake: गलती के बाद
+            About: परिचय
+            Privacy: गोपनीयता
+            Disclaimer: अस्वीकरण
+
+nav:
+  - Home: index.md
+  - Start here: start-here.md
+  - Guiding principles: principles.md
+  - Everyday basics:
+      - What to share (and never share): basics/what-to-share.md
+      - Passwords: basics/passwords.md
+      - OTP, UPI, and money: basics/otp-and-upi.md
+      - Apps on your phone: basics/apps-on-phone.md
+      - WhatsApp: basics/whatsapp.md
+      - Fake links and fake apps: basics/fake-links.md
+  - By situation:
+      - Parents:
+          - Parents overview: situations/parents/index.md
+          - Homework help: situations/parents/homework.md
+          - Deepfakes and harmful content: situations/parents/deepfakes-and-content.md
+          - Children's privacy: situations/parents/child-privacy.md
+      - Employees:
+          - Employees overview: situations/employees/index.md
+          - What you may paste into ChatGPT: situations/employees/what-to-paste.md
+      - Seniors:
+          - Seniors overview: situations/seniors/index.md
+          - Fake calls and messages: situations/seniors/fake-calls.md
+          - Fabricated medical advice: situations/seniors/medical-advice.md
+      - Small business:
+          - Business overview: situations/business/index.md
+          - Customer data: situations/business/customer-data.md
+          - Contracts and marketing: situations/business/contracts-and-marketing.md
+      - Students:
+          - Students overview: situations/students/index.md
+          - Hallucinations, citations, plagiarism: situations/students/homework-and-citations.md
+  - After a mistake: life/if-something-goes-wrong.md
+  - About:
+      - About: about.md
+      - Privacy: privacy.md
+      - Disclaimer: disclaimer.md
+
+extra:
+  alternate:
+    - name: English
+      link: /
+      lang: en
+    - name: हिन्दी
+      link: /hi/
+      lang: hi
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - tables
+  - attr_list
