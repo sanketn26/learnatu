@@ -1,40 +1,44 @@
 # What to share (and never share)
 
-Every app, form, and person will ask for information. This page helps you decide quickly.
+Every app, every form, every polite stranger will ask for a little more information. A delivery needs an address. A bank needs to know it is you. A school group wants a photo. The question is not “is sharing bad?” It is “does this person, on this channel, actually need this?”
+
+This page is a way to decide in a few seconds, before your thumb does the work for you.
 
 ---
 
 ## The quick table
 
-| Information | OK to share | Only with people you know | Never share |
+| Information | Usually fine | Only with people you know and trust | Never share |
 |---|---|---|---|
 | Your first name | ✅ | | |
 | Your city | ✅ | | |
 | Your mobile number | | ✅ | |
 | Your home address | | ✅ | |
-| Photo of yourself | | ✅ | |
-| Your full name + address together | | ✅ | |
-| Aadhaar number | | ✅ (only for required KYC) | |
-| Aadhaar photo / card image | | | 🚫 |
-| PAN card image | | | 🚫 |
-| OTP | | | 🚫 |
-| UPI PIN | | | 🚫 |
-| CVV (card back number) | | | 🚫 |
+| A photo of your face | | ✅ | |
+| Full name and address together | | ✅ | |
+| Aadhaar number | | ✅ (only when the law or a real KYC process requires it) | |
+| Photo of your Aadhaar card | | | 🚫 |
+| Photo of your PAN card | | | 🚫 |
+| OTP (the short code a bank texts you) | | | 🚫 |
+| UPI PIN (the secret number that sends money) | | | 🚫 |
+| CVV (the 3-digit number on the back of a card) | | | 🚫 |
 | Net banking password | | | 🚫 |
-| Backup codes | | | 🚫 |
+| Backup codes (emergency login codes) | | | 🚫 |
 | Customer lists or employee data | | | 🚫 |
 | Unpublished contracts | | | 🚫 |
 | Medical records | | | 🚫 |
-| Photos of minors | | | 🚫 |
+| Photos of children that show school, uniform, or home | | | 🚫 |
+
+**KYC** means “know your customer” — the checks a bank or wallet is required to do. Even then, you do it inside the official app or branch, not by sending a card photo to someone who messaged you.
 
 ---
 
-## Steps before sharing anything
+## Four questions before you share
 
-1. **Who is asking?** Is it an official government or bank site, or a stranger on chat?
-2. **Do they really need it?** A delivery app needs your address; it does not need your Aadhaar.
-3. **Is this a secured channel?** Look for `https://` and the padlock in your browser.
-4. **Can you take it back?** Once a photo is sent, it cannot be unsent. Think first.
+1. **Who is asking?** An official government or bank site you typed yourself is different from a stranger in chat who *says* they are the bank.
+2. **Do they really need it?** A delivery app needs a door to knock on. It does not need your Aadhaar. A school homework chatbot does not need your child’s full name.
+3. **Is this a channel you opened?** In a browser, look for `https://` and a small padlock. That only means the pipe is encrypted — not that the site is genuine. Still, a page you reached by typing the name is safer than a page you reached by tapping a message.
+4. **Can you take it back?** A photo, once sent, can be saved and forwarded. Think of it as already public to anyone in that chat.
 
 ---
 
@@ -43,9 +47,9 @@ Every app, form, and person will ask for information. This page helps you decide
 
 ---
 
-## If you already shared something you shouldn't have
+## If you already shared something you should not have
 
-- Change your password immediately.
+- Change the password on that account from a phone or computer you trust.
 - Block the number or account that received it.
-- For UPI/bank issues, call your bank's official number (on the back of your card) right away.
+- If it was about money (OTP, PIN, card, UPI), call your bank on the number printed on the back of your card. Do it now, not after you “see if anything happens.”
 - Report at [cybercrime.gov.in](https://www.cybercrime.gov.in) or call **1930**.

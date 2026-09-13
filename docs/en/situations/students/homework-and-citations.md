@@ -1,5 +1,7 @@
 # Hallucinations, citations, and plagiarism
 
+The essay is 300 words. ChatGPT will write them if you ask. **ChatGPT** is a chatbot: you type a request, it replies in complete sentences. Gemini is Google’s similar tool. Both can explain a chapter you did not follow in class. Both can invent a book title, attach a real historian’s name to it, and offer the whole thing as a reference.
+
 **Who this is for:** Students who use AI tools for research, essay writing, or homework.
 
 **Risk level:**
@@ -12,16 +14,16 @@
 ## What could go wrong
 
 - The AI gives a book citation with a real author's name but a title that does not exist.
-- You submit an AI-generated paragraph and your teacher's plagiarism tool flags it as AI-written.
+- You submit an AI-generated paragraph and your teacher's plagiarism tool flags it as AI-written. **Plagiarism** is submitting someone else’s words as your own. Many schools now treat uncredited chatbot text the same way.
 - You use an AI explanation for an exam answer that contains a factual error and lose marks.
-- A classmate uses the same AI prompt and submits nearly identical work — both of you are suspected of copying.
+- A classmate uses the same prompt — the same message typed into the tool — and submits nearly identical work. Both of you are suspected of copying.
 - You grow dependent on AI for writing and find in exams that you cannot express ideas yourself.
 
 ---
 
 ## A safe prompt
 
-For understanding a topic, not for submitting directly:
+A **prompt** is the message you type into the tool. For understanding a topic, not for submitting directly:
 
 > "Explain the causes of the First World War in simple points. Do not invent any dates or names. If you are not certain about a fact, say so. I will verify from my textbook."
 
@@ -41,6 +43,8 @@ For drafting (when your teacher allows AI assistance):
 
 ## Checklist
 
+Before the work goes in, walk through this once:
+
 - [ ] Have I verified all facts, dates, and names from a reliable source?
 - [ ] Is the writing in my own words (not a copy-paste from the AI)?
 - [ ] Have I cited the actual source (textbook, article) rather than citing "ChatGPT"?
@@ -51,14 +55,18 @@ For drafting (when your teacher allows AI assistance):
 
 ## Privacy settings to use
 
-- **ChatGPT:** Settings → Data controls → turn off "Improve the model for everyone" if you are using a school-provided account.
+- **ChatGPT:** Settings → Data controls → turn off "Improve the model for everyone" if you are using a school-provided account. That setting, when on, lets the company use chats to train — teach — its software.
 - **Google Gemini:** Pause Gemini Apps Activity if you want your school work not stored in your history.
 - **Browser:** Use a school or college account if available — it has stricter privacy protections than a personal account.
-- **File sharing:** Do not share your assignment draft in a public Google Doc link — use "specific people only."
+- **File sharing:** Do not share your assignment draft in a public Google Doc link — use "specific people only." **Public** or “anyone with the link” means a forward is enough for someone else to open it.
 - **School email:** Use your school-issued email for any AI tools the school recommends, not your personal email.
 
 ---
 
 ## A realistic failure
 
-Fifteen-year-old Ananya had a history assignment due the next day. She asked ChatGPT to "write a 300-word essay on the Non-Cooperation Movement." She changed a few words and submitted it. Her teacher ran it through an AI detection tool and flagged it. Ananya had to rewrite the entire essay by hand. If she had used the AI to explain the topic first, then written her own essay using her notes, she would have submitted original work and actually learned the content.
+Fifteen-year-old Ananya had a history assignment due the next day. She asked ChatGPT to “write a 300-word essay on the Non-Cooperation Movement.” She changed a few words so it would not look copied, and submitted it.
+
+Her teacher ran it through an AI detection tool and flagged it. Ananya had to rewrite the entire essay by hand, under time she no longer had. She also had not learned the movement well enough to write it herself the first time.
+
+If she had used the chatbot to explain the topic, then closed it and written from her notes, she would have submitted original work. The deadline felt like a reason to skip that. It was the reason she needed it.

@@ -14,14 +14,14 @@ export const courses: Course[] = [
     slug: 'ai-confidence',
     icon: '✨',
     title: 'AI Confidence',
-    promise: 'Learn to use AI for real tasks without exposing private information or trusting incorrect answers.',
-    outcome: 'I can ask AI for useful help, protect private information, and check the result before I use it.',
+    promise: 'By the end you will know how to ask an AI for help with a real task, what never to type into it, and how to check the answer before you use it.',
+    outcome: 'I can ask AI for useful help, keep private information out of the chat, and check the result before I use it.',
     lessons: [
-      { path: '/learn/basics/what-ai-is/', title: 'Understand AI', skill: 'Know what AI can and cannot do' },
-      { path: '/learn/basics/how-to-prompt/', title: 'Ask clearly', skill: 'Write a useful prompt in plain language' },
-      { path: '/learn/everyday/write-and-translate/', title: 'Do a real task', skill: 'Draft and translate a safe message' },
-      { path: '/learn/basics/voice-images-and-files/', title: 'Share safely', skill: 'Remove private details before uploading' },
-      { path: '/learn/basics/check-ai-answers/', title: 'Check the answer', skill: 'Verify important AI claims independently' }
+      { path: '/learn/basics/what-ai-is/', title: 'What AI actually is', skill: 'See why a fluent answer can still be wrong' },
+      { path: '/learn/basics/how-to-prompt/', title: 'Ask clearly', skill: 'Tell it the job, the audience, and what not to invent' },
+      { path: '/learn/everyday/write-and-translate/', title: 'Do a real task', skill: 'Turn notes into a message you are willing to send' },
+      { path: '/learn/basics/voice-images-and-files/', title: 'Share safely', skill: 'Crop, remove, or skip anything private before uploading' },
+      { path: '/learn/basics/check-ai-answers/', title: 'Check the answer', skill: 'Confirm names, numbers, and rules on an official source' }
     ]
   },
   {
@@ -29,22 +29,22 @@ export const courses: Course[] = [
     slug: 'online-safety-essentials',
     icon: '🛡️',
     title: 'Online Safety Essentials',
-    promise: 'Build the habits that protect your accounts, money, phone, and family from common digital threats.',
-    outcome: 'I can protect my accounts and money, recognize pressure tactics, and act quickly after a mistake.',
+    promise: 'Six everyday habits — a phone lock, safer passwords, a second check at login, care with links, care with money codes, and a plan if something already went wrong.',
+    outcome: 'I can protect my accounts and money, notice when someone is rushing me, and act quickly after a mistake.',
     lessons: [
-      { path: '/safety/core-rules/', title: 'Pause and recognize risk', skill: 'Apply the essential safety rules' },
-      { path: '/safety/accounts/passwords/', title: 'Protect your accounts', skill: 'Use safer passwords' },
-      { path: '/safety/accounts/two-step-verification/', title: 'Add a second lock', skill: 'Turn on two-step verification' },
-      { path: '/safety/scams/fake-links-and-apps/', title: 'Spot fake links', skill: 'Check before tapping or installing' },
-      { path: '/safety/money/otp-and-upi/', title: 'Protect your money', skill: 'Recognize OTP and UPI tricks' },
-      { path: '/safety/devices/updates-backups-and-permissions/', title: 'Secure your phone', skill: 'Manage updates, backups, and permissions' },
-      { path: '/help/after-a-mistake/', title: 'Recover calmly', skill: 'Take the right first steps after a mistake' }
+      { path: '/safety/core-rules/', title: 'The pause that protects you', skill: 'Eight rules that cover almost every scam' },
+      { path: '/safety/accounts/passwords/', title: 'Protect your accounts', skill: 'Give email its own password, like a master key' },
+      { path: '/safety/accounts/two-step-verification/', title: 'Add a second lock', skill: 'A code on this phone after the password' },
+      { path: '/safety/scams/fake-links-and-apps/', title: 'Spot fake links', skill: 'A logo and a padlock are not proof' },
+      { path: '/safety/money/otp-and-upi/', title: 'Protect your money', skill: 'An OTP is a key, not a conversation' },
+      { path: '/safety/devices/updates-backups-and-permissions/', title: 'Look after the phone', skill: 'Updates, a backup of photos, and fewer permissions' },
+      { path: '/help/after-a-mistake/', title: 'If something already happened', skill: 'Call the bank, then 1930 — shame can wait' }
     ]
   },
   {
     kind: 'course', slug: 'money-confidence', icon: '₹', title: 'Money Confidence',
-    promise: 'Build a practical financial plan and make more informed decisions without chasing promises or exposing private records.',
-    outcome: 'I can make a basic money plan, compare options, verify providers, and recognize when I need qualified help.',
+    promise: 'See where your money actually goes, make a plan you can live with, and check a loan, insurance product, or adviser before you sign — without pasting bank statements into a chat.',
+    outcome: 'I can make a basic money plan, compare the real cost of options, check a provider myself, and know when I need a qualified person.',
     lessons: [
       { path: '/money/foundations/understand-your-money/', title: 'Understand your money', skill: 'See income, essential costs, and irregular expenses clearly' },
       { path: '/money/foundations/simple-budget/', title: 'Make a simple budget', skill: 'Give each part of your income a realistic job' },
@@ -58,8 +58,8 @@ export const courses: Course[] = [
   },
   {
     kind: 'course', slug: 'financial-fraud-defence', icon: '₹!', title: 'Financial Fraud Defence',
-    promise: 'Recognize how financial scams apply pressure, interrupt the transaction, and respond quickly after a loss.',
-    outcome: 'I can pause a suspicious transaction, verify it independently, and take the right steps if money is lost.',
+    promise: 'See the rush, the fake uniform, and the “refund” QR for what they are — then know who to call if money already left.',
+    outcome: 'I can pause a suspicious payment, check it in my own app, and take the right steps if money is lost.',
     lessons: [
       { path: '/money/fraud/how-financial-fraud-works/', title: 'Recognize the pressure sequence', skill: 'Interrupt urgency, authority, emotion, and secrecy' },
       { path: '/safety/money/otp-and-upi/', title: 'Protect OTPs and UPI', skill: 'Know what must never be shared or approved' },

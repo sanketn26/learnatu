@@ -1,5 +1,7 @@
 # Fabricated medical advice
 
+A forward lands in the family WhatsApp group. A letterhead, a doctor’s name, a spice, a promise: stop one tablet for a week and the blood pressure will “reset.” Or you type a symptom into a chatbot — ChatGPT or Gemini, programs that write answers in ordinary language — and it replies as if it has examined you. It has not. It has matched words to other words.
+
 **Who this is for:** Seniors and family members who receive health advice over WhatsApp or look up symptoms using AI tools.
 
 **Risk level:**
@@ -21,7 +23,7 @@
 
 ## A safe prompt
 
-For general background information only — not for diagnosis or treatment:
+A **prompt** is the message you type into the tool. For general background information only — not for diagnosis or treatment:
 
 > "In plain words, what is Type 2 diabetes? Do not give me dosage or treatment advice. I will talk to my doctor about treatment."
 
@@ -37,6 +39,8 @@ For general background information only — not for diagnosis or treatment:
 
 ## Checklist
 
+Before you change a tablet, skip a visit, or upload a report, walk through this once:
+
 - [ ] Did you avoid changing any medication based on a WhatsApp message or AI answer?
 - [ ] Did you keep your next doctor's appointment instead of self-treating?
 - [ ] Did you avoid uploading your medical report or prescription to an AI tool?
@@ -47,13 +51,17 @@ For general background information only — not for diagnosis or treatment:
 
 ## Privacy settings to use
 
-- **ChatGPT / Gemini:** Do not share your real name, age, or medical history. Use general terms ("a 65-year-old person") for background reading.
-- **WhatsApp:** Settings → Privacy → Groups → My contacts (stops strangers from adding you to groups that spread health misinformation).
+- **ChatGPT / Gemini:** Do not share your real name, age, or medical history. Use general terms ("a 65-year-old person") for background reading. The tool does not need to know who you are to explain a word.
+- **WhatsApp:** Settings → Privacy → Groups → My contacts. That stops strangers from adding you to groups that exist mainly to spread health rumours.
 - **Phone:** If an app asks for access to your health data, deny it unless it is from a certified health provider.
-- **Google:** If you search health conditions, use Incognito mode to avoid building a health-based ad profile.
+- **Google:** If you search health conditions, use Incognito mode (a private window that does not save the search in your usual history) to avoid building a health-based ad profile.
 
 ---
 
 ## A realistic failure
 
-Sulochana, 72, received a WhatsApp forward saying that a combination of turmeric, jeera water, and stopping one of her blood pressure tablets for a week would "reset" her blood pressure naturally. The message had a doctor's name and a letterhead that looked official. She stopped the tablet. Three days later she was admitted to hospital with dangerously high blood pressure. The "doctor" on the letterhead did not exist. If Sulochana had forwarded the message to her actual doctor's clinic before acting, the nurse would have told her in two sentences that it was false.
+Sulochana, 72, received a WhatsApp forward saying that turmeric, jeera water, and stopping one of her blood pressure tablets for a week would “reset” her blood pressure naturally. The message had a doctor’s name and a letterhead that looked official. She wanted to feel better without another hospital visit. She stopped the tablet.
+
+Three days later she was admitted with dangerously high blood pressure. The “doctor” on the letterhead did not exist. The spices were not the danger. The missing tablet was.
+
+If she had forwarded the message to her actual doctor’s clinic before acting, the nurse would have told her in two sentences that it was false. The clinic already knew her file. WhatsApp did not.

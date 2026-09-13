@@ -1,12 +1,16 @@
 # Learnatu
 
-**Learn-AH-too** — Learn to use apps and the internet safely. Free. No jargon.
+**Learn-AH-too** — a free handbook for using your phone, apps, and the internet without getting hurt.
 
 ---
 
-This handbook is for anyone who uses a phone but was never formally taught how the internet works. It covers WhatsApp, UPI, Google, ChatGPT, and more — without turning them into an AI school.
+Nobody sat most of us down and explained this. We got a smartphone, a WhatsApp account, a UPI app for payments, maybe ChatGPT later — and we were expected to already know the rules.
 
-**Pick your situation:**
+This site is those missing conversations. Short pages. Everyday situations. Words you already use.
+
+It is not an AI school. AI is one tool among many, treated the same way as WhatsApp or your banking app: useful, if you know what it can and cannot do.
+
+**Start from the life you are already in:**
 
 | Who are you? | Go here |
 |---|---|
@@ -18,8 +22,8 @@ This handbook is for anyone who uses a phone but was never formally taught how t
 
 ---
 
-Not sure where to start? → [Start here](start-here.md)
+New to all of this? → [Start here](start-here.md) — six things you can do today.
 
-Want the core rules in two minutes? → [Guiding principles](principles.md)
+Want the rules that cover almost every scam? → [Guiding principles](principles.md)
 
-Need the daily basics first? → [Everyday basics](basics/what-to-share.md)
+Need the daily basics first — what to share, passwords, money on your phone? → [Everyday basics](basics/what-to-share.md)

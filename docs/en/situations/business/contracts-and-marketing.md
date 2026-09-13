@@ -1,5 +1,7 @@
 # Contracts and marketing
 
+A large client has sent a twelve-page agreement. You need the gist before this evening’s call. Or you need a WhatsApp line for this weekend’s discount that does not sound stiff. ChatGPT — a chatbot you paste text into — will summarise or draft in seconds. The useful part is the *shape* of the language. The dangerous part is the real names, prices, and promises.
+
 **Who this is for:** Small business owners who want to use AI to draft contracts, invoices, or marketing copy.
 
 **Risk level:**
@@ -20,7 +22,7 @@
 
 ## A safe prompt
 
-For a contract template (no real data):
+A **prompt** is the message you type into the tool. For a contract template (no real data):
 
 > "Write a simple service agreement template between a freelancer and a client for website design work. Use Indian law context. Mark any clause I should review with a lawyer in square brackets."
 
@@ -40,6 +42,8 @@ For marketing copy:
 
 ## Checklist
 
+Before a draft goes to a client or a message goes to a broadcast list, walk through this once:
+
 - [ ] Did you avoid pasting the other party's confidential contract terms into an AI tool?
 - [ ] Did a person (not just AI) review the draft contract before you sent it?
 - [ ] Are all claims in your marketing copy verifiable and true?
@@ -50,14 +54,18 @@ For marketing copy:
 
 ## Privacy settings to use
 
-- **ChatGPT:** Settings → Data controls → Improve the model → Off.
-- **Google Docs:** Share drafts only with specific named people, not "anyone with the link."
-- **WhatsApp Business:** Send marketing messages to opted-in contacts only.
-- **Email:** Use BCC when sending a single promotional email to multiple customers so they cannot see each other's addresses.
+- **ChatGPT:** Settings → Data controls → Improve the model → Off. “Improve the model for everyone” means the company may use what you type to train — teach — its software. Contract language does not belong there.
+- **Google Docs:** Share drafts only with specific named people, not "anyone with the link." A forwarded link then does not open the file.
+- **WhatsApp Business:** Send marketing messages to opted-in contacts only — people who asked to hear from you, not everyone in your address book.
+- **Email:** Use BCC when sending a single promotional email to multiple customers so they cannot see each other's addresses. BCC hides the other recipients.
 - **Cloud storage:** Store signed contracts in a folder shared only with yourself and your accountant.
 
 ---
 
 ## A realistic failure
 
-Kavitha runs a small event-planning business. A large client sent her a detailed agreement with special pricing and exclusivity terms. She pasted the entire document into a free AI tool to get a summary. The AI gave her a useful summary, but she did not realise the tool's terms of service allowed the provider to store inputs. When the client later asked how a competitor knew about the exclusivity clause, Kavitha had no answer. If she had read the key clauses herself (or asked a lawyer friend), she would have had the summary without the risk.
+Kavitha runs a small event-planning business. A large client sent a detailed agreement with special pricing and an exclusivity clause — a promise that she would not take a competing booking. She pasted the entire document into a free AI tool to get a summary. The summary was useful. She did not read the tool’s terms, which allowed the provider to store inputs.
+
+Later the client asked how a competitor knew about the exclusivity clause. Kavitha had no answer she was willing to give. The paste had felt like homework, not like sending the file to a stranger.
+
+If she had read the key clauses herself, or asked a lawyer friend, she would have had the summary without handing over the terms. The tool can draft a blank template. It does not need the signed one.

@@ -5,11 +5,11 @@ interface Props { lang: Locale }
 const { lang } = Astro.props;
 const copy = localeCopy[lang];
 const moneyPaths = lang === 'hi' ? [
-  ['₹', 'पैसों की समझ बनाएँ', 'बजट, कर्ज़, बचत, बीमा और भविष्य की योजना', localePath(lang, '/courses/money-confidence/')],
-  ['₹!', 'वित्तीय धोखाधड़ी से बचें', 'दबाव पहचानें, भुगतान जाँचें और नुकसान के बाद कदम उठाएँ', localePath(lang, '/courses/financial-fraud-defence/')]
+  ['₹', 'पैसों की समझ बनाएँ', 'पैसा कहाँ जाता है, कर्ज़ की असली क़ीमत, और दस्तखत से पहले क्या देखें', localePath(lang, '/courses/money-confidence/')],
+  ['₹!', 'पैसों के धोखे से बचें', 'जल्दबाजी, नकली रिफंड, नुकसान के बाद दूसरा धोखा — और किसे फ़ोन करें', localePath(lang, '/courses/financial-fraud-defence/')]
 ] : [
-  ['₹', 'Build money confidence', 'Budget, debt, saving, insurance, and future planning', localePath(lang, '/courses/money-confidence/')],
-  ['₹!', 'Defend against financial fraud', 'Recognize pressure, verify payments, and respond after a loss', localePath(lang, '/courses/financial-fraud-defence/')]
+  ['₹', 'Build money confidence', 'Where the money goes, what a loan really costs, and what to check before you sign', localePath(lang, '/courses/money-confidence/')],
+  ['₹!', 'Defend against financial fraud', 'The rush, the fake refund, the second scam after a loss — and who to call', localePath(lang, '/courses/financial-fraud-defence/')]
 ];
 const paths = [
   ['✨', copy.learn, copy.learnDesc, localePath(lang, '/courses/ai-confidence/')],

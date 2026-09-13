@@ -1,16 +1,28 @@
-# AI-generated code की समीक्षा करें
+# AI-generated कोड को untrusted समझकर रिव्यू करें
 
-Generated code को ऐसे treat करें जैसे यह किसी ऐसे व्यक्ति का untrusted contribution हो जो आपके system से परिचित नहीं है।
+Pull request साफ़ दिखता है। नाम codebase से मिलते हैं। टेस्ट ग्रीन हैं। मॉडल ने commit message भी लिख दिया। शाम 5:40 है, merge कर दें तो टिकट बंद।
 
-## Layers में review करें
+उस diff को ऐसे देखें जैसे कोई अनजान योगदान है, किसी ऐसे इंसान का जिसने आपका सिस्टम कभी नहीं देखा। धाराप्रवाह है। जवाबदेह नहीं। Incident कॉल पर नहीं होगा।
 
-1. **Intent:** क्या यह पूछी गई problem को solve करता है?
-2. **Correctness:** Boundaries, failures, retries, और concurrent use में क्या होता है?
-3. **Security:** क्या input किसी trust boundary को पार कर सकता है या data reveal कर सकता है?
-4. **Operations:** क्या logs सुरक्षित हैं? क्या timeouts, cleanup, और observability पर्याप्त हैं?
-5. **Maintainability:** क्या सबसे simple और समझने लायक design इस्तेमाल हो रहा है?
-6. **Verification:** क्या implementation को जान-बूझकर तोड़ने पर tests fail होते हैं?
+AI ड्राफ्ट करता है। पूरा सिस्टम नहीं समझता, failure modes नहीं समझता, और पिछले क्वार्टर के outage ने जो शॉर्टकट सिखाया वह नहीं लेना — यह भी नहीं जानता। Change स्वीकारने वाला डेवलपर ही उसके लिए ज़िम्मेदार रहता है।
 
-AI से risks पहचानने के लिए कहें, लेकिन उसकी self-review को independent review की जगह न लेने दें। वही model अपने original answer की assumptions को दोहरा सकता है।
+## Layers में रिव्यू करें
 
-Change को accept करने वाला developer ही उसके लिए ज़िम्मेदार रहता है।
+स्टाइल से शुरू न करें। इससे शुरू करें कि यह change होने लायक है भी या नहीं।
+
+1. **Intent.** क्या यह माँगी गई समस्या हल करता है, या पास की वह समस्या जिसके ज़्यादा उदाहरण मॉडल को मिले?
+2. **Correctness.** Boundaries, failures, retries, concurrent use पर क्या होता है? एक happy payload पर चलने वाला function पूरा काम नहीं।
+3. **Security.** क्या input किसी trust boundary को पार कर सकता है, या data दिखा सकता है? Auth check, query construction, फ़ाइल पाथ, redirect, और वह सब देखें जो मॉडल ने किसी tutorial से कॉपी किया जहाँ client पर भरोसा था।
+4. **Operations.** लॉग सुरक्षित हैं, या token और निजी डेटा छाप रहे हैं? Timeout, cleanup, observability काफ़ी हैं जब dependency अटक जाए?
+5. **Maintainability.** क्या यह सबसे सरल डिज़ाइन है जिसे कोई और इंजीनियर छह महीने बाद समझेगा, या मॉडल का गढ़ा clever helpers का ढेर क्योंकि पूरा लगता था?
+6. **Verification.** Implementation जान-बूझकर तोड़ें तो टेस्ट fail होते हैं? फिर भी पास हों तो टेस्ट नहीं हैं — ताली हैं।
+
+उसी मॉडल से जोखिम पूछ सकते हैं। उसे checklist का बीज समझें, sign-off नहीं। मॉडल अपने मूल जवाब की धारणाएँ दोहरा सकता है, और उन्हें नोटिस करने पर खुद को बधाई दे सकता है।
+
+उसी पास में [packages, APIs, और licenses confirm करें](packages-apis-and-licenses.md)। साफ़ दिखने वाला import फिर भी एक install फ़ैसला है।
+
+## एक रिव्यू जो पूरा लगता था
+
+अर्जुन ने payment client के चारों ओर retry wrapper generate किया। कोड HTTP 500 सँभालता था। वह timeout नहीं सँभालता था जब charge पहले ही सफल हो चुका हो, इसलिए दूसरी कोशिश ने duplicate debit बना दिया। Unit टेस्ट ने client को एक बार throw करवाया, फिर success लौटाया — वही कहानी जो implementation खुद के बारे में बताती थी। जिस रिव्यूअर ने पूछा “अगर पहली कॉल सर्वर पर सफल हुई और वापस आते रास्ते fail हुई?” वह पकड़ लेता। मॉडल ने नहीं पकड़ा, और “कोई issue?” पूछने पर भी नहीं।
+
+Diff ऐसे पढ़ें जैसे किसी अजनबी ने भेजा हो। रिव्यू के मकसद से, वैसा ही हुआ है।

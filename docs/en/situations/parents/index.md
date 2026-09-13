@@ -1,6 +1,10 @@
 # Parents
 
-You are raising children in a world where the internet is part of every classroom and every bedroom. This guide covers the three areas where parents face the most risk.
+The school WhatsApp group lights up at 9 p.m. Someone has shared a photo from Sports Day: your child in uniform, the school gate behind them, the class name in the caption. You are proud. Your thumb is already on Forward. That is a good moment to pause.
+
+This section is about those pauses. A homework chatbot that sounds sure of itself. A video that looks like a classmate and is not. A birthday post that tells more than you meant it to.
+
+You are raising children in a world where the internet sits in the classroom and in the bedroom. These three pages cover the places parents most often get surprised.
 
 ---
 
@@ -12,10 +16,8 @@ You are raising children in a world where the internet is part of every classroo
 
 ---
 
-## The two principles that matter most for parents
+## Two habits that protect a child more than any app setting
 
-**Principle 4 — Treat every confident answer as a draft. Check it.**
-AI can give a child a completely wrong answer with full confidence. Encourage your child to check important information from a textbook or teacher.
+A chatbot — ChatGPT, Gemini, or whatever the school group is recommending this month — writes in a calm, complete voice even when it is wrong. ChatGPT and Gemini are programs you type a question into; they reply in ordinary language, as if a person were on the other side. There is not. Treat every confident answer as a draft. Ask your child to check the important bits against the textbook or the teacher before anything goes into a submission.
 
-**Principle 6 — Share the minimum. Default is "do not upload."**
-Your child's school uniform, home address, and daily routine should not be visible to strangers online. Think before you post.
+The other habit is smaller and harder: share the least you can. A school uniform, a house number, a daily route to tuition — those tell a stranger where your child is. Until you have a reason, the safer default is not to put that on the public internet.

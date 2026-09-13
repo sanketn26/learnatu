@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import { localeCodes, localeCopy, localeNames, localePath, type Locale } from '../i18n/locales';
 interface Props { title?: string; description?: string; lang?: Locale; }
-const { title = 'Learnatu', description = 'Use AI confidently. Stay safe online.', lang = 'en' } = Astro.props;
+const { title = 'Learnatu', description = 'Short lessons that explain WhatsApp, UPI, Google, and ChatGPT — for people who were never taught this.', lang = 'en' } = Astro.props;
 const copy = localeCopy[lang];
 const home = localePath(lang);
 const segments = Astro.url.pathname.split('/').filter(Boolean);

@@ -1,6 +1,8 @@
 # Small business
 
-Running a small business in India means handling customer data, writing contracts, and using digital payments every day. AI tools can help, but they come with real risks when confidential information is involved.
+The customer wants a quotation this afternoon. The pharmacy spreadsheet has this month’s regulars — names, phones, what they ordered. A chatbot could tidy the language, sort the list, summarise the contract the hotel sent. All of that is tempting. All of that is how other people’s details leave your shop.
+
+Running a small business in India means handling customer data, writing contracts, and using digital payments every day. AI tools — ChatGPT, Gemini, and similar programs that rewrite and explain in ordinary language — can help with the wording. They become a risk the moment confidential names, numbers, or terms go into a personal account.
 
 ---
 
@@ -11,10 +13,8 @@ Running a small business in India means handling customer data, writing contract
 
 ---
 
-## The two principles that matter most for small business owners
+## Two habits that keep a shop’s trust intact
 
-**Principle 2 — Secrets stay off chat.**
-Customer names, phone numbers, order history, and contract terms are your responsibility. Uploading them to a personal AI account may violate your customers' trust and, increasingly, India's data protection rules.
+Customer names, phone numbers, order history, and contract terms are your responsibility. Uploading them to a personal chatbot account may break your customers’ trust and, increasingly, India’s data protection rules. Secrets stay off chat.
 
-**Principle 6 — Share the minimum. Default is "do not upload."**
-Before you give any app access to your customer list, price sheet, or supplier contacts, ask: does this app truly need all of this to do the job?
+The second habit: share the least you can. Before you give any app access to your customer list, price sheet, or supplier contacts, ask whether it truly needs all of that to do the job. A delivery partner needs an address for today’s order. They do not need five years of purchase history. Until you have a reason, the safer default is not to upload.

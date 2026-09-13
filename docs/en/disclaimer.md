@@ -1,12 +1,14 @@
 # Disclaimer
 
-The information on Learnatu is provided for general educational purposes only.
+Learnatu is here to teach, not to stand in for a professional who knows your situation.
 
 - It is **not** legal advice.
 - It is **not** medical advice.
 - It is **not** financial or banking advice.
-- It is **not** official guidance from any government, regulator, or law enforcement agency.
+- It is **not** official guidance from any government, regulator, bank, or police department.
 
-If you have been the victim of a crime or fraud, contact the police or report online at [cybercrime.gov.in](https://www.cybercrime.gov.in). For medical matters, consult a qualified doctor.
+A page can explain how a loan’s total cost works. It cannot tell you whether *this* loan is right for you. A page can explain why an AI should not choose a medicine dose. It cannot examine you.
 
-While every effort is made to keep the information accurate and up to date, the author makes no warranty of any kind. You rely on this content at your own discretion.
+If you have been the victim of a crime or fraud, contact the police or report online at [cybercrime.gov.in](https://www.cybercrime.gov.in), or call **1930**. For medical matters, talk to a qualified doctor. For money products, use the official regulator and a person who is licensed to advise you.
+
+Every effort is made to keep this information accurate. Apps, scams, and rules change. You still decide what to do, using official sources for anything that would move money, change treatment, or create a legal obligation.
