@@ -5,8 +5,8 @@ interface Props { lang: Locale }
 const { lang } = Astro.props;
 const copy = localeCopy[lang];
 const paths = [
-  ['✨', copy.learn, copy.learnDesc, localePath(lang, '/learn/')],
-  ['🛡️', copy.safety, copy.safetyDesc, localePath(lang, '/safety/')],
+  ['✨', copy.learn, copy.learnDesc, localePath(lang, '/courses/ai-confidence/')],
+  ['🛡️', copy.safety, copy.safetyDesc, localePath(lang, '/courses/online-safety-essentials/')],
   ['◎', copy.guides, copy.guidesDesc, localePath(lang, '/guides/')],
   ['🆘', copy.help, copy.helpDesc, localePath(lang, '/help/')]
 ];

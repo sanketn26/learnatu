@@ -1,0 +1,32 @@
+---
+import type { Course } from '../data/courses';
+import { localePath, type Locale } from '../i18n/locales';
+interface Props { course: Course; index: number; lang: Locale }
+const { course, index, lang } = Astro.props;
+const current = course.lessons[index];
+const next = course.lessons[index + 1];
+---
+<aside class="lesson-progress" data-course={course.slug} data-lesson={current.path}>
+  <div class="lesson-position"><span>{course.icon} {course.title}</span><strong>Lesson {index + 1} of {course.lessons.length}</strong></div>
+  <div class="mini-progress"><span style={`width:${(index + 1) / course.lessons.length * 100}%`}></span></div>
+  <p><strong>You learned:</strong> {current.skill}</p>
+  <button class="complete-button" type="button"><span class="before">Mark lesson complete</span><span class="after">✓ Completed</span></button>
+  {next ? <a class="next-lesson" href={localePath(lang, next.path)}>Next: {next.title} →</a> : <a class="next-lesson" href={localePath(lang, `/courses/${course.slug}/`)}>See my achievement →</a>}
+</aside>
+<script is:inline>
+  document.querySelectorAll('.lesson-progress').forEach((panel) => {
+    const course = panel.dataset.course;
+    const lesson = panel.dataset.lesson;
+    const read = () => JSON.parse(localStorage.getItem('learnatu-progress') || '{}');
+    const render = () => panel.classList.toggle('is-complete', (read()[course] || []).includes(lesson));
+    panel.querySelector('.complete-button')?.addEventListener('click', () => {
+      const progress = read();
+      const lessons = new Set(progress[course] || []);
+      lessons.has(lesson) ? lessons.delete(lesson) : lessons.add(lesson);
+      progress[course] = [...lessons];
+      localStorage.setItem('learnatu-progress', JSON.stringify(progress));
+      render();
+    });
+    render();
+  });
+</script>

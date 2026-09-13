@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCourse } from '../data/courses';
+import { localePath, type Locale } from '../i18n/locales';
+interface Props { lang: Locale; courseSlug: string }
+const { lang, courseSlug } = Astro.props;
+const course = getCourse(courseSlug);
+if (!course) return Astro.redirect(localePath(lang));
+---
+<BaseLayout title={course.title} description={course.promise} lang={lang}>
+  <div class="shell course-page" data-course={course.slug}>
+    <a class="back-link" href={localePath(lang)}>← Learnatu</a>
+    <header class="course-header">
+      <span class="course-symbol" aria-hidden="true">{course.icon}</span>
+      <div><p class="eyebrow">Guided course</p><h1>{course.title}</h1><p class="hero-copy">{course.promise}</p></div>
+    </header>
+    <section class="progress-panel" aria-labelledby="progress-title">
+      <div><strong id="progress-title">Your progress</strong><span class="progress-count" aria-live="polite">0 of {course.lessons.length} complete</span></div>
+      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax={course.lessons.length} aria-valuenow="0"><span></span></div>
+    </section>
+    <ol class="course-steps">
+      {course.lessons.map((lesson, index) => <li data-lesson={lesson.path}>
+        <a href={localePath(lang, lesson.path)}>
+          <span class="step-number"><span>{index + 1}</span><span class="step-check">✓</span></span>
+          <span><small>Lesson {index + 1}</small><strong>{lesson.title}</strong><em>{lesson.skill}</em></span>
+          <span class="step-action">Start →</span>
+        </a>
+      </li>)}
+    </ol>
+    <section class="course-outcome">
+      <span aria-hidden="true">🏅</span><div><strong>What you will be able to say</strong><p>“{course.outcome}”</p></div>
+    </section>
+  </div>
+  <script is:inline define:vars={{ courseSlug: course.slug, lessonCount: course.lessons.length }}>
+    const completed = JSON.parse(localStorage.getItem('learnatu-progress') || '{}');
+    const done = completed[courseSlug] || [];
+    document.querySelectorAll('[data-lesson]').forEach((item) => {
+      const isDone = done.includes(item.dataset.lesson);
+      item.classList.toggle('is-complete', isDone);
+      const action = item.querySelector('.step-action');
+      if (isDone && action) action.textContent = 'Review →';
+    });
+    const count = document.querySelector('.progress-count');
+    if (count) count.textContent = `${done.length} of ${lessonCount} complete`;
+    const bar = document.querySelector('.progress-track');
+    if (bar) {
+      bar.setAttribute('aria-valuenow', String(done.length));
+      bar.querySelector('span').style.width = `${done.length / lessonCount * 100}%`;
+    }
+    document.querySelector('.course-page')?.classList.toggle('course-complete', done.length === lessonCount);
+  </script>
+</BaseLayout>
