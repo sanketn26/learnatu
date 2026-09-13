@@ -1,0 +1,10 @@
+---
+import CoursePage from '../../../../components/CoursePage.astro';
+import { pathways } from '../../../../data/courses';
+import { localeCodes, type Locale } from '../../../../i18n/locales';
+export function getStaticPaths() {
+  return localeCodes.filter((lang) => lang !== 'en').flatMap((lang) => pathways.map((pathway) => ({ params: { lang, pathway: pathway.slug }, props: { lang, pathwaySlug: pathway.slug } })));
+}
+const { lang, pathwaySlug } = Astro.props as { lang: Locale; pathwaySlug: string };
+---
+<CoursePage lang={lang} courseSlug={pathwaySlug} />

@@ -43,18 +43,23 @@ const english: Record<string, { title: string; intro: string; groups: Group[] }>
       { icon: '↓', title: 'Updates, backups, and permissions', description: 'Three habits that prevent many emergencies.', href: '/safety/devices/updates-backups-and-permissions/' }
     ]}
   ]},
-  guides: { title: 'Guides for you', intro: 'Choose a path based on your work or everyday responsibilities.', groups: [
-    { title: 'Work and home', items: [
-      { icon: '⌂', title: 'Home and family', description: 'Protect family privacy and use AI for everyday tasks.', href: '/guides/home-and-family/' },
-      { icon: '♡', title: 'Homemakers and caregivers', description: 'Household communication, planning, learning, and family privacy.', href: '/guides/home-and-caregivers/' },
-      { icon: '🔧', title: 'Plumbers and electricians', description: 'Quotes, customer messages, translations, and payment safety.', href: '/guides/trades/', image: '/images/stock/trades.jpg' },
-      { icon: '⚕', title: 'Doctors and nurses', description: 'Communication help with strict patient-data boundaries.', href: '/guides/healthcare/', image: '/images/stock/healthcare.jpg' },
-      { icon: '▦', title: 'Small businesses', description: 'Customers, marketing, contracts, and payments.', href: '/guides/small-business/' },
-      { icon: '▣', title: 'Employees', description: 'Use workplace AI without leaking company information.', href: '/guides/employees/' },
-      { icon: '⌖', title: 'Gig and delivery workers', description: 'Protect customer, location, account, and payment information.', href: '/guides/gig-and-delivery-workers/' },
-      { icon: '✎', title: 'Teachers and job seekers', description: 'Prepare and practise without inventing or exposing information.', href: '/guides/teachers-and-job-seekers/' },
-      { icon: '◎', title: 'Students', description: 'Learn with AI while checking facts and avoiding plagiarism.', href: '/guides/students/' },
-      { icon: '♡', title: 'Older adults', description: 'Avoid scams and unsafe medical claims.', href: '/guides/older-adults/' }
+  guides: { title: 'Apply it to my life', intro: 'Choose where you want to use these skills. Each path has a clear sequence and finish line.', groups: [
+    { title: 'At home', items: [
+      { icon: '⌂', title: 'Managing a household', description: 'Communication, documents, family privacy, and payments.', href: '/pathways/managing-a-household/' },
+      { icon: '♡', title: 'Caring for family', description: 'Health information, children’s privacy, and urgent requests.', href: '/pathways/family-caregiving/' },
+      { icon: '☀', title: 'Older adults', description: 'Calls, payments, medical claims, and account protection.', href: '/pathways/older-adults/' }
+    ]},
+    { title: 'At work', items: [
+      { icon: '🔧', title: 'Skilled trades', description: 'Quotations, customer messages, privacy, and payments.', href: '/pathways/skilled-trades/', image: '/images/stock/trades.jpg' },
+      { icon: '⚕', title: 'Healthcare', description: 'Low-risk communication with strict patient-data boundaries.', href: '/pathways/healthcare/', image: '/images/stock/healthcare.jpg' },
+      { icon: '▦', title: 'Small business', description: 'Customers, marketing, contracts, and payments.', href: '/pathways/small-business/' },
+      { icon: '▣', title: 'Office work', description: 'Productive AI use without leaking company information.', href: '/pathways/office-work/' },
+      { icon: '⌖', title: 'Gig and delivery work', description: 'Customer, location, account, and payment safety.', href: '/pathways/gig-and-delivery-work/' }
+    ]},
+    { title: 'Learning and career', items: [
+      { icon: '◎', title: 'Students', description: 'Learn, check facts, and avoid plagiarism.', href: '/pathways/students/' },
+      { icon: '✎', title: 'Teachers', description: 'Create useful material while protecting students.', href: '/pathways/teachers/' },
+      { icon: '↗', title: 'Job seekers', description: 'Applications, interviews, and fake-job protection.', href: '/pathways/job-seekers/' }
     ]}
   ]},
   help: { title: 'Get help now', intro: 'A mistake is not the end. Act quickly, one step at a time.', groups: [

@@ -5,16 +5,23 @@ interface Props { course: Course; index: number; lang: Locale }
 const { course, index, lang } = Astro.props;
 const current = course.lessons[index];
 const next = course.lessons[index + 1];
+const resultPath = course.kind === 'pathway' ? `/pathways/${course.slug}/` : `/courses/${course.slug}/`;
 ---
-<aside class="lesson-progress" data-course={course.slug} data-lesson={current.path}>
+<aside class="lesson-progress" data-course={course.slug} data-lesson={current.path} hidden>
   <div class="lesson-position"><span>{course.icon} {course.title}</span><strong>Lesson {index + 1} of {course.lessons.length}</strong></div>
   <div class="mini-progress"><span style={`width:${(index + 1) / course.lessons.length * 100}%`}></span></div>
   <p><strong>You learned:</strong> {current.skill}</p>
   <button class="complete-button" type="button"><span class="before">Mark lesson complete</span><span class="after">✓ Completed</span></button>
-  {next ? <a class="next-lesson" href={localePath(lang, next.path)}>Next: {next.title} →</a> : <a class="next-lesson" href={localePath(lang, `/courses/${course.slug}/`)}>See my achievement →</a>}
+  {next ? <a class="next-lesson" href={`${localePath(lang, next.path)}?track=${course.slug}`}>Next: {next.title} →</a> : <a class="next-lesson" href={localePath(lang, resultPath)}>See my achievement →</a>}
 </aside>
 <script is:inline>
-  document.querySelectorAll('.lesson-progress').forEach((panel) => {
+if (!window.learnatuProgressInitialized) {
+  window.learnatuProgressInitialized = true;
+  const panels = [...document.querySelectorAll('.lesson-progress')];
+  const requestedTrack = new URLSearchParams(location.search).get('track');
+  const activePanel = panels.find((panel) => panel.dataset.course === requestedTrack) || panels[0];
+  if (activePanel) activePanel.hidden = false;
+  panels.filter((panel) => panel === activePanel).forEach((panel) => {
     const course = panel.dataset.course;
     const lesson = panel.dataset.lesson;
     const read = () => JSON.parse(localStorage.getItem('learnatu-progress') || '{}');
@@ -29,4 +36,5 @@ const next = course.lessons[index + 1];
     });
     render();
   });
+}
 </script>

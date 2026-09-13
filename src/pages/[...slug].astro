@@ -3,7 +3,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { contentRoute } from '../lib/content-routes.mjs';
 import { localeCodes, localeCopy, type Locale } from '../i18n/locales';
-import { findLesson } from '../data/courses';
+import { findLessons } from '../data/courses';
 import LessonProgress from '../components/LessonProgress.astro';
 export async function getStaticPaths() {
   const lessons = await getCollection('lessons');
@@ -25,12 +25,12 @@ export async function getStaticPaths() {
 const { entry, displayLang, fallback } = Astro.props as { entry: any; displayLang: Locale; fallback: boolean };
 const { Content, headings } = await render(entry);
 const title = headings.find((heading) => heading.depth === 1)?.text ?? 'Learnatu';
-const courseLesson = findLesson(Astro.url.pathname);
+const courseLessons = findLessons(Astro.url.pathname);
 ---
 <BaseLayout title={title} lang={displayLang}>
   <article class="article">
     {fallback && <p class="translation-notice">{localeCopy[displayLang].fallback}</p>}
     <Content />
-    {courseLesson && <LessonProgress course={courseLesson.course} index={courseLesson.index} lang={displayLang} />}
+    {courseLessons.map((courseLesson) => <LessonProgress course={courseLesson.course} index={courseLesson.index} lang={displayLang} />)}
   </article>
 </BaseLayout>

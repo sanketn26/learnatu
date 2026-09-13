@@ -1,0 +1,9 @@
+---
+import CoursePage from '../../../components/CoursePage.astro';
+import { pathways } from '../../../data/courses';
+export function getStaticPaths() {
+  return pathways.map((pathway) => ({ params: { pathway: pathway.slug }, props: { pathwaySlug: pathway.slug } }));
+}
+const { pathwaySlug } = Astro.props;
+---
+<CoursePage lang="en" courseSlug={pathwaySlug} />

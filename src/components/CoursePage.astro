@@ -12,7 +12,7 @@ if (!course) return Astro.redirect(localePath(lang));
     <a class="back-link" href={localePath(lang)}>← Learnatu</a>
     <header class="course-header">
       <span class="course-symbol" aria-hidden="true">{course.icon}</span>
-      <div><p class="eyebrow">Guided course</p><h1>{course.title}</h1><p class="hero-copy">{course.promise}</p></div>
+      <div><p class="eyebrow">{course.kind === 'pathway' ? 'Applied learning path' : 'Guided course'}</p><h1>{course.title}</h1><p class="hero-copy">{course.promise}</p></div>
     </header>
     <section class="progress-panel" aria-labelledby="progress-title">
       <div><strong id="progress-title">Your progress</strong><span class="progress-count" aria-live="polite">0 of {course.lessons.length} complete</span></div>
@@ -20,7 +20,7 @@ if (!course) return Astro.redirect(localePath(lang));
     </section>
     <ol class="course-steps">
       {course.lessons.map((lesson, index) => <li data-lesson={lesson.path}>
-        <a href={localePath(lang, lesson.path)}>
+        <a href={`${localePath(lang, lesson.path)}?track=${course.slug}`}>
           <span class="step-number"><span>{index + 1}</span><span class="step-check">✓</span></span>
           <span><small>Lesson {index + 1}</small><strong>{lesson.title}</strong><em>{lesson.skill}</em></span>
           <span class="step-action">Start →</span>
