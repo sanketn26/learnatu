@@ -40,6 +40,36 @@ export const courses: Course[] = [
       { path: '/safety/devices/updates-backups-and-permissions/', title: 'Secure your phone', skill: 'Manage updates, backups, and permissions' },
       { path: '/help/after-a-mistake/', title: 'Recover calmly', skill: 'Take the right first steps after a mistake' }
     ]
+  },
+  {
+    kind: 'course', slug: 'money-confidence', icon: '₹', title: 'Money Confidence',
+    promise: 'Build a practical financial plan and make more informed decisions without chasing promises or exposing private records.',
+    outcome: 'I can make a basic money plan, compare options, verify providers, and recognize when I need qualified help.',
+    lessons: [
+      { path: '/money/foundations/understand-your-money/', title: 'Understand your money', skill: 'See income, essential costs, and irregular expenses clearly' },
+      { path: '/money/foundations/simple-budget/', title: 'Make a simple budget', skill: 'Give each part of your income a realistic job' },
+      { path: '/money/foundations/emergency-fund/', title: 'Prepare for emergencies', skill: 'Build an accessible reserve gradually' },
+      { path: '/money/foundations/understand-loans/', title: 'Understand loans', skill: 'Compare total cost instead of EMI alone' },
+      { path: '/money/planning/save-invest-or-repay/', title: 'Choose by purpose', skill: 'Separate saving, investing, and debt repayment' },
+      { path: '/money/planning/insurance-basics/', title: 'Understand insurance', skill: 'Check coverage, exclusions, costs, and providers' },
+      { path: '/money/planning/retirement-basics/', title: 'Plan for later life', skill: 'Identify retirement needs and uncertainties' },
+      { path: '/money/planning/verify-financial-products/', title: 'Verify before committing', skill: 'Check products and providers independently' }
+    ]
+  },
+  {
+    kind: 'course', slug: 'financial-fraud-defence', icon: '₹!', title: 'Financial Fraud Defence',
+    promise: 'Recognize how financial scams apply pressure, interrupt the transaction, and respond quickly after a loss.',
+    outcome: 'I can pause a suspicious transaction, verify it independently, and take the right steps if money is lost.',
+    lessons: [
+      { path: '/money/fraud/how-financial-fraud-works/', title: 'Recognize the pressure sequence', skill: 'Interrupt urgency, authority, emotion, and secrecy' },
+      { path: '/safety/money/otp-and-upi/', title: 'Protect OTPs and UPI', skill: 'Know what must never be shared or approved' },
+      { path: '/money/fraud/fake-payments-and-refunds/', title: 'Check payments and refunds', skill: 'Verify money in your own account' },
+      { path: '/safety/scams/impersonation-and-digital-arrest/', title: 'Challenge impersonation', skill: 'Verify officials, voices, and videos another way' },
+      { path: '/safety/scams/job-investment-and-loan-scams/', title: 'Reject guaranteed outcomes', skill: 'Spot task, investment, job, and loan traps' },
+      { path: '/money/fraud/money-mules-and-account-rental/', title: 'Protect your bank identity', skill: 'Refuse account-rental and forwarding requests' },
+      { path: '/money/fraud/recovery-scams/', title: 'Avoid a second fraud', skill: 'Recognize fake investigators and recovery agents' },
+      { path: '/help/sent-money-or-shared-otp/', title: 'Act after a loss', skill: 'Contact the right institutions and preserve evidence' }
+    ]
   }
 ];
 
@@ -163,6 +193,28 @@ export const pathways: Course[] = [
       { path: '/learn/everyday/understand-a-document/', title: 'Understand job documents', skill: 'Identify questions before agreeing' },
       { path: '/safety/scams/job-investment-and-loan-scams/', title: 'Recognize fake jobs', skill: 'Avoid fees and task scams' },
       { path: '/safety/accounts/recovery/', title: 'Protect your accounts', skill: 'Secure email and recovery details' }
+    ]
+  },
+  {
+    kind: 'pathway', slug: 'software-developers', icon: '</>', title: 'Responsible AI for Developers',
+    promise: 'Use AI to develop faster while protecting code, systems, users, and the software supply chain.',
+    outcome: 'I can use AI for development while independently reviewing security, correctness, dependencies, and licensing.',
+    lessons: [
+      { path: '/work/technology/safe-ai-coding/', title: 'Set safe coding boundaries', skill: 'Keep secrets and proprietary context out of prompts' },
+      { path: '/work/technology/review-ai-code/', title: 'Review generated code', skill: 'Check correctness, security, operations, and maintenance' },
+      { path: '/work/technology/packages-apis-and-licenses/', title: 'Verify dependencies', skill: 'Confirm packages, APIs, versions, and licenses' },
+      { path: '/work/technology/prompt-injection/', title: 'Design AI features defensively', skill: 'Keep untrusted content away from privileged actions' }
+    ]
+  },
+  {
+    kind: 'pathway', slug: 'qa-testers', icon: '✓', title: 'AI for QA and Testers',
+    promise: 'Use AI to broaden test thinking without exposing production data or mistaking volume for coverage.',
+    outcome: 'I can use AI to generate test ideas and synthetic data while independently validating coverage and user impact.',
+    lessons: [
+      { path: '/work/technology/generate-test-ideas/', title: 'Generate risk-based ideas', skill: 'Explore boundaries, failures, roles, and abuse cases' },
+      { path: '/work/technology/synthetic-test-data/', title: 'Protect real data', skill: 'Create purposeful synthetic fixtures' },
+      { path: '/work/technology/validate-test-coverage/', title: 'Challenge the tests', skill: 'Prove assertions can detect meaningful defects' },
+      { path: '/work/technology/accessibility-mobile-testing/', title: 'Test real user conditions', skill: 'Include accessibility, devices, networks, and languages' }
     ]
   }
 ];

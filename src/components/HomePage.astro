@@ -4,9 +4,17 @@ import { localeCopy, localePath, type Locale } from '../i18n/locales';
 interface Props { lang: Locale }
 const { lang } = Astro.props;
 const copy = localeCopy[lang];
+const moneyPaths = lang === 'hi' ? [
+  ['₹', 'पैसों की समझ बनाएँ', 'बजट, कर्ज़, बचत, बीमा और भविष्य की योजना', localePath(lang, '/courses/money-confidence/')],
+  ['₹!', 'वित्तीय धोखाधड़ी से बचें', 'दबाव पहचानें, भुगतान जाँचें और नुकसान के बाद कदम उठाएँ', localePath(lang, '/courses/financial-fraud-defence/')]
+] : [
+  ['₹', 'Build money confidence', 'Budget, debt, saving, insurance, and future planning', localePath(lang, '/courses/money-confidence/')],
+  ['₹!', 'Defend against financial fraud', 'Recognize pressure, verify payments, and respond after a loss', localePath(lang, '/courses/financial-fraud-defence/')]
+];
 const paths = [
   ['✨', copy.learn, copy.learnDesc, localePath(lang, '/courses/ai-confidence/')],
   ['🛡️', copy.safety, copy.safetyDesc, localePath(lang, '/courses/online-safety-essentials/')],
+  ...moneyPaths,
   ['◎', copy.guides, copy.guidesDesc, localePath(lang, '/guides/')],
   ['🆘', copy.help, copy.helpDesc, localePath(lang, '/help/')]
 ];

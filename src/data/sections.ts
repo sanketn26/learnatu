@@ -60,6 +60,10 @@ const english: Record<string, { title: string; intro: string; groups: Group[] }>
       { icon: '◎', title: 'Students', description: 'Learn, check facts, and avoid plagiarism.', href: '/pathways/students/' },
       { icon: '✎', title: 'Teachers', description: 'Create useful material while protecting students.', href: '/pathways/teachers/' },
       { icon: '↗', title: 'Job seekers', description: 'Applications, interviews, and fake-job protection.', href: '/pathways/job-seekers/' }
+    ]},
+    { title: 'Software and technology', items: [
+      { icon: '</>', title: 'Software developers', description: 'Code review, secrets, dependencies, licensing, and prompt injection.', href: '/pathways/software-developers/' },
+      { icon: '✓', title: 'QA and testers', description: 'Test ideas, synthetic data, coverage, accessibility, and mobile testing.', href: '/pathways/qa-testers/' }
     ]}
   ]},
   help: { title: 'Get help now', intro: 'A mistake is not the end. Act quickly, one step at a time.', groups: [

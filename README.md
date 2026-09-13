@@ -63,4 +63,6 @@ The published hierarchy is topic-first:
 /help/     Immediate steps after a mistake
 ```
 
+The homepage leads with four progress-tracked foundation courses: AI Confidence, Online Safety Essentials, Money Confidence, and Financial Fraud Defence. “Apply it” then offers grouped pathways for home, work, learning and career, and software and technology roles.
+
 Published routes are defined centrally in `src/lib/content-routes.mjs`. Old MkDocs URLs are not generated or redirected.
