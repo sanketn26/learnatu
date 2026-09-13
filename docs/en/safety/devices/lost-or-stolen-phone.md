@@ -13,4 +13,9 @@ Act quickly, but do not rush into a second scam.
 
 Erase the phone remotely if recovery is unlikely and you understand that tracking may stop afterward.
 
-Ignore messages claiming someone found the phone and asking for your PIN, OTP, password, or a login link. Device-finding services do not need you to reveal those secrets to a stranger.
+!!! danger "Never"
+    - Reply to a message claiming someone found your phone and asking for your PIN, OTP, or password.
+    - Click a "login" or "track my phone" link sent by a stranger.
+    - Delay locking the phone and blocking the SIM while you decide what to do.
+
+Device-finding services never need you to reveal your PIN, OTP, or password to a stranger to work.

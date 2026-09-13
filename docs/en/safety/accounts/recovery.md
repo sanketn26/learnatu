@@ -14,4 +14,9 @@ Your email account is often the master key to everything else. Recovery details 
 
 Use only the recovery option inside the official app or a website address you typed yourself. Ignore people in comments, messages, or search advertisements who promise to recover an account for a fee.
 
+!!! danger "Never"
+    - Trust a stranger in comments or ads who offers to recover your account for a fee.
+    - Use a recovery email or phone number you do not personally control.
+    - Leave old phones or unknown sessions signed in after recovery.
+
 After recovery, change the password, sign out other sessions, check forwarding rules and recovery details, and turn on two-step verification.

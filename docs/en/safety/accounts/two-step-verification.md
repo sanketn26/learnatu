@@ -10,6 +10,9 @@ Two-step verification adds a second check after your password. Turn it on first 
 4. Save recovery codes offline in a secure place.
 5. Review recovery phone numbers, email addresses, and signed-in devices.
 
-Never share an authentication code, approval notification, QR setup image, recovery code, or passkey prompt. A caller claiming to “cancel fraud” does not need it.
+!!! danger "Never"
+    - Share an authentication code, approval notification, QR setup image, or recovery code with anyone.
+    - Follow a setup link sent in a message instead of opening the app yourself.
+    - Approve a login notification you did not request.
 
 > If an unexpected login approval appears, deny it and change the account password from the official app or website.

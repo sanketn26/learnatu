@@ -15,3 +15,8 @@ Back up important contacts and photographs to an account you protect with a uniq
 Review camera, microphone, contacts, files, and location access. A permission should match the app's purpose. A torch or calculator does not need your contacts.
 
 Delete apps you no longer use. Do not install “cleaner,” “booster,” or update apps from advertisements or message links.
+
+!!! danger "Never"
+    - Install an app update or "cleaner" tool from an advertisement or message link.
+    - Grant contacts, camera, or location access to an app that does not need it for its purpose.
+    - Leave phone or app updates uninstalled for a long time.

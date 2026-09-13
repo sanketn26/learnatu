@@ -9,4 +9,9 @@ This is not your fault. Do not handle it alone.
 5. Report threats or non-consensual intimate content to the appropriate local authority. In India, use **cybercrime.gov.in** when applicable.
 6. If there is immediate physical danger, contact local emergency services.
 
-Avoid repeatedly forwarding the harmful content as evidence. Preserve it securely and share it only with people handling the report.
+!!! danger "Never"
+    - Pay a blackmailer, even once — it does not make the threats stop.
+    - Send more images or agree to meet the person.
+    - Forward the harmful content repeatedly, even "as evidence."
+
+Preserve the evidence securely instead, and share it only with the trusted person or authority handling your report.

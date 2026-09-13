@@ -11,4 +11,9 @@ A familiar voice, profile photo, uniform, caller ID, or video is not proof of id
 
 No legitimate authority keeps you under “digital arrest” over a video call or asks you to transfer money to prove innocence. Urgent secrecy, threats, and instructions to stay on the call are danger signs.
 
-Do not share your screen, move to a private room, or transfer funds while someone is pressuring you.
+!!! danger "Never"
+    - Transfer money over a call to "prove your innocence" or stay under "digital arrest."
+    - Share your screen or move to a private room because a caller pressures you to.
+    - Trust a familiar voice, face, or caller ID as proof of identity.
+
+If a call is already in progress and any of this is happening, hang up now and verify independently before doing anything else.

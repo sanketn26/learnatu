@@ -55,6 +55,10 @@ h1 { margin: 0; max-width: 18ch; font-size: clamp(2.25rem, 9vw, 4.6rem); line-he
 .article table { width: 100%; border-collapse: collapse; display: block; overflow-x: auto; }
 .article th, .article td { padding: .75rem; border: 1px solid var(--line); text-align: left; }
 .article blockquote { margin-inline: 0; padding: .9rem 1rem; border-left: .35rem solid var(--brand); background: var(--brand-soft); border-radius: 0 .75rem .75rem 0; }
+.article blockquote.callout-danger { border-left-color: #c62839; background: #fdeaec; }
+.article blockquote.callout-danger strong { color: #a01d2b; }
+.article blockquote.callout-warning { border-left-color: #b8790a; background: #fff2da; }
+.article blockquote.callout-warning strong { color: #8f5c04; }
 .article details { margin: 1rem 0; border: 1px solid var(--line); border-radius: .9rem; background: white; overflow: hidden; }
 .article summary { min-height: 3.25rem; display: flex; align-items: center; padding: .7rem 1rem; color: var(--brand-dark); font-weight: 800; cursor: pointer; }
 .article details[open] summary { border-bottom: 1px solid var(--line); background: var(--brand-soft); }

@@ -11,4 +11,9 @@ Use a trusted device if possible.
 
 If you cannot sign in, use only the platform's official recovery page. People replying on social media with “recovery experts” are often scammers.
 
+!!! danger "Never"
+    - Trust anyone replying on social media offering to "recover" your account.
+    - Use a link or number they send instead of the platform's official recovery page.
+    - Leave your recovery email or phone number unchecked when several accounts may be affected.
+
 Secure your primary email first when several accounts are affected, because it may be used to reset the others.

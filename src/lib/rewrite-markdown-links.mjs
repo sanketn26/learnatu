@@ -6,7 +6,9 @@ function walk(node, filePath) {
     const match = node.children[0].value.match(/^!!!\s+(\w+)\s+[“"]([^”"]+)[”"]\n([\s\S]+)$/);
     if (match) {
       const lines = match[3].split('\n').map((line) => line.trim()).filter(Boolean);
+      const type = match[1].toLowerCase();
       node.type = 'blockquote';
+      node.data = { hProperties: { className: ['callout', `callout-${type}`] } };
       node.children = [
         { type: 'paragraph', children: [{ type: 'strong', children: [{ type: 'text', value: match[2] }] }] },
         { type: 'list', ordered: false, spread: false, children: lines.map((line) => ({ type: 'listItem', spread: false, children: [{ type: 'paragraph', children: [{ type: 'text', value: line.replace(/^-\s*/, '') }] }] })) }

@@ -12,4 +12,9 @@ A screenshot, SMS, email, or caller's screen can be fabricated. Only your own ve
 
 Open your bank or payment app yourself and check the completed transaction and available balance. Do not use a link in the message.
 
-Never return an “extra payment” until your provider independently confirms that cleared money was actually received and explains the correct process.
+!!! danger "Never"
+    - Trust a payment screenshot, SMS, or caller's screen as proof money arrived.
+    - Scan a QR code or share a PIN, OTP, or screen access to "receive" or "reverse" a payment.
+    - Refund an "extra payment" before your own bank or payment app confirms cleared money was received.
+
+If a "refund" request feels rushed, that pressure is itself a warning sign — a genuine overpayment can wait for you to verify it properly.

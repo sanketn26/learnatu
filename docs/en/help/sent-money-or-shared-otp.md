@@ -9,6 +9,9 @@ Act immediately. Do not spend time arguing with the scammer.
 5. Change affected passwords from a trusted device.
 6. Tell a trusted person who can help you follow through.
 
-Never pay a “recovery agent.” Do not send another payment to unlock, reverse, investigate, or refund the first one.
+!!! danger "Never"
+    - Pay a "recovery agent" or send another payment to unlock, reverse, or refund the first one.
+    - Edit or delete transaction IDs, messages, or screenshots before reporting.
+    - Wait to report — call **1930** and contact your bank immediately.
 
 If you shared a UPI PIN, card PIN, password, or recovery code, tell the relevant provider exactly what was exposed.

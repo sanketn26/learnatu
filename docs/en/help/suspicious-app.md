@@ -7,4 +7,9 @@
 5. Contact your bank immediately if financial information or screen access was exposed.
 6. Back up essential personal files and consider a factory reset if control of the phone is uncertain.
 
-Do not call a removal number displayed by the suspicious app. Use official support channels only.
+!!! danger "Never"
+    - Open banking, email, password-manager, or payment apps on a phone with a suspicious app still installed.
+    - Call a "removal" number displayed by the suspicious app.
+    - Leave accessibility, device-admin, or screen-sharing access on for an app you don't fully trust.
+
+Use only official support channels for help removing it — never a number the app itself displays.

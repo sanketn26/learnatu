@@ -43,7 +43,7 @@ Everyone makes mistakes. The key is acting quickly when something goes wrong.
 
 ## You shared work or customer data in an AI tool by mistake
 
-1. Delete the conversation if the tool allows it (ChatGPT → three dots on the chat → Delete).
+1. Delete the conversation if your AI tool allows it — look for a delete or "clear chat" option in its settings or chat menu.
 2. Inform your manager as soon as possible. Honesty early is far better than a discovery later.
 3. Check the AI tool's data retention policy and submit a data deletion request if available.
 
