@@ -1,0 +1,43 @@
+---
+import '../styles/global.css';
+import { localeCodes, localeCopy, localeNames, localePath, type Locale } from '../i18n/locales';
+interface Props { title?: string; description?: string; lang?: Locale; }
+const { title = 'Learnatu', description = 'Use AI confidently. Stay safe online.', lang = 'en' } = Astro.props;
+const copy = localeCopy[lang];
+const home = localePath(lang);
+const segments = Astro.url.pathname.split('/').filter(Boolean);
+const remainingPath = segments.slice(1);
+const pathWithoutLocale = localeCodes.includes(segments[0] as Locale) && segments[0] !== 'en'
+  ? (remainingPath.length ? `/${remainingPath.join('/')}/` : '/')
+  : Astro.url.pathname;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#087f6b" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title === 'Learnatu' ? title : `${title} · Learnatu`}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header"><div class="shell header-inner">
+      <a class="brand" href={home}>Learnatu</a>
+      <details class="language-menu">
+        <summary>{localeNames[lang]} <span aria-hidden="true">⌄</span></summary>
+        <div class="language-list">
+          {localeCodes.map((code) => <a href={localePath(code, pathWithoutLocale)} lang={code} aria-current={code === lang ? 'page' : undefined}>{localeNames[code]}</a>)}
+        </div>
+      </details>
+    </div></header>
+    <main id="content"><slot /></main>
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <a href={home}><span>⌂</span>{copy.home}</a>
+      <a href={localePath(lang, '/learn/')}><span>✦</span>{copy.learn}</a>
+      <a href={localePath(lang, '/safety/')}><span>◈</span>{copy.safety}</a>
+      <a href={localePath(lang, '/guides/')}><span>●</span>{copy.guides}</a>
+    </nav>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+---
+import SectionPage from '../../../components/SectionPage.astro';
+import { localeCodes, type Locale } from '../../../i18n/locales';
+export function getStaticPaths() {
+  const sections = ['learn', 'safety', 'guides', 'help'];
+  return localeCodes.filter((lang) => lang !== 'en').flatMap((lang) => sections.map((section) => ({ params: { lang, section }, props: { lang, section } })));
+}
+const { lang, section } = Astro.props as { lang: Locale; section: string };
+---
+<SectionPage lang={lang} section={section} />

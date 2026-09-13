@@ -1,0 +1,32 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { contentRoute } from '../lib/content-routes.mjs';
+import { localeCodes, localeCopy, type Locale } from '../i18n/locales';
+export async function getStaticPaths() {
+  const lessons = await getCollection('lessons');
+  const realPages = lessons.filter((entry) => entry.id !== 'en' && entry.id !== 'hi').map((entry) => {
+    const lang = entry.id.startsWith('hi/') ? 'hi' : 'en';
+    const route = contentRoute(entry.id);
+    return { params: { slug: lang === 'en' ? route : `${lang}/${route}` }, props: { entry, displayLang: lang, fallback: false } };
+  });
+  const english = lessons.filter((entry) => entry.id.startsWith('en/'));
+  const hindiRoutes = new Set(lessons.filter((entry) => entry.id.startsWith('hi/')).map((entry) => contentRoute(entry.id)));
+  const hindiFallbacks = english
+    .filter((entry) => !hindiRoutes.has(contentRoute(entry.id)))
+    .map((entry) => ({ params: { slug: `hi/${contentRoute(entry.id)}` }, props: { entry, displayLang: 'hi', fallback: true } }));
+  const fallbacks = localeCodes.filter((lang) => !['en', 'hi'].includes(lang)).flatMap((lang) =>
+    english.map((entry) => ({ params: { slug: `${lang}/${contentRoute(entry.id)}` }, props: { entry, displayLang: lang, fallback: true } }))
+  );
+  return [...realPages, ...hindiFallbacks, ...fallbacks];
+}
+const { entry, displayLang, fallback } = Astro.props as { entry: any; displayLang: Locale; fallback: boolean };
+const { Content, headings } = await render(entry);
+const title = headings.find((heading) => heading.depth === 1)?.text ?? 'Learnatu';
+---
+<BaseLayout title={title} lang={displayLang}>
+  <article class="article">
+    {fallback && <p class="translation-notice">{localeCopy[displayLang].fallback}</p>}
+    <Content />
+  </article>
+</BaseLayout>

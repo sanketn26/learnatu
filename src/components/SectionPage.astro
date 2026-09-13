@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSection } from '../data/sections';
+import { localePath, type Locale } from '../i18n/locales';
+interface Props { lang: Locale; section: string }
+const { lang, section } = Astro.props;
+const data = getSection(section, lang);
+if (!data) return Astro.redirect(localePath(lang));
+const sectionImages: Record<string, string> = {
+  learn: '/images/illustrations/use-ai.webp',
+  safety: '/images/illustrations/stay-safe.webp',
+  guides: '/images/stock/community.jpg'
+};
+---
+<BaseLayout title={data.title} description={data.intro} lang={lang}>
+  <div class="shell section-page">
+    <a class="back-link" href={localePath(lang)}>← Learnatu</a>
+    <h1>{data.title}</h1>
+    <p class="hero-copy">{data.intro}</p>
+    {sectionImages[section] && <img class="section-image" src={sectionImages[section]} alt="" width="1200" height="675" loading="eager" />}
+    {data.groups.map((group) => <section class="topic-group">
+      <h2 class="section-title">{group.title}</h2>
+      <div class="topic-grid">{group.items.map((item) => <a class:list={['topic-card', item.image && 'topic-card-photo']} href={localePath(lang, item.href)}>{item.image ? <img src={item.image} alt="" width="640" height="420" loading="lazy" /> : <span class="topic-icon" aria-hidden="true">{item.icon}</span>}<span><strong>{item.title}</strong><small>{item.description}</small></span><span aria-hidden="true">→</span></a>)}</div>
+    </section>)}
+  </div>
+</BaseLayout>

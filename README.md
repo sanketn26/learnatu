@@ -1,55 +1,66 @@
 # Learnatu
 
-**Learn to use apps and the internet safely. Free. No jargon.**
+**Use AI confidently. Stay safe online. Free. No jargon.**
 
-A bilingual (English + Hindi) static handbook built with MkDocs + Material + i18n.
+A multilingual, mobile-first learning site built with Astro. Content is organized publicly by topic, with profession and life-stage pages acting as curated learning paths.
 
-## Local development
+## Run locally
 
-```bash
-pip install -r requirements.txt
-mkdocs serve
-```
-
-The language switcher (English / हिन्दी) works in local mode. Open http://127.0.0.1:8000.
-
-## Build
+Install dependencies once:
 
 ```bash
-mkdocs build --strict
+npm install
 ```
 
-Output goes to `site/` (git-ignored).
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open <http://localhost:4321>.
+
+## Build and preview
+
+```bash
+npm run build
+npm run preview
+```
+
+The static production site is written to `dist/`.
 
 ## Deployment
 
-GitHub Actions builds and deploys to GitHub Pages on every push to `main`.
+GitHub Actions builds and deploys the site to GitHub Pages on every push to `main`. The custom domain is **learnatu.com**.
 
-Custom domain: **learnatu.com**
+In the repository's Pages settings, use **GitHub Actions** as the source and enable **Enforce HTTPS**.
 
-After enabling Pages (Actions source) in repository Settings:
-1. Set custom domain to `learnatu.com`
-2. Check "Enforce HTTPS"
+## Languages
 
-## Content maintenance
+- English: `/`
+- Hindi: `/hi/`
+- Odia: `/or/`
+- Tamil: `/ta/`
+- Telugu: `/te/`
+- Kannada: `/kn/`
+- Bengali: `/bn/`
 
-Monthly habit: update **one** situation page in both `docs/en/` and `docs/hi/`.
-If the Hindi translation is not ready for a new page, leave a note at the top:
+English and Hindi have reviewed lesson content. The other language routes currently provide localized navigation and clearly labelled English lesson fallbacks until each translation is reviewed.
 
-```
-> English only for now. Hindi translation coming soon.
-```
+## Content and routes
 
-Never let the Hindi nav point at an empty file.
-
-## Structure
-
-```
-docs/en/   — English pages
-docs/hi/   — Hindi pages (mirror structure)
-docs/CNAME — learnatu.com
+```text
+docs/en/  English lessons
+docs/hi/  Hindi lessons with the same relative paths
 ```
 
-## Separate from sanketn26.github.io
+The published hierarchy is topic-first:
 
-This site is a standalone project. It is not connected to sanketn26.github.io.
+```text
+/learn/    AI skills and responsible use
+/safety/   Accounts, money, privacy, scams, and devices
+/guides/   Curated paths for professions and everyday life
+/help/     Immediate steps after a mistake
+```
+
+Published routes are defined centrally in `src/lib/content-routes.mjs`. Old MkDocs URLs are not generated or redirected.
