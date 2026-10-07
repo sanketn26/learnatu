@@ -1,0 +1,10 @@
+# Copy to .dev.vars for local development. In production use `wrangler secret put <NAME>`.
+SITE_URL=http://localhost:4321
+DEBUG=1
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+RAZORPAY_KEY_ID=
+RAZORPAY_KEY_SECRET=
+RAZORPAY_WEBHOOK_SECRET=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=

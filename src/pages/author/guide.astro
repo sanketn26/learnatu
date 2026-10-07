@@ -1,0 +1,18 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { isAuthor } from '../../lib/auth/roles';
+import { loginUrl } from '../../lib/auth/session';
+import { notFound } from '../../lib/routing';
+export const prerender = false;
+
+const user = await Astro.locals.getUser();
+if (!user) return Astro.redirect(loginUrl('/author/guide/'));
+if (!isAuthor(user)) return notFound();
+const entry = await getEntry('authorDocs', 'readme');
+if (!entry) return notFound();
+const { Content } = await render(entry);
+---
+<BaseLayout title="Course-writing guide">
+  <article class="article"><p><a href="/author/">← Author hub</a></p><Content /></article>
+</BaseLayout>

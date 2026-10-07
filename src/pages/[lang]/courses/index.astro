@@ -1,0 +1,9 @@
+---
+import CatalogPage from '../../../components/CatalogPage.astro';
+import { localeCodes, type Locale } from '../../../i18n/locales';
+export function getStaticPaths() {
+  return localeCodes.filter((lang) => lang !== 'en').map((lang) => ({ params: { lang }, props: { lang } }));
+}
+const { lang } = Astro.props as { lang: Locale };
+---
+<CatalogPage lang={lang} />

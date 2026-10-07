@@ -4,36 +4,56 @@
 
 A multilingual, mobile-first learning site built with Astro. Content is organized publicly by topic, with profession and life-stage pages acting as curated learning paths.
 
-## Run locally
+## What this is
 
-Install dependencies once:
+A learning platform: free and paid courses written in Markdown, with in-lesson quizzes, Google sign-in, per-learner progress and Razorpay / Stripe checkout. Astro (SSR) on Cloudflare Workers with a D1 database.
+
+- **Every course page requires sign-in** (free or paid). Paid courses also require a verified purchase.
+- **Authors write courses as Markdown** in `content/courses/`. See [content/README.md](content/README.md) for the format, including the quiz syntax.
+
+## Run locally
 
 ```bash
 npm install
+cp .dev.vars.example .dev.vars   # fill in Google (and optionally payment) credentials
+npm run db:migrate               # creates the local D1 database
+npm run dev                      # http://localhost:4321
 ```
 
-Start the development server:
+Google OAuth: create a *Web application* client at <https://console.cloud.google.com/apis/credentials> with the redirect URI `http://localhost:4321/api/auth/callback` (and `https://learnatu.com/api/auth/callback` for production).
+
+Set `ADMIN_EMAILS` to your Google email to unlock **preview mode**: `/author/` lists every course (including drafts) and you can open any lesson without enrolling or paying.
+
+## Creating a course
 
 ```bash
-npm run dev
+npm run course:new -- my-course        # scaffold (draft) from the sample course; add --free for a free one
+npm run course:validate                # checks course.md, lesson files and every quiz
 ```
 
-Open <http://localhost:4321>.
+Preview it at `/author/`, then set `status: published` in `course.md` and push. Publishing = commit and deploy.
 
-## Build and preview
+## Tests, build, deploy
 
 ```bash
-npm run build
-npm run preview
+npm test             # quiz grading + validation, crypto helpers
+npm run build        # type-check + build
+npm run deploy       # build, then wrangler deploy
 ```
 
-The static production site is written to `dist/`.
+First deploy: `npx wrangler d1 create learnatu`, put the id in `wrangler.jsonc`, `npm run db:migrate:remote`, then `npx wrangler secret put <NAME>` for each variable in `.dev.vars.example`. Webhooks: Razorpay → `/api/webhooks/razorpay` (`payment.captured`), Stripe → `/api/webhooks/stripe` (`checkout.session.completed`).
 
-## Deployment
+## Code map
 
-GitHub Actions builds and deploys the site to GitHub Pages on every push to `main`. The custom domain is **learnatu.com**.
-
-In the repository's Pages settings, use **GitHub Actions** as the source and enable **Enforce HTTPS**.
+```text
+src/lib/auth/      Google OAuth, sessions, author role
+src/lib/db/        one small module per table (users, sessions, enrollments, progress, orders)
+src/lib/courses/   catalog (reads content/), access rules, page loaders, pricing
+src/lib/payments/  razorpay.ts, stripe.ts, fulfil.ts (idempotent enrol-after-payment)
+src/lib/http.ts    api()/authedApi() wrappers: auth, JSON errors, request-id logging
+src/lib/log.ts     structured logs; set DEBUG=1 for debug lines
+src/pages/api/     thin route handlers
+```
 
 ## Languages
 
@@ -47,22 +67,11 @@ In the repository's Pages settings, use **GitHub Actions** as the source and ena
 
 English and Hindi have reviewed lesson content. The other language routes currently provide localized navigation and clearly labelled English lesson fallbacks until each translation is reviewed.
 
-## Content and routes
+## Content
 
 ```text
-docs/en/  English lessons
-docs/hi/  Hindi lessons with the same relative paths
+content/courses/  courses and lessons (the platform)
+docs/             library pages: safety guides, help, pathways
 ```
 
-The published hierarchy is topic-first:
-
-```text
-/learn/    AI skills and responsible use
-/safety/   Accounts, money, privacy, scams, and devices
-/guides/   Curated paths for professions and everyday life
-/help/     Immediate steps after a mistake
-```
-
-The homepage leads with four progress-tracked foundation courses: AI Confidence, Online Safety Essentials, Money Confidence, and Financial Fraud Defence. “Apply it” then offers grouped pathways for home, work, learning and career, and software and technology roles.
-
-Published routes are defined centrally in `src/lib/content-routes.mjs`. Old MkDocs URLs are not generated or redirected.
+Lessons that moved into courses keep working at their old URLs through redirects (`src/data/legacy-redirects.json`). Hindi lessons live beside English ones; other languages fall back to English until translated.

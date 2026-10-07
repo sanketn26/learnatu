@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { listCourses, formatPrice } from '../../lib/courses/catalog';
+import { isAuthor } from '../../lib/auth/roles';
+import { loginUrl } from '../../lib/auth/session';
+import { notFound } from '../../lib/routing';
+export const prerender = false;
+
+const user = await Astro.locals.getUser();
+if (!user) return Astro.redirect(loginUrl('/author/'));
+if (!isAuthor(user)) return notFound();
+const courses = await listCourses('en', { drafts: true });
+---
+<BaseLayout title="Author hub">
+  <div class="shell landing">
+    <section class="hero"><p class="eyebrow">Preview mode</p><h1>Author hub</h1>
+      <p class="hero-copy">Every course, including drafts. Open any lesson to see it exactly as a learner would — without buying or enrolling.</p>
+      <p style="margin-top:1rem"><a class="btn btn-secondary" href="/author/guide/">Course-writing guide</a></p>
+    </section>
+    {courses.map((course) => <section class="author-course">
+      <h2><a href={`/courses/${course.slug}/`}>{course.icon} {course.title}</a>
+        <span class:list={['badge', course.status === 'draft' && 'badge-paid']}>{course.status}</span>
+        <span class="badge">{formatPrice(course.price)}</span></h2>
+      <ol>{course.lessons.map((lesson) => <li><a href={`/courses/${course.slug}/${lesson.slug}/`}>{lesson.title}</a>{lesson.draft && <span class="badge badge-paid">draft</span>}{lesson.preview && <span class="badge">preview</span>}</li>)}</ol>
+    </section>)}
+  </div>
+</BaseLayout>

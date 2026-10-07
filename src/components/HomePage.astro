@@ -1,31 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CourseCard from './CourseCard.astro';
+import { listCourses } from '../lib/courses/catalog';
 import { localeCopy, localePath, type Locale } from '../i18n/locales';
+import { ui } from '../i18n/ui';
 interface Props { lang: Locale }
 const { lang } = Astro.props;
 const copy = localeCopy[lang];
-const moneyPaths = lang === 'hi' ? [
-  ['₹', 'पैसों की समझ बनाएँ', 'पैसा कहाँ जाता है, कर्ज़ की असली क़ीमत, और दस्तखत से पहले क्या देखें', localePath(lang, '/courses/money-confidence/')],
-  ['₹!', 'पैसों के धोखे से बचें', 'जल्दबाजी, नकली रिफंड, नुकसान के बाद दूसरा धोखा — और किसे फ़ोन करें', localePath(lang, '/courses/financial-fraud-defence/')]
-] : [
-  ['₹', 'Build money confidence', 'Where the money goes, what a loan really costs, and what to check before you sign', localePath(lang, '/courses/money-confidence/')],
-  ['₹!', 'Defend against financial fraud', 'The rush, the fake refund, the second scam after a loss — and who to call', localePath(lang, '/courses/financial-fraud-defence/')]
-];
-const paths = [
-  ['✨', copy.learn, copy.learnDesc, localePath(lang, '/courses/ai-confidence/')],
-  ['🛡️', copy.safety, copy.safetyDesc, localePath(lang, '/courses/online-safety-essentials/')],
-  ...moneyPaths,
-  ['◎', copy.guides, copy.guidesDesc, localePath(lang, '/guides/')],
-  ['🆘', copy.help, copy.helpDesc, localePath(lang, '/help/')]
+const t = ui(lang);
+const courses = await listCourses(lang);
+const library = [
+  ['\u{1F9ED}', copy.guides, copy.guidesDesc, localePath(lang, '/guides/')],
+  ['\u{1F198}', copy.help, copy.helpDesc, localePath(lang, '/help/')]
 ];
 ---
 <BaseLayout title="Learnatu" lang={lang}>
   <div class="shell">
     <section class="hero hero-with-image">
-      <div><p class="eyebrow">{copy.eyebrow}</p><h1>{copy.title}</h1><p class="hero-copy">{copy.intro}</p></div>
+      <div>
+        <p class="eyebrow">{copy.eyebrow}</p><h1>{copy.title}</h1><p class="hero-copy">{copy.intro}</p>
+        <p style="margin-top:1.5rem"><a class="btn" href={localePath(lang, '/courses/')}>{t.courses} →</a></p>
+      </div>
       <img class="hero-image" src="/images/illustrations/hero.webp" alt="" width="1600" height="800" fetchpriority="high" />
     </section>
-    <h2 class="section-title">{copy.choose}</h2>
-    <div class="choice-grid home-grid">{paths.map(([icon, title, description, href]) => <a class="choice-card" href={href}><span class="choice-icon" aria-hidden="true">{icon}</span><span><span class="choice-title">{title}</span><span class="choice-description">{description}</span></span><span class="choice-arrow" aria-hidden="true">→</span></a>)}</div>
+    <h2 class="section-title">{t.courses}</h2>
+    <div class="course-grid">{courses.map((course) => <CourseCard course={course} lang={lang} />)}</div>
+    <h2 class="section-title">{t.library}</h2>
+    <div class="choice-grid home-grid">{library.map(([icon, title, description, href]) => <a class="choice-card" href={href}><span class="choice-icon" aria-hidden="true">{icon}</span><span><span class="choice-title">{title}</span><span class="choice-description">{description}</span></span><span class="choice-arrow" aria-hidden="true">→</span></a>)}</div>
   </div>
 </BaseLayout>

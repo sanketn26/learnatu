@@ -1,0 +1,8 @@
+{
+  "name": "learnatu",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    { "binding": "DB", "database_name": "learnatu", "database_id": "REPLACE_WITH_D1_ID", "migrations_dir": "migrations" }
+  ],
+  "vars": { "SITE_URL": "https://learnatu.com" }
+}

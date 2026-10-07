@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CourseCard from './CourseCard.astro';
+import { listCourses } from '../lib/courses/catalog';
+import type { Locale } from '../i18n/locales';
+import { ui } from '../i18n/ui';
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const t = ui(lang);
+const courses = await listCourses(lang);
+---
+<BaseLayout title={t.courses} lang={lang}>
+  <div class="shell">
+    <section class="hero"><p class="eyebrow">Learnatu</p><h1>{t.courses}</h1></section>
+    <div class="course-grid">{courses.map((course) => <CourseCard course={course} lang={lang} />)}</div>
+  </div>
+</BaseLayout>

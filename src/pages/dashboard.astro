@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CourseCard from '../components/CourseCard.astro';
+import { listCourses } from '../lib/courses/catalog';
+import { listEnrolledCourses } from '../lib/db/enrollments';
+import { completedCounts } from '../lib/db/progress';
+import { loginUrl } from '../lib/auth/session';
+export const prerender = false;
+const user = await Astro.locals.getUser();
+if (!user) return Astro.redirect(loginUrl('/dashboard/'));
+const [enrolled, counts, all] = await Promise.all([listEnrolledCourses(user.id), completedCounts(user.id), listCourses()]);
+const mine = enrolled.map((slug) => all.find((c) => c.slug === slug)).filter((c) => !!c);
+const more = all.filter((c) => !enrolled.includes(c.slug));
+---
+<BaseLayout title="My learning">
+  <div class="shell">
+    <section class="hero">
+      <p class="eyebrow">{user.email}</p>
+      <h1>Hello{user.name ? `, ${user.name.split(' ')[0]}` : ''}</h1>
+      <form method="post" action="/api/auth/logout" style="margin-top:1rem"><button class="btn btn-secondary" type="submit">Sign out</button></form>
+    </section>
+    <h2 class="section-title">My courses</h2>
+    {mine.length
+      ? <div class="course-grid">{mine.map((course) => <CourseCard course={course!} lang="en" completed={counts.get(course!.slug) ?? 0} />)}</div>
+      : <p class="hero-copy">You haven't started a course yet.</p>}
+    {more.length > 0 && <>
+      <h2 class="section-title">Explore more</h2>
+      <div class="course-grid">{more.map((course) => <CourseCard course={course} lang="en" />)}</div>
+    </>}
+  </div>
+</BaseLayout>

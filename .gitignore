@@ -31,3 +31,7 @@ pnpm-debug.log*
 .agents
 CLAUDE.md
 AGENTS.md
+
+# local Cloudflare state and secrets
+.dev.vars
+.wrangler/

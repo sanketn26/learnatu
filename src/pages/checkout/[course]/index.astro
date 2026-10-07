@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCourse, formatPrice } from '../../../lib/courses/catalog';
+import { quote } from '../../../lib/courses/pricing';
+import { isEnrolled } from '../../../lib/db/enrollments';
+import { razorpayConfigured } from '../../../lib/payments/razorpay';
+import { stripeConfigured } from '../../../lib/payments/stripe';
+import { loginUrl } from '../../../lib/auth/session';
+import { notFound } from '../../../lib/routing';
+export const prerender = false;
+
+const course = await getCourse(Astro.params.course!);
+if (!course) return notFound();
+const here = `/checkout/${course.slug}/`;
+const user = await Astro.locals.getUser();
+if (!user) return Astro.redirect(loginUrl(here));
+if (course.isFree || (await isEnrolled(user.id, course.slug))) return Astro.redirect(`/courses/${course.slug}/`);
+const inr = quote(course, 'INR');
+const usd = quote(course, 'USD');
+---
+<BaseLayout title={`Buy ${course.title}`}>
+  <div class="checkout" data-course={course.slug}>
+    <a class="back-link" href={`/courses/${course.slug}/`}>← {course.title}</a>
+    <h1 style="font-size:2.2rem">{course.icon} {course.title}</h1>
+    <p class="hero-copy">{course.summary}</p>
+    <div class="options">
+      {inr && razorpayConfigured() && <button class="btn" type="button" id="pay-razorpay">Pay {formatPrice(course.price, 'inr')} — UPI, cards, netbanking</button>}
+      {usd && stripeConfigured() && <button class="btn btn-secondary" type="button" id="pay-stripe">Pay {formatPrice(course.price, 'usd')} — international card</button>}
+      {!(inr && razorpayConfigured()) && !(usd && stripeConfigured()) && <p class="notice">Payments aren't available for this course right now.</p>}
+    </div>
+    <p id="checkout-error" class="notice" hidden></p>
+  </div>
+  <script src="../../../scripts/checkout.ts"></script>
+</BaseLayout>

@@ -7,12 +7,24 @@
     "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "start": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
-    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview"
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "db:migrate": "wrangler d1 migrations apply learnatu --local",
+    "db:migrate:remote": "wrangler d1 migrations apply learnatu --remote",
+    "deploy": "npm run build && wrangler deploy",
+    "test": "node --test \"tests/*.test.mjs\"",
+    "course:new": "node scripts/course.mjs new",
+    "course:validate": "node scripts/course.mjs validate"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.6",
+    "@astrojs/cloudflare": "^14.3.4",
     "@astrojs/markdown-remark": "^7.3.1",
     "astro": "^7.3.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261007.1",
+    "wrangler": "^4.148.0"
   }
 }
