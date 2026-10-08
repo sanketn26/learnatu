@@ -212,6 +212,16 @@ pre.flow { margin: 1.5rem 0; padding: 1rem; overflow-x: auto; border: 1px solid 
 .article:has(.flowmap-host) > :not(.flowmap-host) { max-width: 44rem; }
 .player-main .article:has(.flowmap-host) { max-width: none; }
 
+/* Algorithm diagrams (algomap): plain text until drawn */
+pre.algo { margin: 1.5rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: var(--ink); font: .88rem/1.55 ui-monospace, monospace; white-space: pre-wrap; }
+.algomap-host { margin: 1.5rem 0; clear: both; }
+.algomap-host .am-figure { margin: 0; }
+
+/* Physics scenes (physmap): plain text until drawn */
+pre.phys { margin: 1.5rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: var(--ink); font: .88rem/1.55 ui-monospace, monospace; white-space: pre-wrap; }
+.physmap-host { margin: 1.5rem 0; clear: both; }
+.physmap-host .pm-figure { margin: 0; }
+
 /* ---- Rich blocks: info blocks, collapsible blocks, figures, galleries (see src/lib/remark-blocks.mjs) ---- */
 .block { --bc: var(--brand); margin: 1.5rem 0; padding: .85rem 1.1rem; border: 1px solid color-mix(in srgb, var(--bc) 35%, var(--line)); border-left: .32rem solid var(--bc); border-radius: .9rem; background: color-mix(in srgb, var(--bc) 8%, var(--surface)); clear: both; }
 .block > :first-child { margin-top: 0; }

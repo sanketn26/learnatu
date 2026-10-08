@@ -2,10 +2,13 @@ import { parse } from 'yaml';
 import { courseSettings, lessonSettings } from '../courses/schema.mjs';
 import { validate as validateQuiz } from '../remark-quiz.mjs';
 import { check as checkFlow } from '@learnatu/flowmap';
+import { check as checkAlgo } from '@learnatu/algomap';
+import { check as checkPhys } from '@learnatu/physmap';
 import { splitFrontMatter } from './frontmatter.mjs';
 import { scanMarkdown } from './scan.mjs';
 import { checkMath } from './math.mjs';
 import { checkBlocks } from './blocks-check.mjs';
+import { resolveAsset } from './assets.mjs';
 
 /**
  * Checks a course package (the contents of a zip, or a folder under content/courses/) before it is saved.
@@ -72,6 +75,13 @@ export function checkPackage({ files, assets = new Set(), categories }) {
       });
       blocks.filter((block) => block.lang === 'flow').forEach((block, i) => {
         for (const problem of checkFlow(block.text)) error(file, `flow diagram #${i + 1}, line ${problem.line}: ${problem.message}`);
+      });
+      blocks.filter((block) => block.lang === 'algo').forEach((block, i) => {
+        for (const problem of checkAlgo(block.text)) error(file, `algorithm diagram #${i + 1}, line ${problem.line}: ${problem.message}`);
+      });
+      blocks.filter((block) => block.lang === 'phys').forEach((block, i) => {
+        const hasImage = (ref) => /^(https?:|data:|\/)/.test(ref) || resolveAsset(ref, file, assets) !== null;
+        for (const problem of checkPhys(block.text, { hasImage })) error(file, `physics scene #${i + 1}, line ${problem.line}: ${problem.message}`);
       });
       const bodyStart = text.slice(0, text.length - lessonFront.body.length).split('\n').length - 1;
       for (const problem of checkMath(lessonFront.body)) error(file, `formula on line ${bodyStart + problem.line}: ${problem.message}`);

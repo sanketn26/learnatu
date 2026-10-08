@@ -1,0 +1,13 @@
+{
+  "name": "@learnatu/physmap",
+  "version": "0.1.0",
+  "description": "A small text language for visual physics scenes: bodies, forces, springs and motion over time, with units checked. The reader drags a time slider and the sliders the teacher offers.",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "exports": {
+    ".": "./src/index.ts",
+    "./dom": "./src/dom.ts"
+  },
+  "files": ["src", "README.md"]
+}

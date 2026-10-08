@@ -1,0 +1,13 @@
+{
+  "name": "@learnatu/algomap",
+  "version": "0.1.0",
+  "description": "A small text language for step-by-step diagrams of algorithms on arrays, lists, trees and graphs. The author writes every step.",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "exports": {
+    ".": "./src/index.ts",
+    "./dom": "./src/dom.ts"
+  },
+  "files": ["src", "README.md"]
+}

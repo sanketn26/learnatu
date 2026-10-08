@@ -145,6 +145,58 @@ Blocks have kinds (`client`, `service`, `gateway`, `cache`, `database`, `documen
 with the file, the diagram number and the line.
 
 
+## Step-by-step algorithm diagrams (algomap)
+
+Fence an algorithm walkthrough with `algo`. You declare arrays, linked lists, trees or graphs, then write each step
+with a caption and what changes. Readers get Previous / Play / Next and a slider. Nothing is run or guessed: every
+picture is exactly what you wrote.
+
+````markdown
+```algo
+title "Bubble sort, one pass"
+array a 5 2 9 1
+step "Compare the first two."
+  pointer i a[0]
+  compare a[0] a[1]
+step "5 > 2, so swap them."
+  swap a[0] a[1]
+step "9 > 1, so swap. 9 is now in place."
+  swap a[2] a[3]
+  done a[3]
+```
+````
+
+Besides arrays you can use linked lists, stacks, queues, 2D grids, hash tables, tries, trees (level by level, or with
+nodes written out like `tree t: 5(2 8)` for rotations, B-trees and union-find forests), weighted graphs and a `vars`
+panel for counters. `tag` writes a small note on a cell, and `paint` colours it (red-black trees). The full language is in `packages/algomap/README.md`. A mistake fails the build (or the
+upload check) with the file, the diagram number and the line.
+
+
+## Physics scenes (physmap)
+
+Fence a physics scene with `phys`. You declare bodies, gravity, springs or rods, say how long to run, and readers get
+Play, a time slider, graphs with a moving cursor, and the sliders you declare. Every number has a unit and the checker
+rejects mixed-up units (`mass=3m`) with the line number. It draws idealised models; say what is left out with `assume`.
+
+````markdown
+```phys
+scene mechanics
+title "Mass on a spring"
+assume "no friction, a perfect spring"
+param k 10..100 N/m start=40
+body block mass=2kg at=(0.6m,0m)
+spring k=$k from=(0m,0m) to=block rest=0.4m
+run 6s
+plot block.x
+predict "What if k doubles?" answer="The swing is about 29% faster."
+```
+````
+
+Scenes can use your own pictures: `backdrop "images/ramp.png" from=(0m,0m) size=(4m,2m)` places an image behind the
+physics, and `sprite="images/cart.png"` on a body draws it as a picture. Paths work like Markdown images, and a missing
+picture fails the upload check. Point masses, gravity, springs, rods, drag and a bouncing ground are supported.
+Language: `packages/physmap/README.md`, and the lesson "Physics scenes" in the Create a Learnatu Course course.
+
 ## Mathematical formulas
 
 Write formulas in LaTeX notation, drawn by [KaTeX](https://katex.org/) when the page is built (or the zip is uploaded),
