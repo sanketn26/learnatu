@@ -1,6 +1,7 @@
 ---
 title: AI Confidence
 icon: ✨
+category: ai
 summary: By the end you will know how to ask an AI for help with a real task, what never to type into
   it, and how to check the answer before you use it.
 outcome: I can ask AI for useful help, keep private information out of the chat, and check the result

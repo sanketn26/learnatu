@@ -1,6 +1,7 @@
 ---
 title: Online Safety Essentials
 icon: 🛡️
+category: digital-life
 summary: Six everyday habits — a phone lock, safer passwords, a second check at login, care with links,
   care with money codes, and a plan if something already went wrong.
 outcome: I can protect my accounts and money, notice when someone is rushing me, and act quickly after

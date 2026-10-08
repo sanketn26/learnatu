@@ -1,6 +1,7 @@
 ---
 title: Money Confidence
 icon: 💰
+category: money
 summary: See where your money actually goes, make a plan you can live with, and check a loan, insurance
   product, or adviser before you sign — without pasting bank statements into a chat.
 outcome: I can make a basic money plan, compare the real cost of options, check a provider myself, and

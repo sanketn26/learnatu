@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { categorySlugs } from './data/categories';
 
 /** Library pages (about, safety guides, help) — not part of any course. */
 const lessons = defineCollection({
@@ -13,6 +14,8 @@ const courseMeta = defineCollection({
   schema: z.object({
     title: z.string(),
     icon: z.string().default('📘'),
+    /** The subject this course is filed under; see src/data/categories.ts for the allowed values. */
+    category: z.enum(categorySlugs),
     summary: z.string(),
     outcome: z.string().optional(),
     level: z.string().default('Beginner'),

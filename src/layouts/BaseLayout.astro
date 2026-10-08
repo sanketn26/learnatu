@@ -5,7 +5,7 @@ import '../styles/platform.css';
 import { ui } from '../i18n/ui';
 import { localeCopy, type Locale } from '../i18n/locales';
 interface Props { title?: string; description?: string; lang?: Locale; }
-const { title = 'Learnatu', description = 'Short lessons that explain WhatsApp, UPI, Google, and ChatGPT — for people who were never taught this.', lang = Astro.locals.lang ?? 'en' } = Astro.props;
+const { title = 'Learnatu', description = 'Short courses and one-minute answers on anything worth knowing, at your own pace.', lang = Astro.locals.lang ?? 'en' } = Astro.props;
 const copy = localeCopy[lang];
 const t = ui(lang);
 ---

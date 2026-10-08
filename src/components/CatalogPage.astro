@@ -1,17 +1,36 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CourseCard from './CourseCard.astro';
+import CategoryIcon from './CategoryIcon.astro';
 import { listCourses } from '../lib/courses/catalog';
+import { groupByCategory } from '../lib/courses/grouping';
+import { categorySlugs, categoryText } from '../data/categories';
 import type { Locale } from '../i18n/locales';
 import { ui } from '../i18n/ui';
 interface Props { lang: Locale }
 const { lang } = Astro.props;
 const t = ui(lang);
 const courses = await listCourses(lang);
+const all = groupByCategory(courses, categorySlugs);
+// /courses/?category=money shows just that subject; anything unknown shows everything.
+const selected = all.some((group) => group.category === Astro.url.searchParams.get('category')) ? Astro.url.searchParams.get('category') : null;
+const groups = selected ? all.filter((group) => group.category === selected) : all;
 ---
 <BaseLayout title={t.courses} lang={lang}>
   <div class="shell">
     <section class="hero"><p class="eyebrow">Learnatu</p><h1>{t.courses}</h1></section>
-    <div class="course-grid">{courses.map((course) => <CourseCard course={course} lang={lang} />)}</div>
+    <nav class="chip-row" aria-label={t.subjects}>
+      <a class="chip" href="/courses/" aria-current={selected ? undefined : 'true'}>{t.allSubjects}</a>
+      {all.map((group) => <a class="chip" href={`/courses/?category=${group.category}`} aria-current={group.category === selected ? 'true' : undefined}>{categoryText(group.category, lang).name}</a>)}
+    </nav>
+    {groups.map((group) => (
+      <section class="cat-group" style={`--c:var(--cat-${group.category})`}>
+        <div class="cat-head">
+          <CategoryIcon slug={group.category} size="2.6rem" />
+          <div><h2>{categoryText(group.category, lang).name}</h2><p>{categoryText(group.category, lang).blurb}</p></div>
+        </div>
+        <div class="course-grid">{group.items.map((course) => <CourseCard course={course} lang={lang} />)}</div>
+      </section>
+    ))}
   </div>
 </BaseLayout>

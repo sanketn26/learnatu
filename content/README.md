@@ -15,6 +15,7 @@ content/courses/<course>/
 ---
 title: Money Confidence
 icon: ₹
+category: money     # the subject this course is filed under (see src/data/categories.ts)
 summary: One or two sentences shown on cards and the landing page.
 outcome: "I can make a basic money plan…"     # optional "what you will be able to say"
 level: Beginner

@@ -7,7 +7,7 @@ export type { Price };
 export type LessonRef = { draft: boolean; slug: string; title: string; minutes?: number; preview: boolean; translated: boolean };
 export type Course = {
   featured: boolean; order: number; accent?: string; tags: string[]; prerequisites: string[]; status: 'published' | 'draft';
-  slug: string; icon: string; title: string; summary: string; outcome?: string; level: string;
+  slug: string; icon: string; category: string; title: string; summary: string; outcome?: string; level: string;
   price: Price | null; isFree: boolean;
   modules: { title: string; lessons: LessonRef[] }[];
   lessons: LessonRef[]; // flat, in order
@@ -43,7 +43,7 @@ export async function getCourse(slug: string, lang: Locale = 'en', options?: Opt
   })))).filter((module) => module.lessons.length);
   return {
     featured: base.featured, order: base.order, accent: base.accent, tags: base.tags, prerequisites: base.prerequisites, status: base.status,
-    slug, icon: text.icon, title: text.title, summary: text.summary, outcome: text.outcome, level: text.level,
+    slug, icon: text.icon, category: base.category, title: text.title, summary: text.summary, outcome: text.outcome, level: text.level,
     price: price ?? null, isFree: !price, modules: resolved, lessons: resolved.flatMap((m) => m.lessons)
   };
 }

@@ -2,6 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CourseCard from './CourseCard.astro';
 import { listCourses } from '../lib/courses/catalog';
+import CategoryIcon from './CategoryIcon.astro';
+import { groupByCategory } from '../lib/courses/grouping';
+import { categorySlugs, categoryText } from '../data/categories';
 import { localeCopy, type Locale } from '../i18n/locales';
 import { ui } from '../i18n/ui';
 interface Props { lang: Locale }
@@ -9,6 +12,8 @@ const { lang } = Astro.props;
 const copy = localeCopy[lang];
 const t = ui(lang);
 const courses = await listCourses(lang);
+const subjects = groupByCategory(courses, categorySlugs);
+const starter = courses.slice(0, 6);
 const library = [
   ['\u{1F9ED}', copy.guides, copy.guidesDesc, '/guides/'],
   ['\u{1F198}', copy.help, copy.helpDesc, '/help/']
@@ -23,8 +28,17 @@ const library = [
       </div>
       <img class="hero-image" src="/images/illustrations/hero.webp" alt="" width="1600" height="800" fetchpriority="high" />
     </section>
-    <h2 class="section-title">{t.courses}</h2>
-    <div class="course-grid">{courses.map((course) => <CourseCard course={course} lang={lang} />)}</div>
+    <h2 class="section-title">{t.subjects}</h2>
+    <div class="subject-grid">{subjects.map((group) => (
+      <a class="subject-card" style={`--c:var(--cat-${group.category})`} href={`/courses/?category=${group.category}`}>
+        <CategoryIcon slug={group.category} size="3rem" />
+        <span><strong>{categoryText(group.category, lang).name}</strong><small>{categoryText(group.category, lang).blurb}</small></span>
+        <span class="count">{group.items.length} {group.items.length === 1 ? t.courseOne : t.courseMany}</span>
+      </a>
+    ))}</div>
+    <h2 class="section-title">{t.startWith}</h2>
+    <div class="course-grid">{starter.map((course) => <CourseCard course={course} lang={lang} />)}</div>
+    <p><a class="btn btn-secondary" href="/courses/">{t.allCourses} →</a></p>
     <h2 class="section-title">{t.library}</h2>
     <div class="choice-grid home-grid">{library.map(([icon, title, description, href]) => <a class="choice-card" href={href}><span class="choice-icon" aria-hidden="true">{icon}</span><span><span class="choice-title">{title}</span><span class="choice-description">{description}</span></span><span class="choice-arrow" aria-hidden="true">→</span></a>)}</div>
   </div>

@@ -1,6 +1,7 @@
 ---
 title: Sample Paid Course
 icon: 🎓
+category: digital-life
 summary: A template that shows every course setting and every quiz type. Copy this folder to start a new course.
 outcome: I know how a Learnatu course is put together.
 level: Beginner

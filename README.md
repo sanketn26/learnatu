@@ -48,7 +48,8 @@ First deploy: `npx wrangler d1 create learnatu`, put the id in `wrangler.jsonc`,
 ```text
 src/lib/auth/      Google OAuth, sessions, author role
 src/lib/db/        one small module per table (users, sessions, enrollments, progress, orders)
-src/lib/courses/   catalog (reads content/), access-rules (who may read), format, pricing, page loaders
+src/lib/courses/   catalog (reads content/), grouping (by category), access-rules (who may read), format, pricing, page loaders
+src/data/          categories.ts (subjects courses are filed under), sections.ts, pathways.ts
 src/lib/lang*.ts   language: lang-rules (pure), lang (cookie + request wiring)
 src/lib/paths.ts   safeLocalPath: the one check for "stay on this site" redirects
 src/lib/payments/  razorpay.ts, stripe.ts, fulfil.ts (idempotent enrol-after-payment)
