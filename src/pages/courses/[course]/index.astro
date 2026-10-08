@@ -1,10 +1,11 @@
 ---
 import CourseLanding from '../../../components/CourseLanding.astro';
 import { loadLanding } from '../../../lib/courses/pages';
+import { PREVIEW_COOKIE, previewVersionFor } from '../../../lib/courses/preview';
 import { notFound } from '../../../lib/routing';
 export const prerender = false;
 const lang = Astro.locals.lang!;
-const result = await loadLanding(await Astro.locals.getUser(), lang, Astro.params.course!);
+const result = await loadLanding(await Astro.locals.getUser(), lang, Astro.params.course!, previewVersionFor(Astro.cookies.get(PREVIEW_COOKIE)?.value, Astro.params.course!));
 if ('notFound' in result) return notFound();
 ---
 <CourseLanding lang={lang} data={result} />

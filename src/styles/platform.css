@@ -184,3 +184,15 @@ a.lesson-row:hover, a.lesson-row:focus-visible { border-color: var(--c); }
 .site-footer nav a { color: var(--muted); text-decoration: none; min-height: 2.75rem; display: inline-flex; align-items: center; }
 .site-footer nav a:hover { color: var(--ink); }
 @media (min-width: 62rem) { .site-footer { padding-bottom: 2.5rem; } }
+
+.panel { margin: 1.5rem 0; padding: 1.2rem 1.4rem; border: 1px solid var(--line); border-radius: 1.2rem; background: var(--surface); }
+.panel input[type="text"], .panel input[type="file"] { max-width: 100%; margin-top: .3rem; }
+.panel input[type="text"] { min-height: 2.75rem; padding: 0 .9rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--paper); color: var(--ink); font: inherit; }
+.table-wrap { overflow-x: auto; }
+.versions { width: 100%; border-collapse: collapse; }
+.versions th, .versions td { padding: .7rem .6rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+.row-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.report { display: grid; gap: .4rem; margin: 1rem 0; padding: 0; list-style: none; }
+.report li { padding: .65rem .9rem; border-radius: .8rem; }
+.report .bad { background: var(--danger-bg); color: var(--ink); }
+.report .warn { background: var(--warn-bg); color: var(--ink); }

@@ -12,7 +12,7 @@ import type { loadLanding } from '../lib/courses/pages';
 type Loaded = Exclude<Awaited<ReturnType<typeof loadLanding>>, { notFound: true }>;
 interface Props { lang: Locale; data: Loaded }
 const { lang, data } = Astro.props;
-const { course, user, author, enrolled, done, About } = data;
+const { course, user, author, previewing, enrolled, done, about } = data;
 const t = ui(lang);
 const category = categoryText(course.category, lang);
 const lessonHref = (lessonSlug: string) => `/courses/${course.slug}/${lessonSlug}/`;
@@ -34,7 +34,7 @@ const actions = { lang, course, user, enrolled, started: done.size > 0, resumeSl
         <p class="hero-copy">{course.summary}</p>
         {course.outcome && <div class="outcome"><span class="eyebrow">{t.outcomeLabel}</span><p>“{course.outcome}”</p></div>}
         <p class="facts"><span>{course.lessons.length} {t.lessons}</span>{minutes > 0 && <span>~{minutes} {t.minutes}</span>}<span>{course.isFree ? t.free : formatPrice(course.price, 'inr')}</span></p>
-        {author && <p class="notice preview-banner">Preview mode — you see this course as an author{course.status === 'draft' ? ' (draft: not visible to learners)' : ''}.</p>}
+        {author && <p class="notice preview-banner">{previewing ? `Previewing version ${course.version} (not live yet). ` : 'Preview mode: you see this course as an author. '}{previewing && <a href={`/api/author/preview?exit=1&course=${course.slug}`}>Exit preview</a>}</p>}
         {justPaid && !enrolled && <p class="notice">Payment received — we're confirming it with the bank. Refresh in a moment.</p>}
         <CourseActions {...actions} />
       </div>
@@ -70,7 +70,7 @@ const actions = { lang, course, user, enrolled, started: done.size > 0, resumeSl
           </div>)}
         </section>
 
-        {About && <section class="article about"><h2 class="section-title">{t.about}</h2><About /></section>}
+        {about && <section class="article about"><h2 class="section-title">{t.about}</h2>{'Content' in about ? <about.Content /> : <Fragment set:html={about.html} />}</section>}
       </div>
 
       <aside class="c-aside">

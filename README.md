@@ -48,7 +48,8 @@ First deploy: `npx wrangler d1 create learnatu`, put the id in `wrangler.jsonc`,
 ```text
 src/lib/auth/      Google OAuth, sessions, author role
 src/lib/db/        one small module per table (users, sessions, enrollments, progress, orders)
-src/lib/courses/   catalog (reads content/), grouping (by category), access-rules (who may read), format, pricing, page loaders
+src/lib/packages/  zip upload: unzip, check (pure), render Markdown to HTML, frontmatter, slug
+src/lib/courses/   catalog (git + uploaded courses), build-course (pure), preview, grouping (by category), access-rules (who may read), format, pricing, page loaders
 src/data/          categories.ts (subjects courses are filed under), sections.ts, pathways.ts
 src/lib/lang*.ts   language: lang-rules (pure), lang (cookie + request wiring)
 src/lib/paths.ts   safeLocalPath: the one check for "stay on this site" redirects
@@ -85,6 +86,21 @@ Keep imports inside pure files to other pure files with the `.ts`/`.mjs` extensi
 Pages have one URL for every language. There is no language menu: `src/middleware.ts` picks the language from the browser's `Accept-Language` header into `Astro.locals.lang`. A `lang` cookie overrides it (`/api/lang?set=hi&next=/path/` sets it). Old prefixed URLs such as `/hi/courses/` redirect to the unprefixed page and set the cookie. Pages that depend on the language are rendered on demand (`prerender = false`).
 
 Languages: English (default), Hindi, Odia, Tamil, Telugu, Kannada, Bengali. English and Hindi have reviewed lesson content. The other languages currently provide localized navigation and clearly labelled English lesson fallbacks until each translation is reviewed.
+
+## Adding courses
+
+Two ways, same folder layout (`course.md`, `en/`, optional `hi/`, `images/`):
+
+1. **In git**: put the folder in `content/courses/` and deploy. `npm run course:validate` checks it.
+2. **As a zip upload**: an author (an email in `ADMIN_EMAILS`) opens `/author/upload/`, uploads the zip, reads the
+   check report, previews the draft as a learner would see it, then publishes. Every upload is a numbered version;
+   publishing an older version is the roll back. Uploaded courses live in the database (`course_versions`,
+   `course_lessons`, `course_assets`; run `npm run db:migrate:remote` once), lessons are rendered to HTML when
+   uploaded, and images are served from `/media/<course>/…`. A zip cannot reuse the name of a git course.
+   Differences from git courses: no syntax colouring in code blocks, images up to 1 MB, Markdown files up to 512 KB.
+
+Both are checked by the same code (`src/lib/packages/check.mjs`) and turned into the same `Course`
+(`src/lib/courses/build-course.ts`), so pages do not care where a course came from.
 
 ## Content
 

@@ -15,7 +15,7 @@ const courses = await listCourses('en', { drafts: true });
   <div class="shell landing">
     <section class="hero"><p class="eyebrow">Preview mode</p><h1>Author hub</h1>
       <p class="hero-copy">Every course, including drafts. Open any lesson to see it exactly as a learner would — without buying or enrolling.</p>
-      <p style="margin-top:1rem"><a class="btn btn-secondary" href="/author/guide/">Course-writing guide</a></p>
+      <p style="margin-top:1rem"><a class="btn" href="/author/upload/">Upload a course (zip)</a> <a class="btn btn-secondary" href="/author/guide/">Course-writing guide</a></p>
     </section>
     {courses.map((course) => <section class="author-course">
       <h2><a href={`/courses/${course.slug}/`}>{course.icon} {course.title}</a>

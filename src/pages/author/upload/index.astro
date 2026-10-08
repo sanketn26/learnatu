@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { isAuthor } from '../../../lib/auth/roles';
+import { loginUrl } from '../../../lib/auth/session';
+import { listAllVersions } from '../../../lib/db/course-versions';
+import { notFound } from '../../../lib/routing';
+export const prerender = false;
+
+const user = await Astro.locals.getUser();
+if (!user) return Astro.redirect(loginUrl('/author/upload/'));
+if (!isAuthor(user)) return notFound();
+const versions = await listAllVersions();
+const day = (seconds: number) => new Date(seconds * 1000).toISOString().slice(0, 10);
+---
+<BaseLayout title="Upload a course">
+  <div class="shell landing">
+    <a class="back-link" href="/author/">← Author hub</a>
+    <section class="hero"><p class="eyebrow">Author tools</p><h1>Upload a course</h1>
+      <p class="hero-copy">Upload a zip of your course folder. We check it, save it as a draft you can preview, and nothing goes live until you publish.</p>
+    </section>
+
+    <form id="upload-form" class="panel" enctype="multipart/form-data">
+      <p><label for="file"><strong>Course zip</strong></label><br />
+        <input id="file" name="file" type="file" accept=".zip,application/zip" required /></p>
+      <p><label for="slug"><strong>Course name</strong> <span class="muted">(optional; defaults to the folder name in the zip)</span></label><br />
+        <input id="slug" name="slug" type="text" placeholder="money-basics" pattern="[a-z0-9]+(-[a-z0-9]+)*" /></p>
+      <p><button class="btn" type="submit">Check and save as draft</button></p>
+      <p class="muted">Folder layout: <code>course.md</code>, <code>en/&lt;lesson&gt;.md</code>, optional <code>hi/</code> and <code>images/</code>. See the <a href="/author/guide/">writing guide</a>.</p>
+    </form>
+    <div id="report" aria-live="polite"></div>
+
+    <h2 class="section-title">Uploaded courses</h2>
+    {versions.length === 0
+      ? <p class="muted">Nothing uploaded yet. Courses written in the website's own files are listed in the <a href="/author/">author hub</a>.</p>
+      : <div class="table-wrap"><table class="versions">
+          <thead><tr><th>Course</th><th>Version</th><th>Status</th><th>Uploaded</th><th></th></tr></thead>
+          <tbody>{versions.map((v) => <tr>
+            <td>{v.course}</td><td>v{v.version}</td>
+            <td><span class:list={['badge', v.status === 'draft' && 'badge-paid']}>{v.status}</span></td>
+            <td>{day(v.created_at)}</td>
+            <td><div class="row-actions">
+              <a class="btn btn-secondary" href={`/api/author/preview?course=${v.course}&version=${v.id}`}>Preview</a>
+              {v.status !== 'published' && <button class="btn" type="button" data-version-action="publish" data-version={v.id}>{v.status === 'archived' ? 'Roll back to this' : 'Publish'}</button>}
+              {v.status === 'draft' && <button class="btn btn-secondary" type="button" data-version-action="delete" data-version={v.id}>Delete</button>}
+            </div></td>
+          </tr>)}</tbody>
+        </table></div>}
+  </div>
+  <script src="../../../scripts/author-upload.ts"></script>
+</BaseLayout>
