@@ -8,6 +8,8 @@ The salary is in. Someone in the house already has a plan for it — a repair, a
 
 A **budget** is that set of jobs. It is a plan for decisions, not a punishment and not a personality test. Start with the money you actually have and the responsibilities you actually carry, not with a template meant for a different household.
 
+![Four envelopes marked with a house, a bowl of food, a shield and a star](/images/illustrations/budget-envelopes.svg "Give the month jobs: needs, irregular costs, reserve, goals.")
+
 ## A practical order
 
 Give the month a sequence, so the loudest want does not go first.

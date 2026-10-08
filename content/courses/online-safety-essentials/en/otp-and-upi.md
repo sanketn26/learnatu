@@ -14,6 +14,8 @@ Losing either is close to handing over your wallet and walking away.
 
 ---
 
+![A phone showing a one-time code next to a padlock, and a speaker crossed out](/images/illustrations/otp-never-share.svg "The code stays on your phone. Never say it aloud.")
+
 ## How to keep the money yours
 
 1. **When an OTP arrives, do not read it aloud.** Do not type it into a page you opened from a message. Use it only inside the app or site you opened yourself, in the box that is waiting for that code.
@@ -30,6 +32,21 @@ Losing either is close to handing over your wallet and walking away.
     - Pay a “refund” that asks you to type in the amount you want to get back.
 
 ---
+
+Here is how that call works, step by step. The bank never speaks to you; the scammer only borrows its OTP.
+
+```mermaid
+sequenceDiagram
+  participant S as Caller pretending to be the bank
+  participant Y as You
+  participant B as Your real bank
+  S->>Y: Your account will be blocked. Verify the OTP
+  S->>B: Starts a payment from your account
+  B->>Y: Sends the OTP by SMS
+  Y->>S: Reads the OTP aloud
+  S->>B: Types in your OTP
+  B-->>S: Payment complete
+```
 
 ## A story that happens every week
 

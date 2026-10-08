@@ -18,9 +18,18 @@ export async function setLessonComplete(userId: string, course: string, lesson: 
   }
 }
 
+export const QUIZ_ATTEMPTS_PER_MINUTE = 30;
+
+/** Stores an attempt. Returns false (and stores nothing) when the user is sending attempts too fast. A repeat of an already-passed answer is not stored again. */
 export async function recordQuizAttempt(userId: string, course: string, lesson: string, quiz: string, correct: boolean) {
-  await db().prepare('INSERT INTO quiz_attempts (user_id, course, lesson, quiz, correct, created_at) VALUES (?, ?, ?, ?, ?, ?)')
-    .bind(userId, course, lesson, quiz, correct ? 1 : 0, now()).run();
+  const recent = await db().prepare('SELECT COUNT(*) AS n FROM quiz_attempts WHERE user_id = ? AND created_at > ?').bind(userId, now() - 60).first<{ n: number }>();
+  if ((recent?.n ?? 0) >= QUIZ_ATTEMPTS_PER_MINUTE) return false;
+  await db().prepare(
+    `INSERT INTO quiz_attempts (user_id, course, lesson, quiz, correct, created_at)
+     SELECT ?1, ?2, ?3, ?4, ?5, ?6
+     WHERE NOT (?5 = 1 AND EXISTS (SELECT 1 FROM quiz_attempts WHERE user_id = ?1 AND course = ?2 AND lesson = ?3 AND quiz = ?4 AND correct = 1))`
+  ).bind(userId, course, lesson, quiz, correct ? 1 : 0, now()).run();
+  return true;
 }
 
 /** Quiz ids the user has answered correctly at least once in a lesson. */

@@ -27,6 +27,21 @@ Never invest because an AI tool, influencer, messaging group, or stranger promis
 
 This is not personal advice about *your* leftover salary. It is a way to stop a stranger’s screenshot from making the decision. For a product that would move a large amount, or for tax questions, use official resources and a person who is qualified to advise you.
 
+The questions above, put in order. This is a way to think, not personal advice.
+
+```mermaid
+flowchart TD
+  A["This money"] --> B{"Will you need it soon?"}
+  B -->|"Yes"| C["Keep it where you can reach it"]
+  B -->|"No"| D{"Could a fall in value hurt you?"}
+  D -->|"Yes"| C
+  D -->|"No"| E{"Do you have expensive debt, or no emergency money?"}
+  E -->|"Yes"| F["Repay the debt or build a small reserve first"]
+  E -->|"No"| G{"Do you understand the product, how to leave it, and who regulates it?"}
+  G -->|"No"| H["Wait. Do not invest yet"]
+  G -->|"Yes"| I["Investing may fit. Check the official register first"]
+```
+
 ## Do this with the next leftover amount
 
 Write the six questions. Answer them for *this* money, not for money in general. If two answers collide — you need the money soon *and* a group is promising a high return — the “soon” answer wins. The group can wait. Your rent cannot.

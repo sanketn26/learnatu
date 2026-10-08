@@ -14,7 +14,7 @@ export interface ParseResult { diagram: Diagram | null; problems: Problem[] }
 const ID = /^[A-Za-z_][A-Za-z0-9_-]*$/;
 const SETTINGS = ['title', 'direction', 'speed'];
 const KEYWORDS = [...SETTINGS, 'group', 'node', 'flow', 'spof', 'chokepoint', 'whatif'];
-const NODE_ATTRS = ['replicas', 'capacity', 'in', 'zones', 'sidecar', 'sub', 'label'];
+const NODE_ATTRS = ['replicas', 'capacity', 'in', 'zones', 'sidecar', 'sub', 'label', 'ip', 'ports'];
 
 function distance(a: string, b: string): number {
   const row = Array.from({ length: b.length + 1 }, (_, i) => i);
@@ -54,6 +54,29 @@ function hasParentCycle(groups: Map<string, FlowGroup>, start: string): boolean 
   return false;
 }
 
+/** Why `text` is not an IP address (or address with /prefix), or '' when it is fine. IPv6 must be written in quotes because of its colons. */
+function addressProblem(text: string, needPrefix = false): string {
+  const [address, prefix, extra] = text.split('/');
+  if (extra !== undefined || !address) return `"${text}" is not an address`;
+  if (needPrefix && prefix === undefined) return `"${text}" needs a prefix, for example ${text}/24`;
+  const v6 = address.includes(':');
+  if (v6) {
+    if (!/^[0-9a-fA-F:]+$/.test(address) || !address.includes('::') && address.split(':').length !== 8 || address.split(':').length > 8) return `"${text}" is not a valid IPv6 address`;
+  } else {
+    const octets = address.split('.');
+    if (octets.length !== 4 || octets.some((o) => !/^\d{1,3}$/.test(o) || Number(o) > 255)) return `"${text}" is not a valid IPv4 address (four numbers from 0 to 255, like 10.0.0.1)`;
+  }
+  if (prefix !== undefined && (!/^\d{1,3}$/.test(prefix) || Number(prefix) > (v6 ? 128 : 32))) return `the /${prefix} in "${text}" is not a valid prefix (0 to ${v6 ? 128 : 32})`;
+  return '';
+}
+
+const portProblem = (text: string): string => {
+  const m = /^(\d{1,5})(?:-(\d{1,5}))?$/.exec(text);
+  if (!m) return `"${text}" is not a port (use a number like 443 or a range like 8000-8100)`;
+  const [from, to] = [Number(m[1]), Number(m[2] ?? m[1])];
+  return from < 1 || to > 65535 || from > to ? `"${text}" is not a valid port or range (1 to 65535, lowest first)` : '';
+};
+
 const list = (items: readonly string[]) => items.map((i) => `"${i}"`).join(', ');
 
 interface RawEdge { from: string; to: string; twoWay: boolean; label?: string; via?: string; line: number }
@@ -78,7 +101,7 @@ export function parseFlow(source: string): ParseResult {
     if (!ID.test(id)) { fail(line, `"${id}" is not a valid name. Use letters, digits, - and _, starting with a letter.`); return; }
     if (!nodes.has(id)) {
       if (!implicit) return;
-      nodes.set(id, { id, label: id, kind: 'service', zones: [], line });
+      nodes.set(id, { id, label: id, kind: 'service', zones: [], ip: [], ports: [], line });
     }
   };
 
@@ -121,7 +144,11 @@ export function parseFlow(source: string): ParseResult {
       const group: FlowGroup = { id, label, kind: kindWord.text as GroupKind, line };
       for (const tok of restAttrs as Token[]) {
         if (tok.type === 'attr' && tok.key === 'in') group.parent = tok.value;
-        else fail(line, `a group only understands in=ID`);
+        else if (tok.type === 'attr' && tok.key === 'cidr') {
+          const problem = addressProblem(tok.value, true);
+          if (problem) return fail(line, problem);
+          group.cidr = tok.value;
+        } else fail(line, 'a group only understands in=ID and cidr=ADDRESS/PREFIX');
       }
       groups.set(id, group);
 
@@ -138,7 +165,7 @@ export function parseFlow(source: string): ParseResult {
       } else if (existing) {
         return fail(line, `the block "${id}" is already declared on line ${existing.line}`);
       }
-      const node: FlowNode = { id, label: id, kind: 'service', zones: [], line: existing?.line ?? line };
+      const node: FlowNode = { id, label: id, kind: 'service', zones: [], ip: [], ports: [], line: existing?.line ?? line };
       let labelSeen = false;
       for (const tok of others) {
         if (tok.type === 'string' && !labelSeen) { node.label = tok.text; labelSeen = true; }
@@ -162,6 +189,14 @@ export function parseFlow(source: string): ParseResult {
           } else if (key === 'zones') {
             node.zones = value.split(',').map((z) => z.trim()).filter(Boolean);
             node.zones.forEach((z) => pendingNodeRefs.push({ id: z, line, what: 'zone' }));
+          } else if (key === 'ip') {
+            node.ip = value.split(',').map((a) => a.trim()).filter(Boolean);
+            const problem = node.ip.map((a) => addressProblem(a)).find(Boolean) ?? (node.ip.length ? '' : 'ip needs an address, for example ip=10.0.0.1');
+            if (problem) return fail(line, problem);
+          } else if (key === 'ports') {
+            node.ports = value.split(',').map((a) => a.trim()).filter(Boolean);
+            const problem = node.ports.map(portProblem).find(Boolean) ?? (node.ports.length ? '' : 'ports needs a number, for example ports=443');
+            if (problem) return fail(line, problem);
           } else if (key === 'sidecar') node.sidecar = value;
           else if (key === 'sub') node.sub = value;
           else return fail(line, `"${key}" is not a setting of a block. Use: ${NODE_ATTRS.join(', ')}.${suggest(key, NODE_ATTRS)}`);

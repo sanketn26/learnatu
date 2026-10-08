@@ -10,8 +10,14 @@ if (blocks.length) {
     blocks.forEach((pre, index) => {
       const host = document.createElement('div');
       host.className = 'algomap-host';
-      pre.replaceWith(host);
-      mountAlgomap(host, pre.textContent ?? '', { idPrefix: `am${index + 1}` });
+      pre.after(host);
+      try {
+        mountAlgomap(host, pre.textContent ?? '', { idPrefix: `am${index + 1}` });
+        pre.remove();
+      } catch (error) {
+        host.remove(); // keep the text of this diagram visible and carry on with the others
+        console.error('Could not draw a diagram', error);
+      }
     });
   }).catch((error) => console.error('Could not load algorithm diagrams', error));
 }

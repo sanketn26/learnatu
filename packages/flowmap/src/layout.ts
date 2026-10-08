@@ -202,7 +202,7 @@ export function layout(d: Diagram): Layout {
   for (const g of d.groups) {
     if (g.kind === 'zone') continue;
     const box = boxFor(g.id);
-    if (box) groups.push({ id: g.id, label: g.label, kind: g.kind, depth: depth(g.id), ...box });
+    if (box) groups.push({ id: g.id, label: g.cidr ? `${g.label} · ${g.cidr}` : g.label, kind: g.kind, depth: depth(g.id), ...box });
   }
   groups.sort((a, b) => a.depth - b.depth);
 

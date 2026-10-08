@@ -1,6 +1,8 @@
 /** The shapes of data flowmap works with. Everything here is plain data, so it is easy to print and to test. */
 
-export const NODE_KINDS = ['client', 'service', 'gateway', 'cache', 'database', 'document', 'storage', 'disk', 'queue', 'stream', 'worker', 'external', 'ingress', 'egress', 'proxy'] as const;
+export const NODE_KINDS = ['client', 'service', 'gateway', 'cache', 'database', 'document', 'storage', 'disk', 'queue', 'stream', 'worker', 'external', 'ingress', 'egress', 'proxy',
+  // networking
+  'server', 'router', 'switch', 'firewall', 'loadbalancer', 'dns', 'vpn', 'accesspoint', 'internet'] as const;
 export type NodeKind = (typeof NODE_KINDS)[number];
 
 /** Other names people use for a kind. `node k "Events" kafka` is the same as `stream`. */
@@ -8,10 +10,18 @@ export const NODE_KIND_ALIASES: Record<string, NodeKind> = {
   kafka: 'stream', kinesis: 'stream', eventstream: 'stream', topic: 'stream',
   mongodb: 'document', documentdb: 'document', docstore: 'document',
   files: 'storage', fileserver: 'storage', bucket: 'storage', s3: 'storage', objectstore: 'storage',
-  volume: 'disk', drive: 'disk', ssd: 'disk', nfs: 'disk'
+  volume: 'disk', drive: 'disk', ssd: 'disk', nfs: 'disk',
+  host: 'server', vm: 'server', webserver: 'server',
+  laptop: 'client', phone: 'client', mobile: 'client', pc: 'client', device: 'client',
+  gw: 'router', modem: 'router', nat: 'router',
+  fw: 'firewall', waf: 'firewall',
+  lb: 'loadbalancer', alb: 'loadbalancer', nlb: 'loadbalancer',
+  nameserver: 'dns', resolver: 'dns',
+  wifi: 'accesspoint', ap: 'accesspoint', wap: 'accesspoint',
+  wan: 'internet', web: 'internet'
 };
 
-export const GROUP_KINDS = ['vpc', 'subnet', 'cluster', 'namespace', 'region', 'layer', 'zone'] as const;
+export const GROUP_KINDS = ['vpc', 'subnet', 'cluster', 'namespace', 'region', 'layer', 'zone', 'lan', 'dmz', 'vlan'] as const;
 export type GroupKind = (typeof GROUP_KINDS)[number];
 
 export type Direction = 'right' | 'down';
@@ -20,11 +30,19 @@ export type Speed = 'slow' | 'normal' | 'fast';
 /** A mistake in the text, with the line it is on (1 = first line of the block). */
 export interface Problem { line: number; message: string }
 
-export interface FlowGroup { id: string; label: string; kind: GroupKind; parent?: string; line: number }
+export interface FlowGroup {
+  id: string; label: string; kind: GroupKind; parent?: string; line: number;
+  /** Address range of a network group, such as 10.0.1.0/24; shown beside its name. */
+  cidr?: string;
+}
 
 export interface FlowNode {
   id: string; label: string; kind: NodeKind; line: number;
   replicas?: number; capacity?: number;
+  /** Addresses of a network device, one per interface, such as "10.0.0.1" or "192.168.1.1/24". */
+  ip: string[];
+  /** Ports it listens on, such as "443" or "8000-8100". */
+  ports: string[];
   /** The (non-zone) group this block sits in, for example a VPC or a cluster. */
   group?: string;
   /** Zone groups the block runs in. */

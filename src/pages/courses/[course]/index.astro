@@ -2,10 +2,17 @@
 import CourseLanding from '../../../components/CourseLanding.astro';
 import { loadLanding } from '../../../lib/courses/pages';
 import { PREVIEW_COOKIE, previewVersionFor } from '../../../lib/courses/preview';
+import { confirmStripeReturn } from '../../../lib/payments/confirm';
 import { notFound } from '../../../lib/routing';
 export const prerender = false;
 const lang = Astro.locals.lang!;
-const result = await loadLanding(await Astro.locals.getUser(), lang, Astro.params.course!, previewVersionFor(Astro.cookies.get(PREVIEW_COOKIE)?.value, Astro.params.course!));
+const user = await Astro.locals.getUser();
+const sessionId = Astro.url.searchParams.get('session_id');
+if (user && sessionId) {
+  // Back from Stripe Checkout: confirm the payment now instead of waiting for the webhook.
+  try { await confirmStripeReturn(user, sessionId); } catch (error) { console.error('stripe return check failed', error); }
+}
+const result = await loadLanding(user, lang, Astro.params.course!, previewVersionFor(Astro.cookies.get(PREVIEW_COOKIE)?.value, Astro.params.course!));
 if ('notFound' in result) return notFound();
 ---
 <CourseLanding lang={lang} data={result} />

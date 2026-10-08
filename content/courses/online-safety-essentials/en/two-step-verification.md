@@ -8,6 +8,21 @@ A password is one lock. **Two-step verification** (sometimes called 2FA or two-f
 
 If a scammer steals or guesses the password, they still should not get in. That is why this is worth turning on first for email, banking, WhatsApp, and any account you would hate to lose.
 
+![A password box with a lock, then an arrow to a phone showing a tick](/images/illustrations/two-locks.svg "The password is lock one. Your phone is lock two.")
+
+This is what the second lock does when someone has stolen your password:
+
+```mermaid
+sequenceDiagram
+  participant T as Thief with your stolen password
+  participant S as The service
+  participant Y as You, on your own phone
+  T->>S: Signs in with your password
+  S->>Y: Asks for the second step
+  Y-->>S: You deny it
+  S-->>T: Sign-in refused
+```
+
 ## Set it up safely
 
 1. Open the app yourself. Do not follow a “turn on 2FA” link in a message. That link may be a fake page collecting the very codes meant to protect you.

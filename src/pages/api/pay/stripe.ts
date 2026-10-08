@@ -13,7 +13,7 @@ export const POST = authedApi(async ({ request }, user) => {
   const id = crypto.randomUUID();
   const session = await createCheckoutSession({
     orderId: id, amount, courseTitle: course.title, email: user.email,
-    successUrl: `${siteUrl}/courses/${course.slug}/?paid=1`, cancelUrl: `${siteUrl}/checkout/${course.slug}/`
+    successUrl: `${siteUrl}/courses/${course.slug}/?paid=1&session_id={CHECKOUT_SESSION_ID}`, cancelUrl: `${siteUrl}/checkout/${course.slug}/`
   });
   await createOrder({ id, user_id: user.id, course: course.slug, provider: 'stripe', provider_ref: session.id, amount, currency: 'USD' });
   return json({ url: session.url });

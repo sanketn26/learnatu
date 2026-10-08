@@ -32,9 +32,11 @@ export function nodesDownWhenFailing(d: Diagram, groupId: string): string[] {
 }
 
 /** Text under a block's name: "×3 · cap 200/s". (Zones are shown as a small tag on the block.) */
-export function subLabel(d: Diagram, n: FlowNode): string {
+export function subLabel(_d: Diagram, n: FlowNode): string {
   if (n.sub !== undefined) return n.sub;
   const parts: string[] = [];
+  if (n.ip.length) parts.push(n.ip.join(', '));
+  if (n.ports.length) parts.push(`port ${n.ports.join(', ')}`);
   if (n.replicas !== undefined) parts.push(`×${n.replicas}`);
   if (n.capacity !== undefined) parts.push(`cap ${n.capacity}/s`);
   return parts.join(' · ');

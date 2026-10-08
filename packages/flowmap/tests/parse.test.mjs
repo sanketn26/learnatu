@@ -119,3 +119,36 @@ test('familiar names work as kinds: kafka, mongodb, s3, volume', () => {
 test('a misspelt kind suggests a close one, including familiar names', () => {
   assert.match(messages('node a "A" kafak'), /Did you mean "kafka"\?/);
 });
+
+// ------------------------------------------------------------------ networking
+
+import { NETWORK } from './fixtures.mjs';
+
+test('the network sample parses with no problems', () => {
+  assert.deepEqual(check(NETWORK), []);
+});
+
+test('network kinds, aliases, addresses and ports are read', () => {
+  const d = parse(NETWORK);
+  const by = (id) => d.nodes.find((n) => n.id === id);
+  assert.deepEqual(['laptop', 'ap', 'router', 'net', 'fw', 'lb', 'web', 'dns'].map((id) => by(id).kind),
+    ['client', 'accesspoint', 'router', 'internet', 'firewall', 'loadbalancer', 'server', 'dns']);
+  assert.deepEqual(by('router').ip, ['192.168.1.1', '203.0.113.7']);
+  assert.deepEqual(by('lb').ports, ['80', '443']);
+  assert.equal(by('dns').ip[0], '2001:db8::53');
+  assert.equal(d.groups.find((g) => g.id === 'lan').cidr, '192.168.1.0/24');
+  assert.equal(d.groups.find((g) => g.id === 'dmz').kind, 'dmz');
+});
+
+test('bad addresses, ports and prefixes are explained', () => {
+  assert.match(messages('node a "A" router ip=10.0.0.256'), /not a valid IPv4 address/);
+  assert.match(messages('node a "A" router ip=10.0.0'), /not a valid IPv4 address/);
+  assert.match(messages('node a "A" router ip=10.0.0.1/33'), /not a valid prefix/);
+  assert.match(messages('node a "A" server ports=70000'), /not a valid port/);
+  assert.match(messages('node a "A" server ports=https'), /not a port/);
+  assert.match(messages('node a "A" server ports=900-80'), /lowest first/);
+  assert.match(messages('node a "A" router ip="zzzz::1"'), /not a valid IPv6/);
+  assert.match(messages('group g "G" lan cidr=10.0.0.0'), /needs a prefix/);
+  assert.match(messages('group g "G" lan size=3'), /cidr=/);
+  assert.match(messages('node a "A" routr'), /Did you mean "router"/);
+});

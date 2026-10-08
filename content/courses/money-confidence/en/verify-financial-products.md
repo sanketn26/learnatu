@@ -10,6 +10,19 @@ Professional-looking websites, certificates, apps, and testimonials can be copie
 
 **SEBI** is the Securities and Exchange Board of India (investments and many advisers). **RBI** is the Reserve Bank of India (banks and many lending products). **IRDAI** is the Insurance Regulatory and Development Authority of India (insurance). **PFRDA** is the Pension Fund Regulatory and Development Authority (pensions such as NPS). Each keeps official lists. A seller’s PDF is not one of those lists.
 
+The steps below as one path. Any "no" means stop.
+
+```mermaid
+flowchart TD
+  A["Someone offers a product or an adviser"] --> B["Which regulator should cover it? RBI, SEBI, IRDAI or PFRDA"]
+  B --> C["Open that official register yourself"]
+  C --> D{"Is the exact legal name there?"}
+  D -->|"No, or only a similar name"| E["Stop. Share nothing and pay nothing"]
+  D -->|"Yes"| F{"Do the website, phone and payment account match?"}
+  F -->|"No"| E
+  F -->|"Yes"| G["Read fees, lock-in, exit rules and complaints. Take your time"]
+```
+
 ## Verification steps
 
 1. **Identify which regulator or authority should cover the product or provider.** A savings account is not an insurance policy. A pension is not a trading app. Why: fraud often borrows the name of one regulator to sell something that regulator does not oversee.

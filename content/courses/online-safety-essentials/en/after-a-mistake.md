@@ -10,6 +10,21 @@ You are not the first person this happened to. The national helpline **1930** is
 
 ---
 
+Not sure where to start? Find what happened and follow the arrow. Each section below has the full steps.
+
+```mermaid
+flowchart TD
+  A["Something went wrong"] --> B{"What happened?"}
+  B -->|"Money sent"| C["Call your bank on the number on your card"]
+  B -->|"OTP or PIN shared"| C
+  B -->|"Suspicious link or app"| D["Go offline, uninstall, change passwords from a safe device"]
+  B -->|"Photo or video shared"| E["Report on the platform and save the post address"]
+  B -->|"Work data pasted into AI"| F["Delete the chat and tell your manager"]
+  C --> G["Report at cybercrime.gov.in or call 1930"]
+  D --> G
+  E --> G
+```
+
 ## Money went to the wrong person, or to a scammer
 
 Minutes count. Banks can sometimes hold a payment if they hear while it is still moving.

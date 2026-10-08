@@ -20,6 +20,8 @@ type Problem = { where: string; message: string };
  * Answers { ok: false, errors, warnings } (nothing saved) or { ok: true, course, version, versionId, warnings }.
  */
 export const POST = authorApi(async ({ request }, user) => {
+  // Refuse before reading the body when the browser already says it is too big (the file itself is checked below).
+  if (Number(request.headers.get('content-length') ?? 0) > MAX_UPLOAD_BYTES + 64 * 1024) throw new HttpError(413, 'That zip is larger than 15 MB.');
   const form = await request.formData().catch(() => null);
   const file = form?.get('file');
   if (!(file instanceof File)) throw new HttpError(400, 'Choose a .zip file to upload.');

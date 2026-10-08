@@ -75,7 +75,7 @@ class Figure {
   private note = el('p', 'fm-note');
   private reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  constructor(private container: HTMLElement, private d: Diagram, private id: string) {
+  constructor(container: HTMLElement, private d: Diagram, private id: string) {
     this.animate = !this.reduceMotion;
     const figure = el('figure', 'fm-figure');
     figure.append(this.controls(), this.stage, this.legend());

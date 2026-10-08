@@ -16,3 +16,8 @@ export async function listEnrolledCourses(userId: string) {
   const { results } = await db().prepare('SELECT course FROM enrollments WHERE user_id = ? ORDER BY created_at DESC').bind(userId).all<{ course: string }>();
   return results.map((row) => row.course);
 }
+
+/** Removes access that came from a payment (used when the payment is refunded). Grants and free enrolments are untouched. */
+export async function revokePaidEnrollment(userId: string, course: string, source: EnrollmentSource) {
+  await db().prepare("DELETE FROM enrollments WHERE user_id = ? AND course = ? AND source = ?").bind(userId, course, source).run();
+}

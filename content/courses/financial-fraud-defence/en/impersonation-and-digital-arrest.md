@@ -8,6 +8,17 @@ The voice sounds like your son. The caller ID says “truecaller: State Bank.”
 
 None of that is proof. Photos are copied. Voices can be recorded and, increasingly, generated. Uniforms can be bought. Caller ID can be faked. **Impersonation** means pretending to be someone you would obey or rush to help.
 
+The safe order, whoever the caller says they are:
+
+```mermaid
+flowchart TD
+  A["An unexpected call, voice or video asks for money or secrets"] --> B["Hang up. You are allowed to"]
+  B --> C["Call back on a number you saved, or one you found yourself"]
+  C --> D{"Do they confirm the request?"}
+  D -->|"Yes"| E["Carry on through that trusted channel"]
+  D -->|"No, or nobody can be reached"| F["Treat it as a scam. Tell someone at home and report to 1930"]
+```
+
 ## Verify using another channel
 
 1. End the unexpected call. You are allowed to hang up. A real emergency will still be an emergency in five minutes, and a real relative will pick up when you dial *them*.

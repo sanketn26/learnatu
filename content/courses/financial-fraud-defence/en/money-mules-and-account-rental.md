@@ -8,6 +8,22 @@ A neighbour, or a cousin’s friend, offers work that sounds like nothing: recei
 
 What they are asking is for you to become a **money mule**: a person whose account, SIM, or identity is used to move money that came from fraud. When the bank and the police follow the trail, the trail ends at *your* KYC — **KYC** is the identity check (know your customer) that tied the account to your name, photograph, and Aadhaar or PAN. The stranger who “only needed the account” is no longer on the screen.
 
+Watch where the money goes, and where the investigation stops.
+
+```flow
+title "How stolen money reaches you"
+node victim "Fraud victim" client
+node you "Your account" database
+node boss "The stranger's account" external
+node bank "Bank and police" service
+victim -> you "₹40,000 arrives"
+you -> boss "You forward it"
+bank -> you "They follow the trail"
+flow money "Stolen money moves" rate=40: victim -> you -> boss
+flow trail "The investigation" rate=25 color=3: bank -> you
+spof you "The trail stops at your name and your KYC"
+```
+
 ## Warning phrases
 
 - “Keep a commission and send the rest”

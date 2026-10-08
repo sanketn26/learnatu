@@ -4,6 +4,8 @@ import { parse, check, parseQuantity, parseUnit, dimName, tokenize, PhysSyntaxEr
 import { parseModel } from '../src/mechanics-api.ts';
 import { SPRING, THROW, BOUNCE, PENDULUM } from './fixtures.mjs';
 
+/** Quantities from parseQuantity carry a numeric value; the type also allows plain text. */
+const valueOf = (text) => /** @type {{ value: number }} */ (parseQuantity(text)).value;
 const messages = (text) => check(text).map((p) => `${p.line}: ${p.message}`).join('\n');
 const wrap = (body) => `scene mechanics\n${body}\nrun 1s`;
 
@@ -12,13 +14,13 @@ test('the examples have no problems', () => {
 });
 
 test('units convert to SI and keep their dimension', () => {
-  assert.equal(parseQuantity('2kg').value, 2);
-  assert.equal(parseQuantity('500g').value, 0.5);
-  assert.equal(parseQuantity('3cm').value, 0.03);
-  assert.equal(parseQuantity('9.8m/s2').value, 9.8);
+  assert.equal(valueOf('2kg'), 2);
+  assert.equal(valueOf('500g'), 0.5);
+  assert.equal(valueOf('3cm'), 0.03);
+  assert.equal(valueOf('9.8m/s2'), 9.8);
   assert.deepEqual(parseUnit('N/m').dim, { L: 0, M: 1, T: -2, I: 0, K: 0 });
   assert.deepEqual(parseUnit('kg*m/s2').dim, parseUnit('N').dim);
-  assert.ok(Math.abs(parseQuantity('180deg').value - Math.PI) < 1e-12);
+  assert.ok(Math.abs(valueOf('180deg') - Math.PI) < 1e-12);
   assert.equal(parseUnit('furlong'), null);
   assert.equal(dimName({ L: 1, M: 0, T: 0, I: 0, K: 0 }), 'a length');
 });

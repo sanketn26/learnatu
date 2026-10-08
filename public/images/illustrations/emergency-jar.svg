@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img" aria-hidden="true"><rect width="800" height="400" rx="28" fill="#eef7f3"/>
+<g transform="translate(250,40)">
+<rect x="30" y="0" width="240" height="40" rx="12" fill="#087f6b"/>
+<path d="M50 40h200v36q40 16 40 70v130q0 40-40 40H50q-40 0-40-40V146q0-54 40-70z" fill="#fff" stroke="#087f6b" stroke-width="8"/>
+<path d="M14 250h272v36q0 40-40 40H54q-40 0-40-40z" fill="#fff4d0"/>
+<g fill="#f2b632" stroke="#b8790a" stroke-width="5"><ellipse cx="80" cy="300" rx="38" ry="14"/><ellipse cx="150" cy="292" rx="38" ry="14"/><ellipse cx="220" cy="300" rx="38" ry="14"/><ellipse cx="116" cy="272" rx="38" ry="14"/><ellipse cx="190" cy="268" rx="38" ry="14"/></g>
+<circle cx="150" cy="170" r="44" fill="#dcf5eb"/>
+<text x="150" y="187" text-anchor="middle" font-family="system-ui,sans-serif" font-size="50" font-weight="800" fill="#075d50">₹</text>
+</g>
+<g transform="translate(580,110)"><path d="M70 0 140 24v62c0 52-30 90-70 108C30 176 0 138 0 86V24z" fill="#1790c4"/><path d="M42 88l20 22 38-44" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(90,150)"><path d="M10 100q60-110 120 0z" fill="#d6446f"/><path d="M70 100v70q0 14 14 14t14-14" fill="none" stroke="#17332e" stroke-width="8" stroke-linecap="round"/><g fill="#7ab8e6"><path d="M20 20l-6 18M48 4l-6 18M110 14l-6 18M138 40l-6 18"/></g></g>
+</svg>

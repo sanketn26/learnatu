@@ -66,6 +66,7 @@ The kind picks the icon:
 | `worker` | A background job | |
 | `external` | A third party | |
 | `ingress`, `egress`, `proxy` | Proxy layers | |
+| `server`, `router`, `switch`, `firewall`, `loadbalancer`, `dns`, `vpn`, `accesspoint`, `internet` | Network devices (see the next lessons) | |
 
 A block written with an alternative name, like `kafka`, is drawn as its main kind (`stream`).
 
@@ -147,7 +148,7 @@ api <-> db
 ## 6. Groups and zones
 
 A **group** draws a box around the blocks in it. Put a block in a group with `in=`. Group kinds: `vpc`, `subnet`,
-`cluster`, `namespace`, `region`, `layer` and `zone`. A group can sit inside another with `in=`.
+`cluster`, `namespace`, `region`, `layer`, `zone`, `lan`, `dmz` and `vlan`. A group can sit inside another with `in=`.
 
 A **zone** is different: it is not a box. Name a block's zones with `zones=` and it gets a small zone tag. Zones
 power the what-if button below.

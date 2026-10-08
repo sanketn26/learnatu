@@ -1,10 +1,11 @@
 import js from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 import astro from 'eslint-plugin-astro';
 import globals from 'globals';
 
 /** Lint rules. Kept small on purpose: catch real mistakes (unused code, undefined names), not style. */
-export default tseslint.config(
+export default defineConfig(
   { ignores: ['dist/', '.astro/', '.wrangler/', 'node_modules/', 'release/', 'worker-configuration.d.ts'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,

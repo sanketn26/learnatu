@@ -17,6 +17,6 @@ export const GET: APIRoute = async ({ params, cookies, locals }) => {
   if (!asset) return new Response('Not found', { status: 404 });
 
   return new Response(asset.data, {
-    headers: { 'content-type': asset.content_type, 'cache-control': previewing ? 'private, no-store' : 'public, max-age=3600' }
+    headers: { 'content-type': asset.content_type, 'x-content-type-options': 'nosniff', 'cache-control': previewing ? 'private, no-store' : 'public, max-age=3600' }
   });
 };

@@ -139,7 +139,7 @@ spof db "One copy of the data"
 ````
 
 Blocks have kinds (`client`, `service`, `gateway`, `cache`, `database`, `document`, `storage`, `disk`, `queue`,
-`stream` (or `kafka`), `worker`, `external`, `ingress`, `egress`, `proxy`), links can be two-way (`<->`), groups draw VPCs and clusters, zones power a what-if button, and
+`stream` (or `kafka`), `worker`, `external`, `ingress`, `egress`, `proxy`, and network devices such as `router`, `switch`, `firewall`, `loadbalancer`, `dns`, `vpn`, `accesspoint`, `server`, `internet`), links can be two-way (`<->`), groups draw VPCs and clusters, zones power a what-if button, and
 `via=` / `sidecar=` show proxy layers. The full language is in `packages/flowmap/README.md`, and the tutorial course
 `create-a-course` teaches it step by step with live examples. A mistake in a diagram fails the build (or the upload check)
 with the file, the diagram number and the line.

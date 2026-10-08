@@ -35,8 +35,8 @@ const kinds = Object.keys(KIND_INFO);
       </div>
       <div class="playground-view"><div id="pg-preview" aria-live="polite"></div></div>
     </div>
-    <script id="pg-kinds" type="application/json" set:html={JSON.stringify(KIND_INFO)} />
-    <script id="pg-examples" type="application/json" set:html={JSON.stringify(EXAMPLES)} />
+    <script is:inline id="pg-kinds" type="application/json" set:html={JSON.stringify(KIND_INFO)} />
+    <script is:inline id="pg-examples" type="application/json" set:html={JSON.stringify(EXAMPLES)} />
   </div>
 </BaseLayout>
 

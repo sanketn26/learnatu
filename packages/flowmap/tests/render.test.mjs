@@ -81,3 +81,22 @@ test('each new kind has its own icon', () => {
   const icons = [...out.matchAll(/class="fm-icon" d="([^"]+)"/g)].map((m) => m[1]);
   assert.equal(new Set(icons).size, 5);
 });
+
+// ------------------------------------------------------------------ networking
+
+import { NETWORK } from './fixtures.mjs';
+
+test('network blocks show their address and ports, and network groups show their range', () => {
+  const out = svg(NETWORK);
+  assert.ok(out.includes('>192.168.1.1, 203.0.113.7</text>'));
+  assert.ok(out.includes('>10.0.5.2 · port 80, 443</text>'));
+  assert.ok(out.includes('Home network · 192.168.1.0/24'));
+  assert.ok(out.includes('fm-group fm-lan') && out.includes('fm-group fm-dmz'));
+  assert.equal((out.match(/class="fm-node[ "]/g) ?? []).length, 8);
+});
+
+test('every kind of block has its own icon', () => {
+  const kinds = ['server', 'router', 'switch', 'firewall', 'loadbalancer', 'dns', 'vpn', 'accesspoint', 'internet'];
+  const paths = kinds.map((k) => svg(`node a "A" ${k}`).match(/class="fm-icon" d="([^"]+)"/)[1]);
+  assert.equal(new Set(paths).size, kinds.length);
+});

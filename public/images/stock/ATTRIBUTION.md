@@ -7,3 +7,5 @@ The Unsplash photographs are used under the [Unsplash License](https://unsplash.
 - Community: `https://images.unsplash.com/photo-1529156069898-49953e39b3ac`
 
 The generated illustrations in the adjacent `illustrations/` directory were created specifically for Learnatu using OpenAI's built-in image generation tool.
+
+The SVG illustrations in `illustrations/` (otp-never-share, check-the-link, two-locks, emergency-jar, budget-envelopes, backup-copies, ask-then-check) were drawn by hand for Learnatu. They contain no words, only digits, web addresses and symbols, so one file serves every language.

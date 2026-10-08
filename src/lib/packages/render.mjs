@@ -71,7 +71,28 @@ export async function renderMarkdown(markdown, { slug, fromPath = 'course.md', a
     .use(rehypeKatex)
     .use(rehypeMathErrors)
     .use(rehypeHighlight) // same colours as the built-in courses
+    .use(rehypeSafeUrls)
     .use(rehypeStringify)
     .process({ value: markdown, path: fromPath });
   return String(result);
+}
+
+/** Check generated HTML URLs too, including images produced by directives. */
+function rehypeSafeUrls() {
+  const walk = (node) => {
+    if (node.type === 'element') {
+      for (const key of ['href', 'src']) {
+        const value = node.properties?.[key];
+        if (typeof value !== 'string') continue;
+        // Remove controls that browsers ignore when interpreting URL schemes.
+        // eslint-disable-next-line no-control-regex
+        const normalized = value.replace(/[\u0000-\u0020\u007f]/g, '');
+        const scheme = normalized.match(/^([a-z][a-z0-9+.-]*):/i)?.[1]?.toLowerCase();
+        const allowed = key === 'href' ? ['http', 'https', 'mailto', 'tel'] : ['http', 'https'];
+        if (scheme && !allowed.includes(scheme)) delete node.properties[key];
+      }
+    }
+    node.children?.forEach(walk);
+  };
+  return walk;
 }

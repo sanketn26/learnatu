@@ -12,6 +12,8 @@ A **link** is the address of a page, the way a house has an address. On a phone 
 
 ---
 
+![Two web addresses: hdfc-bank-refund.in marked wrong, and hdfcbank.com marked right](/images/illustrations/check-the-link.svg "Extra words and hyphens are a warning. Read the whole address.")
+
 ## How to spot a fake link
 
 1. **Read the full address, slowly.** `hdfc-bank-refund.in` is not HDFC Bank. The real site is closer to `hdfcbank.com`. Extra words, extra hyphens, and a different ending (`.net`, `.xyz`, `.in` when you expected `.com`) are warnings.
@@ -28,6 +30,17 @@ A **link** is the address of a page, the way a house has an address. On a phone 
     - Enter your OTP, PIN, or password on a page you are not sure you opened yourself.
 
 ---
+
+The question to ask every time:
+
+```mermaid
+flowchart TD
+  A["A message has a link, or asks you to install an app"] --> B{"Did you open the site or app yourself?"}
+  B -->|"No, the message sent me"| C["Do not tap. Search the name yourself, or open the app you already have"]
+  B -->|"Yes"| D{"Does the address match the real one exactly?"}
+  D -->|"No, or not sure"| C
+  D -->|"Yes"| E["Go on. A padlock alone never proves a site is genuine"]
+```
 
 ## How to check a link is real
 

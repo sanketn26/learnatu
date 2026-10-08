@@ -8,6 +8,8 @@ AI can invent facts, sources, prices, rules, quotations, and phone numbers. It d
 
 So “it sounded sure” is not a check. Confidence is a writing style.
 
+![A chat bubble with text, an arrow, then a document with a magnifying glass and a tick](/images/illustrations/ask-then-check.svg "The AI writes the draft. You check it.")
+
 ## Use the three-check method
 
 1. **Check the claim.** Circle, in your head, anything that would cause harm if it were wrong: a name, a date, a price, a law, a medicine, a helpline, a historical fact for homework. Those are the parts that must not stay on trust.
@@ -15,6 +17,17 @@ So “it sounded sure” is not a check. Confidence is a writing style.
 3. **Check the fit.** Even a true statement may not apply to *you*. A rule for another country, a fee that changed last year, a medical note written for a different age or condition — all of these can be “correct” in general and dangerous in your case.
 
 Do not ask the same AI “Are you sure?” and treat a second confident yes as proof. It may repeat the same error with more adjectives.
+
+The three checks in order:
+
+```mermaid
+flowchart TD
+  A["An AI answer"] --> B["1. Check the claim: what would hurt if it were wrong?"]
+  B --> C["2. Check the source: an official site you typed yourself"]
+  C -->|"It matches"| D["3. Check the fit: does it apply to you?"]
+  C -->|"It does not match"| F["Throw the AI's version away"]
+  D --> E["Now you can use it"]
+```
 
 ## What this looks like in real life
 

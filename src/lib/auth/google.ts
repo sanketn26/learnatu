@@ -1,5 +1,6 @@
 import { env } from 'cloudflare:workers';
 import { logger } from '../log';
+import { decodeTokenPayload } from './token';
 
 const log = logger('auth.google');
 
@@ -33,7 +34,7 @@ export async function profileFromCode(code: string): Promise<GoogleProfile> {
   const { id_token } = (await response.json()) as { id_token?: string };
   if (!id_token) throw new Error('Google response had no id_token');
   // The token came straight from Google over TLS, so the payload can be trusted once the claims are checked.
-  const claims = JSON.parse(atob(id_token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+  const claims = decodeTokenPayload(id_token);
   if (claims.aud !== env.GOOGLE_CLIENT_ID) throw new Error('id_token audience mismatch');
   if (!['accounts.google.com', 'https://accounts.google.com'].includes(claims.iss)) throw new Error('id_token issuer mismatch');
   if (claims.exp * 1000 < Date.now()) throw new Error('id_token expired');

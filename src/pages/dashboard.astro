@@ -17,7 +17,7 @@ const more = all.filter((c) => !enrolled.includes(c.slug));
     <section class="hero">
       <p class="eyebrow">{user.email}</p>
       <h1>Hello{user.name ? `, ${user.name.split(' ')[0]}` : ''}</h1>
-      <form method="post" action="/api/auth/logout" style="margin-top:1rem"><button class="btn btn-secondary" type="submit">Sign out</button></form>
+      <form method="post" action="/api/auth/logout" style="margin-top:1rem"><button class="btn btn-secondary" type="submit">Sign out</button> <button class="btn btn-secondary" type="submit" name="all" value="1">Sign out everywhere</button></form>
     </section>
     <h2 class="section-title">My courses</h2>
     {mine.length

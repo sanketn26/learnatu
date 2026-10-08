@@ -25,3 +25,20 @@ chokepoint db "Every write waits for one disk" badge="92%"
 chokepoint api -> db "Busy link"
 whatif "What if Zone A fails?" fail=za stops=checkout
 `;
+
+/** A small network: a laptop on a home LAN reaches a web server through a router and firewall. */
+export const NETWORK = `title "Home to web server"
+group lan "Home network" lan cidr=192.168.1.0/24
+group dmz "Server network" dmz cidr=10.0.5.0/28
+node laptop "Laptop" laptop ip=192.168.1.20 in=lan
+node ap "Wi-Fi" wifi in=lan
+node router "Home router" router ip=192.168.1.1,203.0.113.7 in=lan
+node net "Internet" internet
+node fw "Firewall" firewall ip=10.0.5.1 in=dmz
+node lb "Load balancer" lb ip=10.0.5.2 ports=80,443 in=dmz
+node web "Web servers" server replicas=2 ports=8080 in=dmz
+node dns "DNS" dns ip="2001:db8::53"
+laptop -> ap -> router -> net -> fw -> lb -> web
+laptop -> dns "UDP 53"
+flow page "Open a web page" rate=30: laptop -> ap -> router -> net -> fw -> lb -> web
+`;

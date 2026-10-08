@@ -39,12 +39,22 @@ const ICONS: Record<string, string> = {
   external: 'M6 15.5a3.8 3.8 0 010-7.6 5 5 0 019.4 1.4 3.1 3.1 0 01-.6 6.2z',
   ingress: 'M2.5 10h9 M8.5 6l4 4-4 4 M17 3v14',
   egress: 'M17.5 10h-9 M11.5 6l-4 4 4 4 M3 3v14',
-  proxy: 'M10 2l6 2v5c0 4-3 7-6 9-3-2-6-5-6-9V4z'
+  proxy: 'M10 2l6 2v5c0 4-3 7-6 9-3-2-6-5-6-9V4z',
+  server: 'M3.5 3h13v5h-13z M3.5 12h13v5h-13z M6.5 5.5h.01 M6.5 14.5h.01 M10 5.5h4 M10 14.5h4',
+  router: 'M3 11.5h14v5.5H3z M6 14.2h.01 M9 14.2h.01 M10 11.5V4 M6 11.5 4 6 M14 11.5 16 6',
+  switch: 'M2.5 5h15v10h-15z M6 8.5h8 M12 6.5l2 2-2 2 M14 12.5H6 M8 10.5l-2 2 2 2',
+  firewall: 'M3 4h14v12H3z M3 8h14 M3 12h14 M8 4v4 M13 8v4 M8 12v4',
+  loadbalancer: 'M10 3v4 M10 7 4.5 13 M10 7v6 M10 7l5.5 6 M4.5 16h.01 M10 16h.01 M15.5 16h.01',
+  dns: 'M9 3a6 6 0 100 12A6 6 0 009 3z M3 9h12 M9 3c-2 2-2 10 0 12 M9 3c2 2 2 10 0 12 M13.5 13.5 17 17',
+  vpn: 'M5 9h10v8H5z M7 9V6a3 3 0 016 0v3 M10 12.5v2',
+  accesspoint: 'M2.5 8a10 10 0 0115 0 M5 11a6.5 6.5 0 0110 0 M7.5 14a3 3 0 015 0 M10 16.5h.01',
+  internet: 'M10 2.5a7.5 7.5 0 100 15 7.5 7.5 0 000-15z M2.5 10h15 M10 2.5c-3 3-3 12 0 15 M10 2.5c3 3 3 12 0 15'
 };
 const isProxy = (kind: string) => kind === 'ingress' || kind === 'egress' || kind === 'proxy';
 const KIND_COLOUR: Record<string, string> = {
   client: 'muted', external: 'muted', service: 'f1', gateway: 'f3', ingress: 'f3', egress: 'f3', proxy: 'f3',
-  cache: 'f5', database: 'f4', document: 'f4', storage: 'f6', disk: 'worker', queue: 'f2', stream: 'f2', worker: 'worker'
+  cache: 'f5', database: 'f4', document: 'f4', storage: 'f6', disk: 'worker', queue: 'f2', stream: 'f2', worker: 'worker',
+  server: 'f1', router: 'f6', switch: 'f6', accesspoint: 'f6', firewall: 'bad', loadbalancer: 'f3', dns: 'f5', vpn: 'f5', internet: 'muted'
 };
 const SPEED_SECONDS = { slow: 1.9, normal: 1.25, fast: 0.8 } as const;
 
@@ -72,7 +82,11 @@ font-family:var(--fm-font,inherit)}
 .fm .fm-badge text{fill:#fff;font:800 10.5px sans-serif;letter-spacing:.05em;text-anchor:middle}.fm .fm-badge.fm-warn text{fill:#1b1200}
 .fm .fm-group .fm-box{fill:color-mix(in srgb,var(--_muted) 7%,transparent);stroke:color-mix(in srgb,var(--_muted) 65%,transparent);stroke-width:1.6}
 .fm .fm-group.fm-cluster .fm-box,.fm .fm-group.fm-namespace .fm-box{fill:color-mix(in srgb,var(--_f1) 7%,transparent);stroke:var(--_f1);stroke-dasharray:7 5;stroke-width:1.8}
-.fm .fm-group.fm-subnet .fm-box{stroke-dasharray:3 4}
+.fm .fm-group.fm-subnet .fm-box,.fm .fm-group.fm-vlan .fm-box{stroke-dasharray:3 4}
+.fm .fm-group.fm-lan .fm-box{fill:color-mix(in srgb,var(--_f6) 7%,transparent);stroke:var(--_f6);stroke-width:1.8}
+.fm .fm-group.fm-dmz .fm-box{fill:color-mix(in srgb,var(--_warn) 8%,transparent);stroke:var(--_warn);stroke-dasharray:7 5;stroke-width:1.8}
+.fm .fm-group.fm-lan .fm-chip{stroke:var(--_f6)}.fm .fm-group.fm-dmz .fm-chip{stroke:var(--_warn)}
+.fm .fm-group.fm-lan text{fill:var(--_f6)}.fm .fm-group.fm-dmz text{fill:var(--_warn)}
 .fm .fm-group.fm-layer .fm-box{fill:color-mix(in srgb,var(--_muted) 5%,transparent);stroke:none}
 .fm .fm-chip{fill:var(--_card);stroke:color-mix(in srgb,var(--_muted) 55%,transparent);stroke-width:1.2}
 .fm .fm-group.fm-cluster .fm-chip,.fm .fm-group.fm-namespace .fm-chip{stroke:var(--_f1)}

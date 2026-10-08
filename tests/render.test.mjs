@@ -15,6 +15,15 @@ test('raw HTML and scripts are dropped', async () => {
   assert.doesNotMatch(html, /<script|onerror/);
 });
 
+test('unsafe URL schemes are removed from links and directive images', async () => {
+  for (const url of ['javascript:alert%281%29', 'JaVaScRiPt:alert%281%29', 'vbscript:msgbox%281%29', 'data:text/html,hello']) {
+    assert.doesNotMatch(await render(`[click](${url})`), /href=/);
+  }
+  assert.doesNotMatch(await render('::figure{src="javascript:alert(1)" alt="test"}'), /src=/);
+  assert.match(await render('[email](mailto:hello@example.com) [phone](tel:123) [section](#top)'), /href="mailto:hello@example.com"/);
+  assert.match(await render('[section](#top)'), /href="#top"/);
+});
+
 test('images point at the course media URL', async () => {
   const html = await render('![chart](../images/chart.png)', ['images/chart.png']);
   assert.match(html, /src="\/media\/demo\/images\/chart\.png"/);

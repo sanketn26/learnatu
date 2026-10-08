@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { fulfilOrder } from '../../../lib/payments/fulfil';
+import { handleRazorpayEvent } from '../../../lib/payments/events';
 import { verifyWebhookSignature } from '../../../lib/payments/razorpay';
 import { logger } from '../../../lib/log';
 
@@ -12,11 +12,9 @@ export const POST: APIRoute = async ({ request }) => {
     log.warn('bad signature');
     return new Response('bad signature', { status: 400 });
   }
-  const event = JSON.parse(raw) as { event: string; payload?: { payment?: { entity?: { order_id?: string } } } };
+  let event;
+  try { event = JSON.parse(raw); } catch { return new Response('bad body', { status: 400 }); }
   log.debug('event', { type: event.event });
-  if (event.event === 'payment.captured' || event.event === 'order.paid') {
-    const orderId = event.payload?.payment?.entity?.order_id;
-    if (orderId) await fulfilOrder('razorpay', orderId);
-  }
+  await handleRazorpayEvent(event);
   return new Response('ok');
 };

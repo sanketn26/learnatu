@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { fulfilOrder } from '../../../lib/payments/fulfil';
+import { handleStripeEvent } from '../../../lib/payments/events';
 import { verifyWebhook } from '../../../lib/payments/stripe';
 import { logger } from '../../../lib/log';
 
@@ -12,10 +12,9 @@ export const POST: APIRoute = async ({ request }) => {
     log.warn('bad signature');
     return new Response('bad signature', { status: 400 });
   }
-  const event = JSON.parse(raw) as { type: string; data: { object: { id: string; payment_status?: string } } };
+  let event;
+  try { event = JSON.parse(raw); } catch { return new Response('bad body', { status: 400 }); }
   log.debug('event', { type: event.type });
-  if (['checkout.session.completed', 'checkout.session.async_payment_succeeded'].includes(event.type) && event.data.object.payment_status === 'paid') {
-    await fulfilOrder('stripe', event.data.object.id);
-  }
+  await handleStripeEvent(event);
   return new Response('ok');
 };

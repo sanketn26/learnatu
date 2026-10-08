@@ -12,8 +12,14 @@ if (blocks.length) {
       try { images = JSON.parse(pre.dataset.images ?? '{}'); } catch { /* no pictures */ }
       const host = document.createElement('div');
       host.className = 'physmap-host';
-      pre.replaceWith(host);
-      mountPhysmap(host, pre.textContent ?? '', { idPrefix: `pm${index + 1}`, resolveImage: (ref) => images[ref] ?? ref });
+      pre.after(host);
+      try {
+        mountPhysmap(host, pre.textContent ?? '', { idPrefix: `pm${index + 1}`, resolveImage: (ref) => images[ref] ?? ref });
+        pre.remove();
+      } catch (error) {
+        host.remove(); // keep the text of this scene visible and carry on with the others
+        console.error('Could not draw a physics scene', error);
+      }
     });
   }).catch((error) => console.error('Could not load physics scenes', error));
 }

@@ -56,8 +56,8 @@ One statement per line. `#` starts a comment.
 | `title "Text"` | Title (also the accessible name) |
 | `direction right` / `down` | Reading direction. Default `right` |
 | `speed slow` / `normal` / `fast` | Dot speed |
-| `group id "Label" kind [in=group]` | A group. Kinds: `vpc subnet cluster namespace region layer zone`. Zones are tags, not boxes |
-| `node id "Label" kind [replicas=N] [capacity=N] [in=group] [zones=a,b] [sidecar=text] [sub="text"]` | A block. Kinds: `client service gateway cache database document storage disk queue stream worker external ingress egress proxy` (default `service`). Also accepted: `kafka kinesis eventstream topic` (stream), `mongodb documentdb docstore` (document), `s3 bucket files fileserver objectstore` (storage), `volume drive ssd nfs` (disk) |
+| `group id "Label" kind [in=group] [cidr=10.0.0.0/24]` | A group. Kinds: `vpc subnet cluster namespace region layer zone lan dmz vlan`. Zones are tags, not boxes. `cidr=` shows an address range beside the name |
+| `node id "Label" kind [replicas=N] [capacity=N] [in=group] [zones=a,b] [sidecar=text] [ip=addr,addr] [ports=443,8000-8100] [sub="text"]` | A block. Kinds: `client service gateway cache database document storage disk queue stream worker external ingress egress proxy`, and for networks `server router switch firewall loadbalancer dns vpn accesspoint internet` (default `service`). `ip=` and `ports=` show under the name; write IPv6 in quotes (`ip="2001:db8::1"`). Also accepted: `kafka kinesis eventstream topic` (stream), `mongodb documentdb docstore` (document), `s3 bucket files fileserver objectstore` (storage), `volume drive ssd nfs` (disk), `laptop phone mobile pc device` (client), `host vm webserver` (server), `gw modem nat` (router), `fw waf` (firewall), `lb alb nlb` (loadbalancer), `nameserver resolver` (dns), `wifi ap wap` (accesspoint), `wan web` (internet) |
 | `a -> b -> c`, `a <-> b`, `a <- b` | Links. Unknown names become blocks. After a link: `"label"` or `via=proxy` |
 | `flow id "Label" [rate=N] [color=1-6]: a -> b <-> c` | Traffic along links that exist. `<->` sends a reply back |
 | `spof id "reason"` | Mark a single point of failure |

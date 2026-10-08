@@ -8,6 +8,8 @@ The scooter will not start on a work morning. A parent needs a hospital deposit.
 
 An **emergency fund** is money kept within reach for unexpected essential costs: urgent travel, a repair, a stretch of lost work, medical needs. It is not meant to grow quickly. It is meant to still be there on a bad day. That is a different job from investing.
 
+![A jar with a few coins and a rupee sign, between an umbrella and a shield](/images/illustrations/emergency-jar.svg "A small jar, started early, is your umbrella for a rainy day.")
+
 ## Start without an intimidating target
 
 Advice on the internet loves a round number of months. Your first job is smaller: a first pile you can actually build without skipping food or taking a new loan to look prepared.

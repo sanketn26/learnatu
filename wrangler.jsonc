@@ -1,6 +1,7 @@
 {
   "name": "learnatu",
   "compatibility_flags": ["nodejs_compat"],
+  // Create the database with `npx wrangler d1 create learnatu` and paste its id over REPLACE_WITH_D1_ID before deploying.
   "d1_databases": [
     { "binding": "DB", "database_name": "learnatu", "database_id": "REPLACE_WITH_D1_ID", "migrations_dir": "migrations" }
   ],

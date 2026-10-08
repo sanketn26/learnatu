@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img" aria-hidden="true"><rect width="800" height="400" rx="28" fill="#eef7f3"/>
+<g transform="translate(60,52)">
+<rect x="0" y="0" width="680" height="116" rx="18" fill="#fff" stroke="#c62839" stroke-width="5"/>
+<circle cx="34" cy="30" r="7" fill="#e5e7eb"/><circle cx="58" cy="30" r="7" fill="#e5e7eb"/><circle cx="82" cy="30" r="7" fill="#e5e7eb"/>
+<rect x="24" y="52" width="560" height="44" rx="22" fill="#fdeaec"/>
+<text x="52" y="82" font-family="ui-monospace,Menlo,monospace" font-size="24" font-weight="700" fill="#a01d2b">hdfc-bank-refund.in</text>
+<circle cx="628" cy="74" r="30" fill="#c62839"/><path d="M614 60l28 28M642 60l-28 28" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+</g>
+<g transform="translate(60,226)">
+<rect x="0" y="0" width="680" height="116" rx="18" fill="#fff" stroke="#087f6b" stroke-width="5"/>
+<circle cx="34" cy="30" r="7" fill="#e5e7eb"/><circle cx="58" cy="30" r="7" fill="#e5e7eb"/><circle cx="82" cy="30" r="7" fill="#e5e7eb"/>
+<rect x="24" y="52" width="560" height="44" rx="22" fill="#dcf5eb"/>
+<text x="52" y="82" font-family="ui-monospace,Menlo,monospace" font-size="24" font-weight="700" fill="#075d50">hdfcbank.com</text>
+<circle cx="628" cy="74" r="30" fill="#087f6b"/><path d="M613 74l11 12 21-24" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

@@ -1,6 +1,8 @@
 # Copy to .dev.vars for local development. In production use `wrangler secret put <NAME>`.
 SITE_URL=http://localhost:4321
 DEBUG=1
+# Comma-separated emails that get author tools (upload, preview, playground)
+ADMIN_EMAILS=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 RAZORPAY_KEY_ID=

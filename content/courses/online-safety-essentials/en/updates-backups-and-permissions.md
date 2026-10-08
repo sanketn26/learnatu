@@ -6,6 +6,8 @@ minutes: 2
 
 Three quiet habits prevent a surprising number of emergencies. None of them require you to become a technician. They are closer to locking a door, keeping a spare key, and not giving the spare to every visitor.
 
+![A phone with photos and arrows to a cloud and a drive](/images/illustrations/backup-copies.svg "One copy is a hope. Two copies in different places is a backup.")
+
 ## Keep software updated
 
 Your phone and its apps get **updates** — new versions that often repair security holes someone has already found. Install them from **Settings** or from Play Store / App Store. A message that says “tap here to update WhatsApp” is not an update. It is a door.
