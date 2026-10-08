@@ -1,7 +1,15 @@
 /** The shapes of data flowmap works with. Everything here is plain data, so it is easy to print and to test. */
 
-export const NODE_KINDS = ['client', 'service', 'gateway', 'cache', 'database', 'storage', 'queue', 'worker', 'external', 'ingress', 'egress', 'proxy'] as const;
+export const NODE_KINDS = ['client', 'service', 'gateway', 'cache', 'database', 'document', 'storage', 'disk', 'queue', 'stream', 'worker', 'external', 'ingress', 'egress', 'proxy'] as const;
 export type NodeKind = (typeof NODE_KINDS)[number];
+
+/** Other names people use for a kind. `node k "Events" kafka` is the same as `stream`. */
+export const NODE_KIND_ALIASES: Record<string, NodeKind> = {
+  kafka: 'stream', kinesis: 'stream', eventstream: 'stream', topic: 'stream',
+  mongodb: 'document', documentdb: 'document', docstore: 'document',
+  files: 'storage', fileserver: 'storage', bucket: 'storage', s3: 'storage', objectstore: 'storage',
+  volume: 'disk', drive: 'disk', ssd: 'disk', nfs: 'disk'
+};
 
 export const GROUP_KINDS = ['vpc', 'subnet', 'cluster', 'namespace', 'region', 'layer', 'zone'] as const;
 export type GroupKind = (typeof GROUP_KINDS)[number];

@@ -57,3 +57,26 @@ test('code in other common languages is coloured too, and unknown ones still sho
   const unknown = await render('```klingon\nqapla\n```');
   assert.match(unknown, /<pre data-language="klingon"><code class="language-klingon">qapla/);
 });
+
+test('maths: inline and display formulas are drawn once, with a screen-reader version', async () => {
+  const html = await render('Energy is $E = mc^2$ here.\n\n$$\n\\frac{a}{b} + \\sqrt{x}\n$$');
+  assert.match(html, /class="katex"/);
+  assert.match(html, /class="katex-display"/);
+  assert.match(html, /<math/); // MathML for assistive technology
+  assert.match(html, /m<\/mi>|mc|c<\/mi>/);
+});
+
+test('a dollar amount can be written with a backslash and is not a formula', async () => {
+  const html = await render('It costs \\$5 and \\$10.');
+  assert.doesNotMatch(html, /katex/);
+  assert.match(html, /\$5 and \$10/);
+});
+
+test('a formula KaTeX cannot read stops the render with a clear message', async () => {
+  await assert.rejects(render('Bad: $\\notacommand{x}$'), /notacommand/);
+});
+
+test('formulas inside code are left alone', async () => {
+  const html = await render('Use `$x^2$` like this:\n\n```\n$$y$$\n```');
+  assert.doesNotMatch(html, /class="katex"/);
+});

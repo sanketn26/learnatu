@@ -31,6 +31,9 @@ const ICONS: Record<string, string> = {
   cache: 'M11 2 4.5 11H9l-1 7 7.5-9.5H11z',
   database: 'M4 5c0-1.4 2.7-2.5 6-2.5s6 1.1 6 2.5-2.7 2.5-6 2.5S4 6.4 4 5z M4 5v10c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5V5 M4 10c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5',
   storage: 'M3 6h14v10H3z M3 6l2-3h10l2 3 M8 10h4',
+  document: 'M5 2.5h7l3 3v12H5z M12 2.5v3h3 M7.5 9h5 M7.5 12h5',
+  disk: 'M3 11h14v5.5H3z M4.6 6.5 3 11 M15.4 6.5 17 11 M4.6 6.5h10.8 M13.8 13.75h.01 M11 13.75h.01',
+  stream: 'M2 5h11 M10.5 2.5 13.5 5l-3 2.5 M2 10h14 M13 7.5 16 10l-3 2.5 M2 15h11 M10.5 12.5 13.5 15l-3 2.5',
   queue: 'M3 5.5h9 M3 10h14 M3 14.5h9 M14 4l3 1.5L14 7',
   worker: 'M10 7a3 3 0 100 6 3 3 0 000-6z M10 2v3 M10 15v3 M2 10h3 M15 10h3 M4.3 4.3l2.1 2.1 M13.6 13.6l2.1 2.1 M15.7 4.3l-2.1 2.1 M6.4 13.6l-2.1 2.1',
   external: 'M6 15.5a3.8 3.8 0 010-7.6 5 5 0 019.4 1.4 3.1 3.1 0 01-.6 6.2z',
@@ -41,7 +44,7 @@ const ICONS: Record<string, string> = {
 const isProxy = (kind: string) => kind === 'ingress' || kind === 'egress' || kind === 'proxy';
 const KIND_COLOUR: Record<string, string> = {
   client: 'muted', external: 'muted', service: 'f1', gateway: 'f3', ingress: 'f3', egress: 'f3', proxy: 'f3',
-  cache: 'f5', database: 'f4', storage: 'f4', queue: 'f2', worker: 'worker'
+  cache: 'f5', database: 'f4', document: 'f4', storage: 'f6', disk: 'worker', queue: 'f2', stream: 'f2', worker: 'worker'
 };
 const SPEED_SECONDS = { slow: 1.9, normal: 1.25, fast: 0.8 } as const;
 

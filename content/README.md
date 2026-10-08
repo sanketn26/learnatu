@@ -138,8 +138,25 @@ spof db "One copy of the data"
 ```
 ````
 
-Blocks have kinds (`client`, `service`, `gateway`, `cache`, `database`, `queue`, `worker`, `external`, `ingress`,
-`egress`, `proxy`), links can be two-way (`<->`), groups draw VPCs and clusters, zones power a what-if button, and
+Blocks have kinds (`client`, `service`, `gateway`, `cache`, `database`, `document`, `storage`, `disk`, `queue`,
+`stream` (or `kafka`), `worker`, `external`, `ingress`, `egress`, `proxy`), links can be two-way (`<->`), groups draw VPCs and clusters, zones power a what-if button, and
 `via=` / `sidecar=` show proxy layers. The full language is in `packages/flowmap/README.md`, and the tutorial course
 `create-a-course` teaches it step by step with live examples. A mistake in a diagram fails the build (or the upload check)
 with the file, the diagram number and the line.
+
+
+## Mathematical formulas
+
+Write formulas in LaTeX notation, drawn by [KaTeX](https://katex.org/) when the page is built (or the zip is uploaded),
+so readers download no maths code and screen readers get a spoken version.
+
+````markdown
+Inline: $E = mc^2$.
+
+$$
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
+````
+
+Put `$$` on its own lines for a display formula. Write dollar amounts as `\$5`. A formula KaTeX cannot read fails the
+upload check and the build, with the file and line. Formulas inside code blocks or `backticks` are plain text.

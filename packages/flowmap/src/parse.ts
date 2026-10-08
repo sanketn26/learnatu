@@ -1,4 +1,4 @@
-import { GROUP_KINDS, NODE_KINDS, FlowSyntaxError } from './types.ts';
+import { GROUP_KINDS, NODE_KINDS, NODE_KIND_ALIASES, FlowSyntaxError } from './types.ts';
 import type { Diagram, Flow, FlowEdge, FlowGroup, FlowNode, GroupKind, Mark, NodeKind, Problem, WhatIf } from './types.ts';
 import { tokenize } from './tokenize.ts';
 import type { Token } from './tokenize.ts';
@@ -143,8 +143,9 @@ export function parseFlow(source: string): ParseResult {
       for (const tok of others) {
         if (tok.type === 'string' && !labelSeen) { node.label = tok.text; labelSeen = true; }
         else if (tok.type === 'word') {
-          if (!(NODE_KINDS as readonly string[]).includes(tok.text)) return fail(line, `"${tok.text}" is not a kind of block. Use one of: ${list(NODE_KINDS)}.${suggest(tok.text, [...NODE_KINDS])}`);
-          node.kind = tok.text as NodeKind;
+          const kind = (NODE_KINDS as readonly string[]).includes(tok.text) ? (tok.text as NodeKind) : NODE_KIND_ALIASES[tok.text.toLowerCase()];
+          if (!kind) return fail(line, `"${tok.text}" is not a kind of block. Use one of: ${list(NODE_KINDS)}.${suggest(tok.text, [...NODE_KINDS, ...Object.keys(NODE_KIND_ALIASES)])}`);
+          node.kind = kind;
         } else if (tok.type === 'attr') {
           const { key, value } = tok;
           if (key === 'label') node.label = value;

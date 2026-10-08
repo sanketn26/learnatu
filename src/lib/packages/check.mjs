@@ -5,6 +5,7 @@ import { validate as validateQuiz } from '../remark-quiz.mjs';
 import { check as checkFlow } from '@learnatu/flowmap';
 import { splitFrontMatter } from './frontmatter.mjs';
 import { scanMarkdown } from './scan.mjs';
+import { checkMath } from './math.mjs';
 
 /**
  * Checks a course package (the contents of a zip, or a folder under content/courses/) before it is saved.
@@ -78,6 +79,8 @@ export function checkPackage({ files, assets = new Set(), categories }) {
       blocks.filter((block) => block.lang === 'flow').forEach((block, i) => {
         for (const problem of checkFlow(block.text)) error(file, `flow diagram #${i + 1}, line ${problem.line}: ${problem.message}`);
       });
+      const bodyStart = text.slice(0, text.length - lessonFront.body.length).split('\n').length - 1;
+      for (const problem of checkMath(lessonFront.body)) error(file, `formula on line ${bodyStart + problem.line}: ${problem.message}`);
       for (const [, ref] of prose.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)) {
         if (/^(https?:|data:|\/)/.test(ref)) continue;
         if (!resolveAsset(ref, file, assets)) error(file, `image "${ref}" is not in the zip`);

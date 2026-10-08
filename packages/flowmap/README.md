@@ -57,7 +57,7 @@ One statement per line. `#` starts a comment.
 | `direction right` / `down` | Reading direction. Default `right` |
 | `speed slow` / `normal` / `fast` | Dot speed |
 | `group id "Label" kind [in=group]` | A group. Kinds: `vpc subnet cluster namespace region layer zone`. Zones are tags, not boxes |
-| `node id "Label" kind [replicas=N] [capacity=N] [in=group] [zones=a,b] [sidecar=text] [sub="text"]` | A block. Kinds: `client service gateway cache database storage queue worker external ingress egress proxy` (default `service`) |
+| `node id "Label" kind [replicas=N] [capacity=N] [in=group] [zones=a,b] [sidecar=text] [sub="text"]` | A block. Kinds: `client service gateway cache database document storage disk queue stream worker external ingress egress proxy` (default `service`). Also accepted: `kafka kinesis eventstream topic` (stream), `mongodb documentdb docstore` (document), `s3 bucket files fileserver objectstore` (storage), `volume drive ssd nfs` (disk) |
 | `a -> b -> c`, `a <-> b`, `a <- b` | Links. Unknown names become blocks. After a link: `"label"` or `via=proxy` |
 | `flow id "Label" [rate=N] [color=1-6]: a -> b <-> c` | Traffic along links that exist. `<->` sends a reply back |
 | `spof id "reason"` | Mark a single point of failure |

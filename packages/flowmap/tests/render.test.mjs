@@ -75,3 +75,9 @@ test('a diagram with only blocks and no flows still renders', () => {
   assert.match(out, /^<svg /);
   assert.doesNotMatch(out, /fm-flow/);
 });
+
+test('each new kind has its own icon', () => {
+  const out = svg('node a "A" stream\nnode b "B" document\nnode c "C" disk\nnode d "D" storage\nnode e "E" queue\na -> b -> c -> d -> e');
+  const icons = [...out.matchAll(/class="fm-icon" d="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(new Set(icons).size, 5);
+});

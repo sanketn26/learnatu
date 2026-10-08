@@ -105,3 +105,17 @@ test('parse throws one error listing all problems', () => {
 test('parseFlow returns no diagram when there are problems', () => {
   assert.equal(parseFlow('foo').diagram, null);
 });
+
+test('streams, queues, document stores, file storage and disks are all kinds of block', () => {
+  const d = parse('node a "Events" stream\nnode b "Jobs" queue\nnode c "Docs" document\nnode d "Files" storage\nnode e "Disk" disk');
+  assert.deepEqual(d.nodes.map((n) => n.kind), ['stream', 'queue', 'document', 'storage', 'disk']);
+});
+
+test('familiar names work as kinds: kafka, mongodb, s3, volume', () => {
+  const d = parse('node a "Events" kafka\nnode b "Docs" mongodb\nnode c "Bucket" s3\nnode d "Data" volume\nnode e "Share" nfs');
+  assert.deepEqual(d.nodes.map((n) => n.kind), ['stream', 'document', 'storage', 'disk', 'disk']);
+});
+
+test('a misspelt kind suggests a close one, including familiar names', () => {
+  assert.match(messages('node a "A" kafak'), /Did you mean "kafka"\?/);
+});

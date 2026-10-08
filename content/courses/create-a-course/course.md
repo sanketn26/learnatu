@@ -2,21 +2,21 @@
 title: Create a Learnatu Course
 icon: 🛠️
 category: authoring
-summary: Write a course as plain Markdown files, add quizzes, code, Mermaid diagrams and animated flow diagrams, then upload it as a zip, preview it and publish.
+summary: Write a course as plain Markdown files, add quizzes, code, formulas, Mermaid diagrams and animated flow diagrams, then upload it as a zip, preview it and publish.
 outcome: I can build a complete course, check it, preview it as a learner would see it, and publish it.
 level: Beginner
 status: published
 featured: false
 order: 20
-tags: [authoring, markdown, mermaid, flowmap]
+tags: [authoring, markdown, mermaid, flowmap, maths]
 prerequisites: [A text editor, A Learnatu author account]
 modules:
   - title: The basics
     lessons: [how-courses-work, course-settings, write-a-lesson]
   - title: Make lessons interactive
-    lessons: [quizzes, code-blocks]
+    lessons: [quizzes, code-blocks, write-formulas]
   - title: Draw diagrams
-    lessons: [mermaid-diagrams, flow-diagrams]
+    lessons: [mermaid-diagrams, sequence-diagrams, class-diagrams, flow-diagrams]
   - title: Go live
     lessons: [upload-and-publish, checklist]
 ---

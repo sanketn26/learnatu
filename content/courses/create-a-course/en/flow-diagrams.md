@@ -49,8 +49,41 @@ node db "Orders DB" database
 browser -> api "HTTPS" -> db "SQL"
 ```
 
-The kind picks the icon: `client`, `service` (the default), `gateway`, `cache`, `database`, `storage`, `queue`,
-`worker`, `external`, and the proxy kinds `ingress`, `egress` and `proxy`.
+The kind picks the icon:
+
+| Kind | For | Also accepted |
+| --- | --- | --- |
+| `client` | A person, browser or app | |
+| `service` (default) | Your own code | |
+| `gateway` | Load balancer, API gateway | |
+| `cache` | CDN, Redis | |
+| `database` | A relational database | |
+| `document` | A document store | `mongodb`, `documentdb` |
+| `storage` | File or object storage | `s3`, `bucket`, `files`, `objectstore` |
+| `disk` | A disk or volume | `volume`, `drive`, `ssd`, `nfs` |
+| `queue` | A message queue | |
+| `stream` | An event stream such as Kafka | `kafka`, `kinesis`, `eventstream`, `topic` |
+| `worker` | A background job | |
+| `external` | A third party | |
+| `ingress`, `egress`, `proxy` | Proxy layers | |
+
+A block written with an alternative name, like `kafka`, is drawn as its main kind (`stream`).
+
+A small event-driven example:
+
+```flow
+node api "Order API" service
+node events "Order events" kafka
+node worker "Mailer" worker
+node docs "Receipts" mongodb
+node files "Invoices" s3
+node disk "Scratch disk" volume
+api -> events -> worker
+worker -> docs
+worker -> files
+worker -> disk
+flow receipt "Send a receipt" rate=30: api -> events -> worker -> docs
+```
 
 ## 3. Animate a flow
 

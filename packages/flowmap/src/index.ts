@@ -17,5 +17,5 @@ export { layout, rankNodes } from './layout.ts';
 export type { Layout, LayoutNode, LayoutEdge, LayoutGroup } from './layout.ts';
 export { findEdge, groupChain, nodesDownWhenFailing, subLabel } from './model.ts';
 export { tokenize } from './tokenize.ts';
-export { FlowSyntaxError, NODE_KINDS, GROUP_KINDS } from './types.ts';
+export { FlowSyntaxError, NODE_KINDS, NODE_KIND_ALIASES, GROUP_KINDS } from './types.ts';
 export type { Diagram, FlowNode, FlowEdge, FlowGroup, Flow, FlowHop, Mark, WhatIf, Problem, NodeKind, GroupKind, Direction, Speed } from './types.ts';
