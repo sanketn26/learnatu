@@ -196,3 +196,9 @@ a.lesson-row:hover, a.lesson-row:focus-visible { border-color: var(--c); }
 .report li { padding: .65rem .9rem; border-radius: .8rem; }
 .report .bad { background: var(--danger-bg); color: var(--ink); }
 .report .warn { background: var(--warn-bg); color: var(--ink); }
+
+/* Mermaid diagrams: plain text until drawn, then a centred picture that scrolls sideways if wide */
+pre.mermaid { margin: 1.5rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: var(--ink); font: .9rem/1.5 ui-monospace, monospace; white-space: pre-wrap; }
+pre.mermaid.is-drawn { display: flex; justify-content: center; white-space: normal; }
+pre.mermaid.is-drawn svg { max-width: 100%; height: auto; }
+pre.mermaid.has-error { border-color: var(--danger); }

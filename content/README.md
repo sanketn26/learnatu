@@ -99,3 +99,24 @@ console.log("Hello");
 ````
 
 Use `text` for output or anything that should not be highlighted. See `sample-paid-course/en/code-blocks.md`.
+
+Courses uploaded as a zip colour these languages: bash, c, c++, c#, css, diff, dockerfile, go, html, java,
+javascript, json, jsx, kotlin, markdown, php, python, ruby, rust, sql, tsx, typescript, yaml (plus short names
+such as `js`, `ts`, `py`, `sh`). Any other language still shows, without colours.
+
+## Diagrams (Mermaid)
+
+Fence a diagram with `mermaid`. It works in course lessons, uploaded zips and library pages.
+
+````markdown
+```mermaid
+flowchart LR
+  A[Learner] --> B{Signed in?}
+  B -- yes --> C[Lesson]
+  B -- no --> D[Sign in]
+```
+````
+
+Every [Mermaid diagram type](https://mermaid.js.org/intro/) works (flowchart, sequence, class, state, ER, Gantt, mind map…).
+Diagrams are drawn in the browser, follow the light/dark theme, and are only downloaded on pages that have one. If a
+diagram has a syntax mistake, its text is shown with a red outline instead. See `sample-paid-course/en/diagrams.md`.

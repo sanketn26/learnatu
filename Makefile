@@ -2,7 +2,7 @@
 # Every target is a thin wrapper around an npm script, so `npm run <name>` still works.
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev preview build package test check lint lint-fix validate ci update outdated \
+.PHONY: help install run dev stop preview build package test check lint lint-fix validate ci update outdated \
         db-migrate db-migrate-remote deploy clean
 
 VERSION := $(shell git rev-parse --short HEAD 2>/dev/null || echo local)
@@ -15,8 +15,16 @@ help: ## Show this list
 install: ## Install dependencies (exactly as locked)
 	npm ci
 
-dev: ## Start the site locally at http://localhost:4321
+run: ## First-time friendly start: install if needed, set up the local database, then start the site
+	@test -d node_modules || npm ci
+	npm run db:migrate
 	npm run dev
+
+dev: ## Start the site locally at http://localhost:4321 (no setup steps)
+	npm run dev
+
+stop: ## Stop the local site
+	-npx astro dev stop
 
 preview: build ## Build, then serve the production build locally
 	npm run preview

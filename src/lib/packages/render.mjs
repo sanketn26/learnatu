@@ -4,13 +4,15 @@ import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import remarkQuiz from '../remark-quiz.mjs';
+import rehypeHighlight from './highlight.mjs';
 import remarkCodeExtras from '../remark-code-extras.mjs';
+import remarkMermaid from '../remark-mermaid.mjs';
 import rewriteMarkdownLinks from '../rewrite-markdown-links.mjs';
 import { resolveAsset } from './check.mjs';
 
 /**
  * Turns an uploaded lesson's Markdown into HTML once, at upload time (so reading a lesson is just a database read).
- * Same Markdown features as the built-in courses (tables, callouts, quizzes, code tabs) except syntax colouring.
+ * Same Markdown features as the built-in courses: tables, callouts, quizzes, code tabs and colouring, Mermaid diagrams.
  * Raw HTML inside Markdown is dropped on purpose.
  */
 
@@ -30,19 +32,6 @@ function remarkCourseLinks({ slug, fromPath, assets }) {
   return () => (tree) => walk(tree);
 }
 
-/** Lets code-blocks.ts label code blocks: <pre data-language="js"> (the built-in courses get this from Shiki). */
-function rehypeCodeLanguage() {
-  const walk = (node) => {
-    if (node.tagName === 'pre') {
-      const code = node.children?.find((child) => child.tagName === 'code');
-      const lang = (code?.properties?.className ?? []).find((c) => String(c).startsWith('language-'));
-      if (lang) node.properties = { ...node.properties, dataLanguage: String(lang).slice(9) };
-    }
-    node.children?.forEach(walk);
-  };
-  return () => (tree) => walk(tree);
-}
-
 export async function renderMarkdown(markdown, { slug, fromPath = 'course.md', assets = new Set() }) {
   const result = await unified()
     .use(remarkParse)
@@ -50,9 +39,10 @@ export async function renderMarkdown(markdown, { slug, fromPath = 'course.md', a
     .use(remarkCourseLinks({ slug, fromPath, assets })) // before the callout plugin, which would treat .md links as library pages
     .use(rewriteMarkdownLinks)
     .use(remarkQuiz)
+    .use(remarkMermaid)
     .use(remarkCodeExtras)
     .use(remarkRehype)
-    .use(rehypeCodeLanguage())
+    .use(rehypeHighlight) // same colours as the built-in courses
     .use(rehypeStringify)
     .process({ value: markdown, path: fromPath });
   return String(result);

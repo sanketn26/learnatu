@@ -36,9 +36,24 @@ test('callouts and code languages', async () => {
   const callout = await render('!!! warning "Careful"\nOne\nTwo');
   assert.match(callout, /callout-warning/);
   const code = await render('```js\nconsole.log(1)\n```');
-  assert.match(code, /<pre data-language="js">/);
+  assert.match(code, /data-language="js"/);
+  assert.match(code, /color:#B392F0/); // syntax colours (Shiki), same as the built-in courses
 });
 
 test('a broken quiz throws with the file name so the upload can report it', async () => {
   await assert.rejects(render('```quiz\ntype: single\nquestion: Q\n```'), /en\/one\.md/);
+});
+
+test('a mermaid block stays as plain text for the browser to draw, and is not colourised', async () => {
+  const html = await render('```mermaid\ngraph TD; A-->B;\n```');
+  assert.match(html, /^<pre class="mermaid">graph TD; A-->B;<\/pre>/);
+  assert.doesNotMatch(html, /astro-code/);
+});
+
+test('code in other common languages is coloured too, and unknown ones still show', async () => {
+  const py = await render('```py\nprint("hi")\n```');
+  assert.match(py, /data-language="py"/);
+  assert.match(py, /color:#/);
+  const unknown = await render('```klingon\nqapla\n```');
+  assert.match(unknown, /<pre data-language="klingon"><code class="language-klingon">qapla/);
 });

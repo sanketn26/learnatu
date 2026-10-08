@@ -4,6 +4,7 @@ import { unified } from '@astrojs/markdown-remark';
 import rewriteMarkdownLinks from './src/lib/rewrite-markdown-links.mjs';
 import remarkQuiz from './src/lib/remark-quiz.mjs';
 import remarkCodeExtras from './src/lib/remark-code-extras.mjs';
+import remarkMermaid from './src/lib/remark-mermaid.mjs';
 import legacyRedirects from './src/data/legacy-redirects.json' with { type: 'json' };
 
 export default defineConfig({
@@ -15,6 +16,6 @@ export default defineConfig({
   // Lessons that moved into courses keep working at their old URLs.
   redirects: legacyRedirects,
   security: { checkOrigin: true },
-  // The shared processor converts legacy callouts, internal links and ```quiz blocks and code-block titles / tabs.
-  markdown: { processor: unified({ remarkPlugins: [rewriteMarkdownLinks, remarkQuiz, remarkCodeExtras] }) }
+  // The shared processor converts legacy callouts, internal links, ```quiz and ```mermaid blocks and code-block titles / tabs.
+  markdown: { processor: unified({ remarkPlugins: [rewriteMarkdownLinks, remarkQuiz, remarkMermaid, remarkCodeExtras] }) }
 });

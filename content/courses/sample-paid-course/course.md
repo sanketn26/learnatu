@@ -16,7 +16,7 @@ i18n:
   hi: { title: नमूना पेड कोर्स }
 modules:
   - title: Getting started
-    lessons: [welcome, quiz-types, code-blocks]
+    lessons: [welcome, quiz-types, code-blocks, diagrams]
 ---
 
 This body is the **About this course** section on the landing page. It is plain Markdown: headings,
