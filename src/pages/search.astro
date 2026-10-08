@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { buildSearchIndex } from '../lib/search-index';
+import { searchItems } from '../lib/search';
+import { ui } from '../i18n/ui';
+export const prerender = false;
+const lang = Astro.locals.lang!;
+const t = ui(lang);
+const q = (Astro.url.searchParams.get('q') ?? '').trim();
+const results = q ? searchItems(await buildSearchIndex(lang), q) : [];
+const kindLabel = { course: t.kindCourse, lesson: t.kindLesson, page: t.kindPage } as Record<string, string>;
+---
+<BaseLayout title={t.search} lang={lang}>
+  <div class="shell search-page">
+    <h1>{t.search}</h1>
+    <form class="search-form" action="/search/" method="get" role="search">
+      <input type="search" name="q" value={q} placeholder={t.searchPlaceholder} aria-label={t.search} autofocus />
+      <button class="btn" type="submit">{t.search}</button>
+    </form>
+    {q && <p class="muted">{results.length} {results.length === 1 ? t.resultOne : t.resultMany} “{q}”</p>}
+    <ul class="result-list">
+      {results.map((item) => <li><a href={item.href}><span class="badge">{kindLabel[item.kind]}</span><strong>{item.title}</strong>{item.summary && <small>{item.summary}</small>}</a></li>)}
+    </ul>
+    {q && results.length === 0 && <p>{t.noResults}</p>}
+  </div>
+</BaseLayout>

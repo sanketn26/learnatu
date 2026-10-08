@@ -4,6 +4,8 @@ import type { Locale } from '../i18n/locales';
 import { ui } from '../i18n/ui';
 import type { loadLesson } from '../lib/courses/pages';
 import { loginUrl } from '../lib/auth/session';
+import Breadcrumbs from './Breadcrumbs.astro';
+import { percentDone } from '../lib/courses/summary';
 type Loaded = Exclude<Awaited<ReturnType<typeof loadLesson>>, { notFound: true } | { redirect: string }>;
 interface Props { lang: Locale; data: Loaded }
 const { lang, data } = Astro.props;
@@ -12,10 +14,11 @@ const lesson = course.lessons[index];
 const t = ui(lang);
 const prev = course.lessons[index - 1];
 const next = course.lessons[index + 1];
+const percent = percentDone(done.size, course.lessons.length);
 const href = (slug: string) => `/courses/${course.slug}/${slug}/`;
 ---
 <BaseLayout title={lesson.title} lang={lang}>
-  <div class="player" data-course={course.slug} data-lesson={lesson.slug}>
+  <div class="player" data-course={course.slug} data-lesson={lesson.slug} style={`--c:${course.accent ?? `var(--cat-${course.category})`}`}>
     <details class="player-nav" open>
       <summary>{course.icon} {course.title} · {done.size}/{course.lessons.length}</summary>
       {course.modules.map((module) => <>
@@ -27,6 +30,8 @@ const href = (slug: string) => `/courses/${course.slug}/${slug}/`;
     </details>
 
     <div class="player-main">
+      <Breadcrumbs items={[{ label: t.courses, href: '/courses/' }, { label: course.title, href: `/courses/${course.slug}/` }, { label: lesson.title }]} />
+      <div class="lesson-bar" role="progressbar" aria-label={course.title} aria-valuemin="0" aria-valuemax="100" aria-valuenow={percent}><span style={`width:${percent}%`}></span></div>
       <article class="article">
         {loaded.fallback && <p class="translation-notice">{t.translationNotice}</p>}
         <p class="eyebrow">{index + 1} / {course.lessons.length}{lesson.minutes ? ` · ${lesson.minutes} ${t.minutes}` : ''}</p>

@@ -6,6 +6,8 @@
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+html[data-size="2"] { font-size: 112.5%; }
+html[data-size="3"] { font-size: 125%; }
 body { margin: 0; min-width: 320px; line-height: 1.65; }
 a { color: var(--brand-dark); text-underline-offset: .18em; }
 button, a { -webkit-tap-highlight-color: transparent; }
@@ -103,6 +105,7 @@ h1 { margin: 0; max-width: 18ch; font-size: clamp(2.25rem, 9vw, 4.6rem); line-he
 .bottom-nav { position: fixed; z-index: 10; left: .75rem; right: .75rem; bottom: .75rem; display: grid; grid-template-columns: repeat(4, 1fr); padding: .4rem; border: 1px solid var(--line); border-radius: 1.15rem; background: var(--glass); box-shadow: 0 8px 35px var(--shadow-strong); }
 .bottom-nav a { min-height: 3.1rem; display: grid; place-items: center; color: var(--muted); font-size: .72rem; font-weight: 750; text-align: center; text-decoration: none; }
 .top-nav { display: none; }
+.bottom-nav a[aria-current] { color: var(--brand-dark); }
 .bottom-nav span { display: block; font-size: 1.2rem; line-height: 1; }
 @media (min-width: 48rem) {
   .hero-with-image { grid-template-columns: minmax(0, .9fr) minmax(24rem, 1.1fr); min-height: 32rem; }
@@ -118,6 +121,7 @@ h1 { margin: 0; max-width: 18ch; font-size: clamp(2.25rem, 9vw, 4.6rem); line-he
 @media (min-width: 62rem) {
   .top-nav { display: flex; gap: 1.5rem; margin-left: 1.5rem; font-weight: 700; }
   .top-nav a { color: var(--muted); text-decoration: none; }
+  .top-nav a[aria-current] { color: var(--ink); box-shadow: 0 2px 0 var(--brand); }
   .top-nav a:hover { color: var(--ink); }
   .bottom-nav { display: none; }
 }
