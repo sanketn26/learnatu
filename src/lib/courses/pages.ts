@@ -30,14 +30,14 @@ export async function loadLanding(user: User | null, lang: Locale, slug: string)
 }
 
 export async function loadLesson(user: User | null, lang: Locale, courseSlug: string, lessonSlug: string, pathname: string): Promise<Failure | {
-  course: NonNullable<Awaited<ReturnType<typeof getCourse>>>; index: number; access: Extract<Awaited<ReturnType<typeof lessonAccess>>, { ok: true }>;
+  user: User | null; course: NonNullable<Awaited<ReturnType<typeof getCourse>>>; index: number; access: Extract<Awaited<ReturnType<typeof lessonAccess>>, { ok: true }>;
   Content: Awaited<ReturnType<typeof render>>['Content']; entry: NonNullable<Awaited<ReturnType<typeof getLessonEntry>>>; done: Set<string>;
 }> {
   const course = await getCourse(courseSlug, lang, { drafts: isAuthor(user) });
   const index = course?.lessons.findIndex((lesson) => lesson.slug === lessonSlug) ?? -1;
   if (!course || index < 0) return NOT_FOUND;
 
-  // Every lesson needs a signed-in user; paid courses also need enrolment (or a preview lesson).
+  // Free courses are open to all; paid courses need a signed-in, enrolled user (or a preview lesson).
   const access = await lessonAccess(user, course, course.lessons[index]);
   if (!access.ok) {
     return { redirect: access.reason === 'login' ? loginUrl(pathname) : `/courses/${course.slug}/` };
@@ -46,5 +46,5 @@ export async function loadLesson(user: User | null, lang: Locale, courseSlug: st
   if (!entry) return NOT_FOUND;
   const { Content } = await render(entry.entry);
   const done = user ? await completedLessons(user.id, course.slug) : new Set<string>();
-  return { course, index, access, Content, entry, done };
+  return { user, course, index, access, Content, entry, done };
 }

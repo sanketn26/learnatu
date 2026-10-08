@@ -1,6 +1,6 @@
 ---
 title: Financial Fraud Defence
-icon: ₹!
+icon: 🚨
 summary: See the rush, the fake uniform, and the “refund” QR for what they are — then know who to call
   if money already left.
 outcome: I can pause a suspicious payment, check it in my own app, and take the right steps if money is

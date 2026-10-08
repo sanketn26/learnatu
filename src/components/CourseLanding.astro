@@ -31,7 +31,9 @@ const justPaid = Astro.url.searchParams.has('paid');
     {justPaid && !enrolled && <p class="notice">Payment received — we're confirming it with the bank. Refresh in a moment.</p>}
     <div class="landing-actions">
       {!course.isFree && !enrolled && <span class="price">{formatPrice(course.price, 'inr')}{course.price?.usd ? <small> / ${course.price.usd}</small> : null}</span>}
-      {!user && <a class="btn" href={loginUrl(here)}>{t.signIn} → {course.isFree ? t.start : t.buy}</a>}
+      {!user && course.isFree && <a class="btn" href={lessonHref(course.lessons[0].slug)}>{t.start} →</a>}
+      {!user && course.isFree && <a href={loginUrl(here)}>{t.saveProgress}</a>}
+      {!user && !course.isFree && <a class="btn" href={loginUrl(here)}>{t.signIn} → {t.buy}</a>}
       {user && enrolled && <a class="btn" href={lessonHref(resume.slug)}>{done.size ? t.continue : t.start} →</a>}
       {user && !enrolled && course.isFree && <button class="btn" type="button" data-enroll={course.slug} data-first={lessonHref(course.lessons[0].slug)}>{t.enrollFree}</button>}
       {user && !enrolled && !course.isFree && <a class="btn" href={`/checkout/${course.slug}/`}>{t.buy}</a>}
@@ -45,8 +47,8 @@ const justPaid = Astro.url.searchParams.has('paid');
         {course.modules.length > 1 && <h3>{module.title}</h3>}
         <ul style="list-style:none;padding:0">
           {module.lessons.map((lesson) => <li>
-            {enrolled || lesson.preview
-              ? <a class:list={[done.has(lesson.slug) && 'done']} href={lessonHref(lesson.slug)}><span>{lesson.title}</span><span>{lesson.preview && !enrolled ? t.preview : lesson.minutes ? `${lesson.minutes} ${t.minutes}` : ''}</span></a>
+            {enrolled || lesson.preview || course.isFree
+              ? <a class:list={[done.has(lesson.slug) && 'done']} href={lessonHref(lesson.slug)}><span>{lesson.title}</span><span>{lesson.preview && !enrolled && !course.isFree ? t.preview : lesson.minutes ? `${lesson.minutes} ${t.minutes}` : ''}</span></a>
               : <span class="locked"><span>🔒 {lesson.title}</span><span>{lesson.minutes ? `${lesson.minutes} ${t.minutes}` : ''}</span></span>}
           </li>)}
         </ul>

@@ -36,8 +36,8 @@ Markdown body: the **About this course** section. Headings, lists, links, images
 ```
 
 **Pricing and access.** `price.inr` is sold through Razorpay, `price.usd` through Stripe; set one or both.
-Every course — free or paid — requires a signed-in Google account. Free courses are one-click enrol; paid
-courses unlock after a verified payment.
+Free courses can be read by anyone; signing in and enrolling (one click) saves progress. Paid courses
+require a signed-in Google account and unlock after a verified payment.
 
 ## Lesson files
 
