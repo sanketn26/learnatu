@@ -202,3 +202,12 @@ pre.mermaid { margin: 1.5rem 0; padding: 1rem; overflow-x: auto; border: 1px sol
 pre.mermaid.is-drawn { display: flex; justify-content: center; white-space: normal; }
 pre.mermaid.is-drawn svg { max-width: 100%; height: auto; }
 pre.mermaid.has-error { border-color: var(--danger); }
+
+/* Flow diagrams: plain text until drawn (same look as an undrawn Mermaid block) */
+pre.flow { margin: 1.5rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: var(--ink); font: .88rem/1.55 ui-monospace, monospace; white-space: pre-wrap; }
+.flowmap-host { margin: 1.5rem 0; }
+.flowmap-host .fm-figure { margin: 0; }
+/* A lesson with a diagram uses the full width for the diagram; text keeps its reading width */
+.article:has(.flowmap-host) { max-width: none; }
+.article:has(.flowmap-host) > :not(.flowmap-host) { max-width: 44rem; }
+.player-main .article:has(.flowmap-host) { max-width: none; }

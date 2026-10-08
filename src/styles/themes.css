@@ -15,7 +15,10 @@
   --warn: #b8790a; --warn-bg: #fff2da; --warn-ink: #8f5c04; --notice-line: #e8c95b; --notice-bg: #fff6d8;
   --ok: #1b8a5a; --ok-bg: #dff6e9; --ring: #b9cec7; --track: #c4ded5;
   --panel-muted: #cce7df; --panel-fill: #55d6ae; --preview: #6d4bd8; --preview-bg: #efeaff;
-  --cat-ai: #7b4fd6; --cat-digital-life: #1790c4; --cat-money: #d6446f; --cat-security: #0b8f7a; --cat-careers: #c47c00; --cat-physics: #4152e0;
+  --cat-ai: #7b4fd6; --cat-digital-life: #1790c4; --cat-money: #d6446f; --cat-security: #0b8f7a; --cat-careers: #c47c00; --cat-physics: #4152e0; --cat-authoring: #0e7490;
+  /* Flow diagrams (flowmap) take their colours from these */
+  --fm-ink: var(--ink); --fm-muted: var(--muted); --fm-card: var(--surface); --fm-line: var(--line); --fm-bad: var(--danger); --fm-warn: var(--warn); --fm-brand: var(--brand);
+  --fm-flow-1: var(--cat-physics); --fm-flow-2: var(--cat-money); --fm-flow-3: var(--cat-careers); --fm-flow-4: var(--cat-security); --fm-flow-5: var(--cat-ai); --fm-flow-6: var(--cat-digital-life);
   color-scheme: light;
 }
 :root[data-theme="white"] {
@@ -33,7 +36,7 @@
     --warn: #ffc267; --warn-bg: #3a2c12; --warn-ink: #ffd49a; --notice-line: #6b5a1f; --notice-bg: #2f2912;
     --ok: #4fd39b; --ok-bg: #12372a; --ring: #3f524d; --track: #2b3b37;
     --panel-muted: #35524b; --panel-fill: #0b6b5a; --preview: #b494ff; --preview-bg: #2a2250;
-    --cat-ai: #b494ff; --cat-digital-life: #5cc4f0; --cat-money: #ff7a9f; --cat-security: #35c7ae; --cat-careers: #ffbe3d; --cat-physics: #8c98ff;
+    --cat-ai: #b494ff; --cat-digital-life: #5cc4f0; --cat-money: #ff7a9f; --cat-security: #35c7ae; --cat-careers: #ffbe3d; --cat-physics: #8c98ff; --cat-authoring: #67e8f9;
   color-scheme: dark;
   }
 }
@@ -46,6 +49,6 @@
   --warn: #ffc267; --warn-bg: #3a2c12; --warn-ink: #ffd49a; --notice-line: #6b5a1f; --notice-bg: #2f2912;
   --ok: #4fd39b; --ok-bg: #12372a; --ring: #3f524d; --track: #2b3b37;
   --panel-muted: #35524b; --panel-fill: #0b6b5a; --preview: #b494ff; --preview-bg: #2a2250;
-  --cat-ai: #b494ff; --cat-digital-life: #5cc4f0; --cat-money: #ff7a9f; --cat-security: #35c7ae; --cat-careers: #ffbe3d; --cat-physics: #8c98ff;
+  --cat-ai: #b494ff; --cat-digital-life: #5cc4f0; --cat-money: #ff7a9f; --cat-security: #35c7ae; --cat-careers: #ffbe3d; --cat-physics: #8c98ff; --cat-authoring: #67e8f9;
   color-scheme: dark;
 }

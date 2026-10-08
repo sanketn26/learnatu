@@ -7,12 +7,13 @@ import remarkQuiz from '../remark-quiz.mjs';
 import rehypeHighlight from './highlight.mjs';
 import remarkCodeExtras from '../remark-code-extras.mjs';
 import remarkMermaid from '../remark-mermaid.mjs';
+import remarkFlow from '../remark-flow.mjs';
 import rewriteMarkdownLinks from '../rewrite-markdown-links.mjs';
 import { resolveAsset } from './check.mjs';
 
 /**
  * Turns an uploaded lesson's Markdown into HTML once, at upload time (so reading a lesson is just a database read).
- * Same Markdown features as the built-in courses: tables, callouts, quizzes, code tabs and colouring, Mermaid diagrams.
+ * Same Markdown features as the built-in courses: tables, callouts, quizzes, code tabs and colouring, Mermaid and flow diagrams.
  * Raw HTML inside Markdown is dropped on purpose.
  */
 
@@ -40,6 +41,7 @@ export async function renderMarkdown(markdown, { slug, fromPath = 'course.md', a
     .use(rewriteMarkdownLinks)
     .use(remarkQuiz)
     .use(remarkMermaid)
+    .use(remarkFlow)
     .use(remarkCodeExtras)
     .use(remarkRehype)
     .use(rehypeHighlight) // same colours as the built-in courses

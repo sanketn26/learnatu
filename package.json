@@ -11,7 +11,7 @@
     "db:migrate": "wrangler d1 migrations apply learnatu --local",
     "db:migrate:remote": "wrangler d1 migrations apply learnatu --remote",
     "deploy": "npm run build && wrangler deploy",
-    "test": "node --test \"tests/*.test.mjs\"",
+    "test": "node --test \"tests/*.test.mjs\" \"packages/*/tests/*.test.mjs\"",
     "course:new": "node scripts/course.mjs new",
     "course:validate": "node scripts/course.mjs validate",
     "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
@@ -36,7 +36,8 @@
     "shiki": "^4.5.0",
     "typescript": "^5.9.3",
     "unified": "^11.0.5",
-    "yaml": "^2.9.1"
+    "yaml": "^2.9.1",
+    "@learnatu/flowmap": "*"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261007.1",
@@ -46,5 +47,8 @@
     "globals": "^17.13.0",
     "typescript-eslint": "^8.71.1",
     "wrangler": "^4.148.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

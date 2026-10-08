@@ -12,6 +12,7 @@ export const categories: Category[] = [
   { slug: 'money', en: { name: 'Money', blurb: 'Budgets, loans, insurance, and how to spot financial fraud.' }, hi: { name: 'पैसा', blurb: 'बजट, लोन, बीमा, और वित्तीय धोखाधड़ी की पहचान।' } },
   { slug: 'security', en: { name: 'Security engineering', blurb: 'Defend systems: threat models, detection and response.' }, hi: { name: 'सुरक्षा इंजीनियरिंग', blurb: 'सिस्टम की रक्षा: थ्रेट मॉडल, डिटेक्शन और रिस्पॉन्स।' } },
   { slug: 'careers', en: { name: 'Tech careers', blurb: 'Interview preparation: data structures, system design, practice.' }, hi: { name: 'टेक करियर', blurb: 'इंटरव्यू की तैयारी: डेटा स्ट्रक्चर, सिस्टम डिज़ाइन, अभ्यास।' } },
+  { slug: 'authoring', en: { name: 'Creating courses', blurb: 'Write, check, preview and publish your own courses.' }, hi: { name: 'कोर्स बनाना', blurb: 'अपने कोर्स लिखें, जाँचें, पूर्वावलोकन करें और प्रकाशित करें।' } },
   { slug: 'physics', en: { name: 'Physics', blurb: 'Applied and theoretical, from motion and energy to Lagrangians.' }, hi: { name: 'भौतिकी', blurb: 'अनुप्रयुक्त और सैद्धांतिक: गति और ऊर्जा से लेकर लैग्रेंजियन तक।' } }
 ];
 

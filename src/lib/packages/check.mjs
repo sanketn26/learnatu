@@ -2,7 +2,9 @@ import path from 'node:path';
 import { parse } from 'yaml';
 import { courseSettings, lessonSettings } from '../courses/schema.mjs';
 import { validate as validateQuiz } from '../remark-quiz.mjs';
+import { check as checkFlow } from '@learnatu/flowmap';
 import { splitFrontMatter } from './frontmatter.mjs';
+import { scanMarkdown } from './scan.mjs';
 
 /**
  * Checks a course package (the contents of a zip, or a folder under content/courses/) before it is saved.
@@ -69,10 +71,14 @@ export function checkPackage({ files, assets = new Set(), categories }) {
         continue;
       }
       if (/^# /m.test(lessonFront.body)) error(file, 'has a "# " heading. The title is added automatically, so remove it.');
-      [...lessonFront.body.matchAll(/```quiz\n([\s\S]*?)```/g)].forEach((m, i) => {
-        try { validateQuiz(parse(m[1]), { path: file }, i); } catch (e) { error(file, e.message.replace(/^.*?: /, '')); }
+      const { blocks, prose } = scanMarkdown(lessonFront.body);
+      blocks.filter((block) => block.lang === 'quiz').forEach((block, i) => {
+        try { validateQuiz(parse(block.text), { path: file }, i); } catch (e) { error(file, e.message.replace(/^.*?: /, '')); }
       });
-      for (const [, ref] of lessonFront.body.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)) {
+      blocks.filter((block) => block.lang === 'flow').forEach((block, i) => {
+        for (const problem of checkFlow(block.text)) error(file, `flow diagram #${i + 1}, line ${problem.line}: ${problem.message}`);
+      });
+      for (const [, ref] of prose.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)) {
         if (/^(https?:|data:|\/)/.test(ref)) continue;
         if (!resolveAsset(ref, file, assets)) error(file, `image "${ref}" is not in the zip`);
       }

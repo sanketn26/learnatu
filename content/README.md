@@ -120,3 +120,26 @@ flowchart LR
 Every [Mermaid diagram type](https://mermaid.js.org/intro/) works (flowchart, sequence, class, state, ER, Gantt, mind map…).
 Diagrams are drawn in the browser, follow the light/dark theme, and are only downloaded on pages that have one. If a
 diagram has a syntax mistake, its text is shown with a red outline instead. See `sample-paid-course/en/diagrams.md`.
+
+
+## Animated flow diagrams (flowmap)
+
+Fence a flow diagram with `flow`. Traffic moves along links, and you mark the single points of failure and
+chokepoints yourself (nothing is guessed).
+
+````markdown
+```flow
+node customer "Customer" client
+node api "API" service replicas=3
+node db "Orders DB" database
+customer -> api <-> db "SQL"
+flow order "Place an order" rate=40: customer -> api <-> db
+spof db "One copy of the data"
+```
+````
+
+Blocks have kinds (`client`, `service`, `gateway`, `cache`, `database`, `queue`, `worker`, `external`, `ingress`,
+`egress`, `proxy`), links can be two-way (`<->`), groups draw VPCs and clusters, zones power a what-if button, and
+`via=` / `sidecar=` show proxy layers. The full language is in `packages/flowmap/README.md`, and the tutorial course
+`create-a-course` teaches it step by step with live examples. A mistake in a diagram fails the build (or the upload check)
+with the file, the diagram number and the line.
