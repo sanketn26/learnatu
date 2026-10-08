@@ -19,7 +19,7 @@ const CSS = `
 .fm-controls i{display:inline-block;width:.65rem;height:.65rem;border-radius:50%;margin-right:.4rem}
 .fm-controls .fm-sep{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;opacity:.65;margin-left:.4rem}
 .fm-stage{padding:.6rem;background-image:radial-gradient(color-mix(in srgb,var(--fm-muted,var(--muted,#60706c)) 28%,transparent) 1px,transparent 1.2px);background-size:22px 22px}
-.fm-stage{overflow-x:auto}.fm-stage svg{overflow:visible;min-width:760px}
+.fm-stage{overflow-x:auto}.fm-stage svg{overflow:visible}
 .fm-controls:empty,.fm-legend[hidden],.fm-note[hidden]{display:none}.fm-legend{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;padding:.7rem .9rem;border-top:1px solid var(--fm-line,var(--line,#dfe8e3));font-size:.88rem;opacity:.85}
 .fm-legend span{display:inline-flex;gap:.45rem;align-items:center}.fm-legend svg{width:1.7rem;height:1rem}
 .fm-note{margin:0;padding:.7rem .9rem;background:color-mix(in srgb,var(--fm-bad,var(--bad,#c2314f)) 14%,transparent);font-size:.92rem}

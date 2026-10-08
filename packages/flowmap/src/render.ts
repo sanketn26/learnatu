@@ -107,7 +107,7 @@ export function renderSvg(d: Diagram, options: RenderOptions = {}, precomputed?:
   const L = precomputed ?? layout(d);
   const out: string[] = [];
   const view = L.view;
-  out.push(`<svg class="fm" xmlns="http://www.w3.org/2000/svg" viewBox="${n1(view.x)} ${n1(view.y)} ${n1(view.w)} ${n1(view.h)}" role="img" aria-labelledby="${id}-t ${id}-d" style="width:100%;height:auto;display:block">`);
+  out.push(`<svg class="fm" xmlns="http://www.w3.org/2000/svg" viewBox="${n1(view.x)} ${n1(view.y)} ${n1(view.w)} ${n1(view.h)}" role="img" aria-labelledby="${id}-t ${id}-d" style="width:100%;min-width:${Math.round(Math.min(760, view.w))}px;max-width:${Math.round(view.w * 1.15)}px;height:auto;display:block;margin:0 auto">`);
   out.push(`<title id="${id}-t">${esc(d.title ?? 'Block diagram')}</title><desc id="${id}-d">${esc(describe(d))}</desc>`);
   out.push(`<style>${STYLE.replace(/SHADOW/g, `${id}-shadow`)}</style>`);
   out.push(`<defs><filter id="${id}-shadow" x="-20%" y="-30%" width="140%" height="170%"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#0a0f2a" flood-opacity=".2"/></filter>`
