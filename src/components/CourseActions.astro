@@ -1,0 +1,21 @@
+---
+/** The main button(s) for a course: start, continue, enrol, or buy, depending on who is looking. Used in the hero and the side card. */
+import { loginUrl } from '../lib/auth/session';
+import type { Locale } from '../i18n/locales';
+import { ui } from '../i18n/ui';
+import type { Course } from '../lib/courses/catalog';
+import type { User } from '../lib/db/users';
+interface Props { lang: Locale; course: Course; user: User | null; enrolled: boolean; started: boolean; resumeSlug: string }
+const { lang, course, user, enrolled, started, resumeSlug } = Astro.props;
+const t = ui(lang);
+const lessonHref = (slug: string) => `/courses/${course.slug}/${slug}/`;
+const here = `/courses/${course.slug}/`;
+---
+<div class="landing-actions">
+  {!user && course.isFree && <a class="btn" href={lessonHref(course.lessons[0].slug)}>{t.start} →</a>}
+  {!user && course.isFree && <a class="text-link" href={loginUrl(here)}>{t.saveProgress}</a>}
+  {!user && !course.isFree && <a class="btn" href={loginUrl(here)}>{t.signIn} → {t.buy}</a>}
+  {user && enrolled && <a class="btn" href={lessonHref(resumeSlug)}>{started ? t.continue : t.start} →</a>}
+  {user && !enrolled && course.isFree && <button class="btn" type="button" data-enroll={course.slug} data-first={lessonHref(course.lessons[0].slug)}>{t.enrollFree}</button>}
+  {user && !enrolled && !course.isFree && <a class="btn" href={`/checkout/${course.slug}/`}>{t.buy}</a>}
+</div>

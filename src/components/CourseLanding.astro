@@ -1,10 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { formatPrice } from '../lib/courses/catalog';
-import { loginUrl } from '../lib/auth/session';
-import type { Locale } from '../i18n/locales';
+import Breadcrumbs from './Breadcrumbs.astro';
 import CategoryIcon from './CategoryIcon.astro';
+import CourseActions from './CourseActions.astro';
+import { formatPrice } from '../lib/courses/catalog';
 import { categoryText } from '../data/categories';
+import { collectObjectives, lessonState, percentDone, pickResume, totalMinutes } from '../lib/courses/summary';
+import type { Locale } from '../i18n/locales';
 import { ui } from '../i18n/ui';
 import type { loadLanding } from '../lib/courses/pages';
 type Loaded = Exclude<Awaited<ReturnType<typeof loadLanding>>, { notFound: true }>;
@@ -12,51 +14,77 @@ interface Props { lang: Locale; data: Loaded }
 const { lang, data } = Astro.props;
 const { course, user, author, enrolled, done, About } = data;
 const t = ui(lang);
+const category = categoryText(course.category, lang);
 const lessonHref = (lessonSlug: string) => `/courses/${course.slug}/${lessonSlug}/`;
-const resume = course.lessons.find((lesson) => !done.has(lesson.slug)) ?? course.lessons[0];
-const here = `/courses/${course.slug}/`;
+const resume = pickResume(course.lessons, done);
+const minutes = totalMinutes(course.lessons);
+const goals = collectObjectives(course.lessons);
+const percent = percentDone(done.size, course.lessons.length);
 const justPaid = Astro.url.searchParams.has('paid');
+const actions = { lang, course, user, enrolled, started: done.size > 0, resumeSlug: resume.slug };
 ---
 <BaseLayout title={course.title} description={course.summary} lang={lang}>
-  <div class="shell landing" style={course.accent ? `--brand:${course.accent};--brand-soft:${course.accent}1f` : undefined}>
-    <a class="back-link" href="/courses/">← {t.courses}</a>
-    <header class="course-header">
-      <span class="course-symbol" style={`--c:var(--cat-${course.category})`}><CategoryIcon slug={course.category} size="2.3rem" /></span>
-      <div>
-        <p class="eyebrow">{categoryText(course.category, lang).name} · {course.level} · {course.lessons.length} {t.lessons}</p>
+  <div class="shell landing" style={`--c:${course.accent ?? `var(--cat-${course.category})`}`}>
+    <Breadcrumbs items={[{ label: t.courses, href: '/courses/' }, { label: category.name, href: `/courses/?category=${course.category}` }, { label: course.title }]} />
+
+    <header class="c-hero">
+      <div class="c-hero-text">
+        <p class="eyebrow">{category.name} · {course.level}</p>
         <h1>{course.title}</h1>
         <p class="hero-copy">{course.summary}</p>
+        {course.outcome && <div class="outcome"><span class="eyebrow">{t.outcomeLabel}</span><p>“{course.outcome}”</p></div>}
+        <p class="facts"><span>{course.lessons.length} {t.lessons}</span>{minutes > 0 && <span>~{minutes} {t.minutes}</span>}<span>{course.isFree ? t.free : formatPrice(course.price, 'inr')}</span></p>
+        {author && <p class="notice preview-banner">Preview mode — you see this course as an author{course.status === 'draft' ? ' (draft: not visible to learners)' : ''}.</p>}
+        {justPaid && !enrolled && <p class="notice">Payment received — we're confirming it with the bank. Refresh in a moment.</p>}
+        <CourseActions {...actions} />
+      </div>
+      <div class="c-cover">
+        <CategoryIcon slug={course.category} size="7rem" />
+        {enrolled && done.size > 0 && <div class="ring"><div class="ring-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={percent}><span style={`width:${percent}%`}></span></div><strong>{done.size} / {course.lessons.length}</strong></div>}
       </div>
     </header>
 
-    {author && <p class="notice preview-banner">Preview mode — you see this course as an author{course.status === 'draft' ? ' (draft: not visible to learners)' : ''}.</p>}
-    {justPaid && !enrolled && <p class="notice">Payment received — we're confirming it with the bank. Refresh in a moment.</p>}
-    <div class="landing-actions">
-      {!course.isFree && !enrolled && <span class="price">{formatPrice(course.price, 'inr')}{course.price?.usd ? <small> / ${course.price.usd}</small> : null}</span>}
-      {!user && course.isFree && <a class="btn" href={lessonHref(course.lessons[0].slug)}>{t.start} →</a>}
-      {!user && course.isFree && <a href={loginUrl(here)}>{t.saveProgress}</a>}
-      {!user && !course.isFree && <a class="btn" href={loginUrl(here)}>{t.signIn} → {t.buy}</a>}
-      {user && enrolled && <a class="btn" href={lessonHref(resume.slug)}>{done.size ? t.continue : t.start} →</a>}
-      {user && !enrolled && course.isFree && <button class="btn" type="button" data-enroll={course.slug} data-first={lessonHref(course.lessons[0].slug)}>{t.enrollFree}</button>}
-      {user && !enrolled && !course.isFree && <a class="btn" href={`/checkout/${course.slug}/`}>{t.buy}</a>}
-    </div>
+    <div class="c-body">
+      <div class="c-main">
+        {goals.length > 0 && <section>
+          <h2 class="section-title">{t.syllabus}</h2>
+          <ul class="goals">{goals.map((goal) => <li>{goal}</li>)}</ul>
+        </section>}
 
-    {(course.tags.length > 0 || course.prerequisites.length > 0) && <p class="meta-line">{course.tags.map((tag) => <span class="badge">{tag}</span>)}{course.prerequisites.length > 0 && <span>Before you start: {course.prerequisites.join(', ')}</span>}</p>}
-    {About && <section class="article about"><About /></section>}
-    <h2 class="section-title">{t.syllabus}</h2>
-    <ol class="syllabus">
-      {course.modules.map((module) => <li>
-        {course.modules.length > 1 && <h3>{module.title}</h3>}
-        <ul style="list-style:none;padding:0">
-          {module.lessons.map((lesson) => <li>
-            {enrolled || lesson.preview || course.isFree
-              ? <a class:list={[done.has(lesson.slug) && 'done']} href={lessonHref(lesson.slug)}><span>{lesson.title}</span><span>{lesson.preview && !enrolled && !course.isFree ? t.preview : lesson.minutes ? `${lesson.minutes} ${t.minutes}` : ''}</span></a>
-              : <span class="locked"><span>🔒 {lesson.title}</span><span>{lesson.minutes ? `${lesson.minutes} ${t.minutes}` : ''}</span></span>}
-          </li>)}
+        <section>
+          <h2 class="section-title">{t.lessonsHeading}</h2>
+          {course.modules.map((module) => <div class="module">
+            {course.modules.length > 1 && <h3>{module.title}</h3>}
+            <ol class="lesson-list">
+              {module.lessons.map((lesson) => {
+                const canRead = enrolled || lesson.preview || course.isFree;
+                const state = lessonState({ done: done.has(lesson.slug), canRead, isResume: lesson.slug === resume.slug && (enrolled || course.isFree) });
+                const meta = lesson.preview && !enrolled && !course.isFree ? t.preview : lesson.minutes ? `${lesson.minutes} ${t.minutes}` : '';
+                return <li>
+                  {canRead
+                    ? <a class={`lesson-row is-${state}`} href={lessonHref(lesson.slug)}><span class="state" aria-hidden="true"></span><span class="lesson-title">{lesson.title}</span><span class="lesson-meta">{state === 'next' && done.size > 0 ? t.continue : meta}</span></a>
+                    : <span class="lesson-row is-locked"><span class="state" aria-hidden="true"></span><span class="lesson-title">{lesson.title}</span><span class="lesson-meta">{meta}</span></span>}
+                </li>;
+              })}
+            </ol>
+          </div>)}
+        </section>
+
+        {About && <section class="article about"><h2 class="section-title">{t.about}</h2><About /></section>}
+      </div>
+
+      <aside class="c-aside">
+        <p class="price">{course.isFree ? t.free : formatPrice(course.price, 'inr')}{!course.isFree && course.price?.usd ? <small> / ${course.price.usd}</small> : null}</p>
+        <CourseActions {...actions} />
+        <ul class="includes">
+          <li>{course.lessons.length} {t.lessons}{minutes > 0 ? `, ~${minutes} ${t.minutes}` : ''}</li>
+          <li>{t.includeCheck}</li>
+          <li>{t.includeProgress}</li>
+          <li>{t.includePhone}</li>
         </ul>
-      </li>)}
-    </ol>
-    {course.outcome && <section class="course-outcome"><span aria-hidden="true">🏅</span><div><strong>What you will be able to say</strong><p>“{course.outcome}”</p></div></section>}
+        {course.prerequisites.length > 0 && <p class="before"><strong>{t.before}</strong> {course.prerequisites.join(', ')}</p>}
+      </aside>
+    </div>
   </div>
   <script src="../scripts/enroll.ts"></script>
 </BaseLayout>

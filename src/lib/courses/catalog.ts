@@ -4,7 +4,7 @@ import type { Locale } from '../../i18n/locales';
 import type { Price } from './format';
 export { formatPrice } from './format';
 export type { Price };
-export type LessonRef = { draft: boolean; slug: string; title: string; minutes?: number; preview: boolean; translated: boolean };
+export type LessonRef = { draft: boolean; slug: string; title: string; minutes?: number; preview: boolean; translated: boolean; objectives: string[] };
 export type Course = {
   featured: boolean; order: number; accent?: string; tags: string[]; prerequisites: string[]; status: 'published' | 'draft';
   slug: string; icon: string; category: string; title: string; summary: string; outcome?: string; level: string;
@@ -23,7 +23,7 @@ async function lessonRef(course: string, slug: string, lang: Locale): Promise<Le
   const entry = (await getEntry('courseLessons', `${course}/${wanted}/${slug}`)) ?? (await getEntry('courseLessons', `${course}/en/${slug}`));
   if (!entry) throw new Error(`course.yml for "${course}" lists lesson "${slug}" but content/courses/${course}/en/${slug}.md does not exist`);
   return {
-    draft: entry.data.draft, slug, title: entry.data.title, minutes: entry.data.minutes, preview: entry.data.preview,
+    draft: entry.data.draft, slug, title: entry.data.title, minutes: entry.data.minutes, preview: entry.data.preview, objectives: entry.data.objectives,
     translated: entry.id === `${course}/${wanted}/${slug}`
   };
 }
