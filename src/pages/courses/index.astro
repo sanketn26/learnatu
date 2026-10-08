@@ -1,4 +1,5 @@
 ---
 import CatalogPage from '../../components/CatalogPage.astro';
+export const prerender = false;
 ---
-<CatalogPage lang="en" />
+<CatalogPage lang={Astro.locals.lang!} />

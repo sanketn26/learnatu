@@ -26,5 +26,7 @@ declare namespace App {
     /** Resolves the signed-in user (cached per request); null when anonymous. */
     getUser(): Promise<import('./lib/db/users').User | null>;
     requestId: string;
+    /** The reader's language (from the `lang` cookie); unset on prerendered pages, where English applies. */
+    lang?: import('./i18n/locales').Locale;
   }
 }

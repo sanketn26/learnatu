@@ -1,10 +1,9 @@
 ---
 import CourseLanding from '../../../components/CourseLanding.astro';
 import { loadLanding } from '../../../lib/courses/pages';
-import { localeParam, notFound } from '../../../lib/routing';
+import { notFound } from '../../../lib/routing';
 export const prerender = false;
-const lang = 'en' as const;
-if (!lang) return notFound();
+const lang = Astro.locals.lang!;
 const result = await loadLanding(await Astro.locals.getUser(), lang, Astro.params.course!);
 if ('notFound' in result) return notFound();
 ---

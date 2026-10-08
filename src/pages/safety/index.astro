@@ -1,4 +1,5 @@
 ---
 import SectionPage from '../../components/SectionPage.astro';
+export const prerender = false;
 ---
-<SectionPage lang="en" section="safety" />
+<SectionPage lang={Astro.locals.lang!} section="safety" />

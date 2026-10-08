@@ -1,22 +1,22 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPathway } from '../data/pathways';
-import { localePath, type Locale } from '../i18n/locales';
+import type { Locale } from '../i18n/locales';
 interface Props { lang: Locale; slug: string }
 const { lang, slug } = Astro.props;
 const pathway = getPathway(slug);
-if (!pathway) return Astro.redirect(localePath(lang));
+if (!pathway) return Astro.redirect('/');
 ---
 <BaseLayout title={pathway.title} description={pathway.promise} lang={lang}>
   <div class="shell course-page">
-    <a class="back-link" href={localePath(lang, '/guides/')}>← Guides</a>
+    <a class="back-link" href="/guides/">← Guides</a>
     <header class="course-header">
       <span class="course-symbol" aria-hidden="true">{pathway.icon}</span>
       <div><p class="eyebrow">Learning path</p><h1>{pathway.title}</h1><p class="hero-copy">{pathway.promise}</p></div>
     </header>
     <ol class="course-steps">
       {pathway.lessons.map((lesson, index) => <li>
-        <a href={localePath(lang, lesson.path)}>
+        <a href={lesson.path}>
           <span class="step-number"><span>{index + 1}</span></span>
           <span><small>Step {index + 1}</small><strong>{lesson.title}</strong><em>{lesson.skill}</em></span>
           <span class="step-action">Open →</span>

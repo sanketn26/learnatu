@@ -2,17 +2,11 @@
 import '../styles/global.css';
 import '../styles/platform.css';
 import { ui } from '../i18n/ui';
-import { localeCodes, localeCopy, localeNames, localePath, type Locale } from '../i18n/locales';
+import { localeCopy, type Locale } from '../i18n/locales';
 interface Props { title?: string; description?: string; lang?: Locale; }
-const { title = 'Learnatu', description = 'Short lessons that explain WhatsApp, UPI, Google, and ChatGPT — for people who were never taught this.', lang = 'en' } = Astro.props;
+const { title = 'Learnatu', description = 'Short lessons that explain WhatsApp, UPI, Google, and ChatGPT — for people who were never taught this.', lang = Astro.locals.lang ?? 'en' } = Astro.props;
 const copy = localeCopy[lang];
 const t = ui(lang);
-const home = localePath(lang);
-const segments = Astro.url.pathname.split('/').filter(Boolean);
-const remainingPath = segments.slice(1);
-const pathWithoutLocale = localeCodes.includes(segments[0] as Locale) && segments[0] !== 'en'
-  ? (remainingPath.length ? `/${remainingPath.join('/')}/` : '/')
-  : Astro.url.pathname;
 ---
 <!doctype html>
 <html lang={lang}>
@@ -27,21 +21,15 @@ const pathWithoutLocale = localeCodes.includes(segments[0] as Locale) && segment
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
     <header class="site-header"><div class="shell header-inner">
-      <a class="brand" href={home}>Learnatu</a>
+      <a class="brand" href="/">Learnatu</a>
       <a class="auth-link" id="auth-link" href="/login/" data-signed-out={t.signIn} data-signed-in={t.myLearning}>{t.signIn}</a>
-      <details class="language-menu">
-        <summary>{localeNames[lang]} <span aria-hidden="true">⌄</span></summary>
-        <div class="language-list">
-          {localeCodes.map((code) => <a href={localePath(code, pathWithoutLocale)} lang={code} aria-current={code === lang ? 'page' : undefined}>{localeNames[code]}</a>)}
-        </div>
-      </details>
     </div></header>
     <main id="content"><slot /></main>
     <nav class="bottom-nav" aria-label="Primary navigation">
-      <a href={home}><span>⌂</span>{copy.home}</a>
-      <a href={localePath(lang, '/courses/')}><span>✦</span>{t.courses}</a>
+      <a href="/"><span>⌂</span>{copy.home}</a>
+      <a href="/courses/"><span>✦</span>{t.courses}</a>
       <a href="/dashboard/"><span>◈</span>{t.myLearning}</a>
-      <a href={localePath(lang, '/guides/')}><span>●</span>{t.library}</a>
+      <a href="/guides/"><span>●</span>{t.library}</a>
     </nav>
     <script src="../scripts/auth-link.ts"></script>
   </body>

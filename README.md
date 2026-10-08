@@ -57,15 +57,9 @@ src/pages/api/     thin route handlers
 
 ## Languages
 
-- English: `/`
-- Hindi: `/hi/`
-- Odia: `/or/`
-- Tamil: `/ta/`
-- Telugu: `/te/`
-- Kannada: `/kn/`
-- Bengali: `/bn/`
+Pages have one URL for every language. There is no language menu: `src/middleware.ts` picks the language from the browser's `Accept-Language` header into `Astro.locals.lang`. A `lang` cookie overrides it (`/api/lang?set=hi&next=/path/` sets it). Old prefixed URLs such as `/hi/courses/` redirect to the unprefixed page and set the cookie. Pages that depend on the language are rendered on demand (`prerender = false`).
 
-English and Hindi have reviewed lesson content. The other language routes currently provide localized navigation and clearly labelled English lesson fallbacks until each translation is reviewed.
+Languages: English (default), Hindi, Odia, Tamil, Telugu, Kannada, Bengali. English and Hindi have reviewed lesson content. The other languages currently provide localized navigation and clearly labelled English lesson fallbacks until each translation is reviewed.
 
 ## Content
 

@@ -1,9 +1,5 @@
 ---
 import PathwayPage from '../../../components/PathwayPage.astro';
-import { pathways } from '../../../data/pathways';
-export function getStaticPaths() {
-  return pathways.map((pathway) => ({ params: { pathway: pathway.slug }, props: { pathwaySlug: pathway.slug } }));
-}
-const { pathwaySlug } = Astro.props;
+export const prerender = false;
 ---
-<PathwayPage lang="en" slug={pathwaySlug} />
+<PathwayPage lang={Astro.locals.lang!} slug={Astro.params.pathway!} />

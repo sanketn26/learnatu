@@ -1,4 +1,5 @@
 ---
 import HomePage from '../components/HomePage.astro';
+export const prerender = false;
 ---
-<HomePage lang="en" />
+<HomePage lang={Astro.locals.lang!} />

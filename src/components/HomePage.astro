@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CourseCard from './CourseCard.astro';
 import { listCourses } from '../lib/courses/catalog';
-import { localeCopy, localePath, type Locale } from '../i18n/locales';
+import { localeCopy, type Locale } from '../i18n/locales';
 import { ui } from '../i18n/ui';
 interface Props { lang: Locale }
 const { lang } = Astro.props;
@@ -10,8 +10,8 @@ const copy = localeCopy[lang];
 const t = ui(lang);
 const courses = await listCourses(lang);
 const library = [
-  ['\u{1F9ED}', copy.guides, copy.guidesDesc, localePath(lang, '/guides/')],
-  ['\u{1F198}', copy.help, copy.helpDesc, localePath(lang, '/help/')]
+  ['\u{1F9ED}', copy.guides, copy.guidesDesc, '/guides/'],
+  ['\u{1F198}', copy.help, copy.helpDesc, '/help/']
 ];
 ---
 <BaseLayout title="Learnatu" lang={lang}>
@@ -19,7 +19,7 @@ const library = [
     <section class="hero hero-with-image">
       <div>
         <p class="eyebrow">{copy.eyebrow}</p><h1>{copy.title}</h1><p class="hero-copy">{copy.intro}</p>
-        <p style="margin-top:1.5rem"><a class="btn" href={localePath(lang, '/courses/')}>{t.courses} →</a></p>
+        <p style="margin-top:1.5rem"><a class="btn" href="/courses/">{t.courses} →</a></p>
       </div>
       <img class="hero-image" src="/images/illustrations/hero.webp" alt="" width="1600" height="800" fetchpriority="high" />
     </section>

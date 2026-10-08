@@ -19,9 +19,7 @@ function walk(node, filePath) {
     const match = node.url.match(/^(.*?\.md)(#[^\s]*)?$/);
     if (match && filePath) {
       const target = path.resolve(path.dirname(filePath), match[1]);
-      const locale = filePath.includes('/docs/hi/') ? 'hi' : 'en';
-      const prefix = locale === 'hi' ? '/hi' : '';
-      node.url = `${prefix}/${routeForSourcePath(target)}/${match[2] ?? ''}`;
+      node.url = `/${routeForSourcePath(target)}/${match[2] ?? ''}`;
     }
   }
   if (Array.isArray(node.children)) node.children.forEach((child) => walk(child, filePath));

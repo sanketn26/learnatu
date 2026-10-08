@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { formatPrice } from '../lib/courses/catalog';
 import { loginUrl } from '../lib/auth/session';
-import { localePath, type Locale } from '../i18n/locales';
+import type { Locale } from '../i18n/locales';
 import { ui } from '../i18n/ui';
 import type { loadLanding } from '../lib/courses/pages';
 type Loaded = Exclude<Awaited<ReturnType<typeof loadLanding>>, { notFound: true }>;
@@ -10,14 +10,14 @@ interface Props { lang: Locale; data: Loaded }
 const { lang, data } = Astro.props;
 const { course, user, author, enrolled, done, About } = data;
 const t = ui(lang);
-const lessonHref = (lessonSlug: string) => localePath(lang, `/courses/${course.slug}/${lessonSlug}/`);
+const lessonHref = (lessonSlug: string) => `/courses/${course.slug}/${lessonSlug}/`;
 const resume = course.lessons.find((lesson) => !done.has(lesson.slug)) ?? course.lessons[0];
-const here = localePath(lang, `/courses/${course.slug}/`);
+const here = `/courses/${course.slug}/`;
 const justPaid = Astro.url.searchParams.has('paid');
 ---
 <BaseLayout title={course.title} description={course.summary} lang={lang}>
   <div class="shell landing" style={course.accent ? `--brand:${course.accent};--brand-soft:${course.accent}1f` : undefined}>
-    <a class="back-link" href={localePath(lang, '/courses/')}>← {t.courses}</a>
+    <a class="back-link" href="/courses/">← {t.courses}</a>
     <header class="course-header">
       <span class="course-symbol" aria-hidden="true">{course.icon}</span>
       <div>

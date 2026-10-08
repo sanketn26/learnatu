@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { localePath, type Locale } from '../i18n/locales';
+import type { Locale } from '../i18n/locales';
 import { ui } from '../i18n/ui';
 import type { loadLesson } from '../lib/courses/pages';
 type Loaded = Exclude<Awaited<ReturnType<typeof loadLesson>>, { notFound: true } | { redirect: string }>;
@@ -11,7 +11,7 @@ const lesson = course.lessons[index];
 const t = ui(lang);
 const prev = course.lessons[index - 1];
 const next = course.lessons[index + 1];
-const href = (slug: string) => localePath(lang, `/courses/${course.slug}/${slug}/`);
+const href = (slug: string) => `/courses/${course.slug}/${slug}/`;
 ---
 <BaseLayout title={lesson.title} lang={lang}>
   <div class="player" data-course={course.slug} data-lesson={lesson.slug}>
@@ -36,10 +36,10 @@ const href = (slug: string) => localePath(lang, `/courses/${course.slug}/${slug}
       <div class="lesson-footer">
         {access.author && <p class="notice preview-banner">Preview mode{lesson.draft ? ' — draft lesson' : ''}{course.status === 'draft' ? ' — draft course' : ''}</p>}
         {access.enrolled && <button class="btn complete-toggle" type="button" aria-pressed={done.has(lesson.slug)} data-label={t.markComplete} data-done={t.completed}>{done.has(lesson.slug) ? t.completed : t.markComplete}</button>}
-        {!access.enrolled && <p class="notice">{t.preview} · <a href={localePath(lang, `/courses/${course.slug}/`)}>{t.buy}</a></p>}
+        {!access.enrolled && <p class="notice">{t.preview} · <a href={`/courses/${course.slug}/`}>{t.buy}</a></p>}
         <div class="pager">
           {prev ? <a class="btn btn-secondary" href={href(prev.slug)}>← {t.previous}</a> : <span></span>}
-          {next ? <a class="btn" href={href(next.slug)}>{t.next} →</a> : <a class="btn" href={localePath(lang, `/courses/${course.slug}/`)}>🏅 {t.finish}</a>}
+          {next ? <a class="btn" href={href(next.slug)}>{t.next} →</a> : <a class="btn" href={`/courses/${course.slug}/`}>🏅 {t.finish}</a>}
         </div>
       </div>
     </div>

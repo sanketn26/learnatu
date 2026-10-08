@@ -1,7 +1,7 @@
 ---
 import type { Course } from '../lib/courses/catalog';
 import { formatPrice } from '../lib/courses/catalog';
-import { localePath, type Locale } from '../i18n/locales';
+import type { Locale } from '../i18n/locales';
 import { ui } from '../i18n/ui';
 interface Props { course: Course; lang: Locale; completed?: number }
 const { course, lang, completed } = Astro.props;
@@ -9,7 +9,7 @@ const t = ui(lang);
 const total = course.lessons.length;
 const minutes = course.lessons.reduce((sum, lesson) => sum + (lesson.minutes ?? 0), 0);
 ---
-<a class="course-card" href={localePath(lang, `/courses/${course.slug}/`)} style={course.accent ? `--cover:${course.accent}33` : undefined}>
+<a class="course-card" href={`/courses/${course.slug}/`} style={course.accent ? `--cover:${course.accent}33` : undefined}>
   <span class="icon" aria-hidden="true">{course.icon}</span>
   <h3>{course.title}</h3>
   <p>{course.summary}</p>

@@ -1,6 +1,5 @@
 import { render } from 'astro:content';
 import type { Locale } from '../../i18n/locales';
-import { localePath } from '../../i18n/locales';
 import { isAuthor } from '../auth/roles';
 import { loginUrl } from '../auth/session';
 import type { User } from '../db/users';
@@ -41,7 +40,7 @@ export async function loadLesson(user: User | null, lang: Locale, courseSlug: st
   // Every lesson needs a signed-in user; paid courses also need enrolment (or a preview lesson).
   const access = await lessonAccess(user, course, course.lessons[index]);
   if (!access.ok) {
-    return { redirect: access.reason === 'login' ? loginUrl(pathname) : localePath(lang, `/courses/${course.slug}/`) };
+    return { redirect: access.reason === 'login' ? loginUrl(pathname) : `/courses/${course.slug}/` };
   }
   const entry = await getLessonEntry(course.slug, lessonSlug, lang);
   if (!entry) return NOT_FOUND;
