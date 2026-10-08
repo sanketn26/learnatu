@@ -80,3 +80,52 @@ test('formulas inside code are left alone', async () => {
   const html = await render('Use `$x^2$` like this:\n\n```\n$$y$$\n```');
   assert.doesNotMatch(html, /class="katex"/);
 });
+
+test('info blocks: type, title, and markdown inside', async () => {
+  const html = await render(':::tip[Pro tip]\nUse **short** lessons.\n\n- one\n- two\n:::');
+  assert.match(html, /<aside class="block block-tip" aria-label="Tip">/);
+  assert.match(html, /<p class="block-title">Pro tip<\/p>/);
+  assert.match(html, /<strong>short<\/strong>/);
+  assert.match(html, /<li>one<\/li>/);
+});
+
+test('an info block without a title uses its type as the title', async () => {
+  assert.match(await render(':::warning\nCareful.\n:::'), /<p class="block-title">Warning<\/p>/);
+});
+
+test('collapsible blocks use real details and summary, and can start open', async () => {
+  const closed = await render(':::details[Show the answer]\nForty-two.\n:::');
+  assert.match(closed, /<details class="block block-details">\s*<summary>Show the answer<\/summary>/);
+  assert.doesNotMatch(closed, /<details[^>]* open/);
+  assert.match(await render(':::details[More]{open}\nx\n:::'), /<details class="block block-details" open>/);
+});
+
+test('figures: caption, alignment, width, lazy loading, and the uploaded address', async () => {
+  const html = await render('::figure[A budget sheet]{src="../images/b.png" alt="A sheet" align=right width=40%}', ['images/b.png']);
+  assert.match(html, /<figure class="figure figure-right" style="width:40%">/);
+  assert.match(html, /src="\/media\/demo\/images\/b\.png" alt="A sheet" loading="lazy"/);
+  assert.match(html, /<figcaption>A budget sheet<\/figcaption>/);
+});
+
+test('a normal image with a title becomes a captioned figure', async () => {
+  const html = await render('![A chart](../images/c.png "Figure 1. A chart")', ['images/c.png']);
+  assert.match(html, /<figure class="figure"><img[^>]+><figcaption>Figure 1\. A chart<\/figcaption><\/figure>/);
+});
+
+test('a gallery gives every image its own figure', async () => {
+  const html = await render(':::gallery\n![One](a.png "First")\n![Two](b.png "Second")\n:::');
+  assert.equal((html.match(/<figure class="figure">/g) ?? []).length, 2);
+  assert.match(html, /<div class="gallery">/);
+});
+
+test('wrong blocks stop the render with the file and line', async () => {
+  await assert.rejects(render(':::wat\nx\n:::'), /en\/one\.md: line 1: unknown block ":::wat"/);
+  await assert.rejects(render('::figure{src="a.png"}'), /needs alt=/);
+  await assert.rejects(render('::figure{src="a.png" alt="x" align=middle}'), /align must be one of/);
+  await assert.rejects(render('::figure{src="a.png" alt="x" width=5%}'), /between 10% and 100%/);
+});
+
+test('a time like 10:30 or a stray :word stays plain text', async () => {
+  const html = await render('Meet at 10:30 and see :tip here.');
+  assert.match(html, /Meet at 10:30 and see :tip here\./);
+});

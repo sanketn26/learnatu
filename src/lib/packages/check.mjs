@@ -1,4 +1,3 @@
-import path from 'node:path';
 import { parse } from 'yaml';
 import { courseSettings, lessonSettings } from '../courses/schema.mjs';
 import { validate as validateQuiz } from '../remark-quiz.mjs';
@@ -6,6 +5,7 @@ import { check as checkFlow } from '@learnatu/flowmap';
 import { splitFrontMatter } from './frontmatter.mjs';
 import { scanMarkdown } from './scan.mjs';
 import { checkMath } from './math.mjs';
+import { checkBlocks } from './blocks-check.mjs';
 
 /**
  * Checks a course package (the contents of a zip, or a folder under content/courses/) before it is saved.
@@ -20,13 +20,7 @@ import { checkMath } from './math.mjs';
 export const LANGS = ['en', 'hi'];
 const KEBAB = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
-/** Finds the asset a Markdown image link points to: relative to the lesson's folder, or to the course folder. */
-export function resolveAsset(ref, fromPath, assets) {
-  const fromLesson = path.posix.normalize(path.posix.join(path.posix.dirname(fromPath), ref));
-  if (assets.has(fromLesson)) return fromLesson;
-  const fromRoot = path.posix.normalize(ref);
-  return assets.has(fromRoot) ? fromRoot : null;
-}
+export { resolveAsset } from './assets.mjs';
 
 export function checkPackage({ files, assets = new Set(), categories }) {
   const errors = [];
@@ -72,7 +66,7 @@ export function checkPackage({ files, assets = new Set(), categories }) {
         continue;
       }
       if (/^# /m.test(lessonFront.body)) error(file, 'has a "# " heading. The title is added automatically, so remove it.');
-      const { blocks, prose } = scanMarkdown(lessonFront.body);
+      const { blocks } = scanMarkdown(lessonFront.body);
       blocks.filter((block) => block.lang === 'quiz').forEach((block, i) => {
         try { validateQuiz(parse(block.text), { path: file }, i); } catch (e) { error(file, e.message.replace(/^.*?: /, '')); }
       });
@@ -81,10 +75,7 @@ export function checkPackage({ files, assets = new Set(), categories }) {
       });
       const bodyStart = text.slice(0, text.length - lessonFront.body.length).split('\n').length - 1;
       for (const problem of checkMath(lessonFront.body)) error(file, `formula on line ${bodyStart + problem.line}: ${problem.message}`);
-      for (const [, ref] of prose.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)) {
-        if (/^(https?:|data:|\/)/.test(ref)) continue;
-        if (!resolveAsset(ref, file, assets)) error(file, `image "${ref}" is not in the zip`);
-      }
+      for (const problem of checkBlocks(lessonFront.body, { assets, fromPath: file })) error(file, `line ${bodyStart + problem.line}: ${problem.message}`);
       lessons.push({ lang, slug, data: lesson.data, body: lessonFront.body });
     }
   }

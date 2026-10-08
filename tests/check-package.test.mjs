@@ -81,3 +81,11 @@ test('bad settings give a readable message', () => {
   const files = good(); files.set('en/one.md', 'no settings here');
   assert.match(messages(check(files)).join('\n'), /missing settings block/);
 });
+
+test('images and rich blocks are checked with the lesson and line', () => {
+  const files = good();
+  files.set('en/one.md', lesson('One', '\n\n![](../images/chart.png)\n\n:::wat\nx\n:::'));
+  const found = messages(check(files, new Set(['images/chart.png']))).join('\n');
+  assert.match(found, /en\/one\.md: line \d+: an image needs alt text/);
+  assert.match(found, /en\/one\.md: line \d+: unknown block/);
+});

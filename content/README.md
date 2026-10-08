@@ -160,3 +160,34 @@ $$
 
 Put `$$` on its own lines for a display formula. Write dollar amounts as `\$5`. A formula KaTeX cannot read fails the
 upload check and the build, with the file and line. Formulas inside code blocks or `backticks` are plain text.
+
+
+## Images, info blocks and collapsible blocks
+
+No HTML is needed (and uploaded courses drop it). Everything below works in git courses, uploaded zips and library pages.
+
+````markdown
+![Alt text describing the picture](../images/phone.png "Optional caption")
+
+::figure[Caption]{src="../images/phone.png" alt="Description" align=right width=40%}
+
+:::gallery
+![One](../images/a.png "First")
+![Two](../images/b.png "Second")
+:::
+
+:::tip[Optional title]
+Markdown works inside. Types: note, info, tip, success, warning, danger.
+:::
+
+:::details[Show the answer]{open}
+Hidden until opened. Add {open} to start expanded.
+:::
+````
+
+- **Alt text is required** on every image (the upload check refuses images without it).
+- `align` is `left`, `right` (text wraps around), `center` or `full`; `width` is `10%`..`100%` or like `320px`. On a phone,
+  pictures always sit above the text at full width.
+- In a zip, keep pictures in `images/` and write `../images/name.png`. In a course kept in git, put pictures in `public/images/`
+  and write `/images/name.png`.
+- The older `!!! warning "Title"` callout still works. See the tutorial lesson "Images, info blocks and collapsible blocks".

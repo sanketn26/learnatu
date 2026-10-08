@@ -2,6 +2,8 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import remarkDirective from 'remark-directive';
+import remarkBlocks from '../remark-blocks.mjs';
 import rehypeKatex from 'rehype-katex';
 import rehypeMathErrors from '../rehype-math-errors.mjs';
 import remarkRehype from 'remark-rehype';
@@ -12,7 +14,7 @@ import remarkCodeExtras from '../remark-code-extras.mjs';
 import remarkMermaid from '../remark-mermaid.mjs';
 import remarkFlow from '../remark-flow.mjs';
 import rewriteMarkdownLinks from '../rewrite-markdown-links.mjs';
-import { resolveAsset } from './check.mjs';
+import { resolveAsset } from './assets.mjs';
 
 /**
  * Turns an uploaded lesson's Markdown into HTML once, at upload time (so reading a lesson is just a database read).
@@ -41,6 +43,8 @@ export async function renderMarkdown(markdown, { slug, fromPath = 'course.md', a
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
+    .use(remarkDirective)
+    .use(remarkBlocks)
     .use(remarkCourseLinks({ slug, fromPath, assets })) // before the callout plugin, which would treat .md links as library pages
     .use(rewriteMarkdownLinks)
     .use(remarkQuiz)

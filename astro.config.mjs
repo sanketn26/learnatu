@@ -7,6 +7,8 @@ import remarkCodeExtras from './src/lib/remark-code-extras.mjs';
 import remarkMermaid from './src/lib/remark-mermaid.mjs';
 import remarkFlow from './src/lib/remark-flow.mjs';
 import remarkMath from 'remark-math';
+import remarkDirective from 'remark-directive';
+import remarkBlocks from './src/lib/remark-blocks.mjs';
 import rehypeKatex from 'rehype-katex';
 import rehypeMathErrors from './src/lib/rehype-math-errors.mjs';
 import legacyRedirects from './src/data/legacy-redirects.json' with { type: 'json' };
@@ -20,6 +22,6 @@ export default defineConfig({
   // Lessons that moved into courses keep working at their old URLs.
   redirects: legacyRedirects,
   security: { checkOrigin: true },
-  // The shared processor converts legacy callouts, internal links, ```quiz, ```mermaid and ```flow blocks, $math$ and code-block titles / tabs.
-  markdown: { processor: unified({ remarkPlugins: [remarkMath, rewriteMarkdownLinks, remarkQuiz, remarkMermaid, remarkFlow, remarkCodeExtras], rehypePlugins: [rehypeKatex, rehypeMathErrors] }) }
+  // The shared processor converts legacy callouts, internal links, ```quiz, ```mermaid and ```flow blocks, $math$, :::blocks and figures and code-block titles / tabs.
+  markdown: { processor: unified({ remarkPlugins: [remarkMath, remarkDirective, remarkBlocks, rewriteMarkdownLinks, remarkQuiz, remarkMermaid, remarkFlow, remarkCodeExtras], rehypePlugins: [rehypeKatex, rehypeMathErrors] }) }
 });
