@@ -1,7 +1,9 @@
 import { getCollection, getEntry } from 'astro:content';
 import type { Locale } from '../../i18n/locales';
 
-export type Price = { inr?: number; usd?: number };
+import type { Price } from './format';
+export { formatPrice } from './format';
+export type { Price };
 export type LessonRef = { draft: boolean; slug: string; title: string; minutes?: number; preview: boolean; translated: boolean };
 export type Course = {
   featured: boolean; order: number; accent?: string; tags: string[]; prerequisites: string[]; status: 'published' | 'draft';
@@ -59,10 +61,4 @@ export async function getLessonEntry(course: string, slug: string, lang: Locale)
   if (entry) return { entry, fallback: false };
   const english = await getEntry('courseLessons', `${course}/en/${slug}`);
   return english ? { entry: english, fallback: lang !== 'en' } : null;
-}
-
-export function formatPrice(price: Price | null, currency: 'inr' | 'usd' = 'inr') {
-  const amount = price?.[currency];
-  if (!amount) return 'Free';
-  return currency === 'inr' ? `₹${amount.toLocaleString('en-IN')}` : `$${amount}`;
 }

@@ -36,7 +36,7 @@ Preview it at `/author/`, then set `status: published` in `course.md` and push. 
 ## Tests, build, deploy
 
 ```bash
-npm test             # quiz grading + validation, crypto helpers
+npm test             # all tests in tests/ (plain JavaScript, no setup)
 npm run build        # type-check + build
 npm run deploy       # build, then wrangler deploy
 ```
@@ -48,12 +48,36 @@ First deploy: `npx wrangler d1 create learnatu`, put the id in `wrangler.jsonc`,
 ```text
 src/lib/auth/      Google OAuth, sessions, author role
 src/lib/db/        one small module per table (users, sessions, enrollments, progress, orders)
-src/lib/courses/   catalog (reads content/), access rules, page loaders, pricing
+src/lib/courses/   catalog (reads content/), access-rules (who may read), format, pricing, page loaders
+src/lib/lang*.ts   language: lang-rules (pure), lang (cookie + request wiring)
+src/lib/paths.ts   safeLocalPath: the one check for "stay on this site" redirects
 src/lib/payments/  razorpay.ts, stripe.ts, fulfil.ts (idempotent enrol-after-payment)
 src/lib/http.ts    api()/authedApi() wrappers: auth, JSON errors, request-id logging
 src/lib/log.ts     structured logs; set DEBUG=1 for debug lines
 src/pages/api/     thin route handlers
 ```
+
+## How the code is kept testable
+
+Decisions live in small **pure** files that import nothing from Astro or the database, so a test can load
+them directly: `courses/access-rules.ts`, `courses/format.ts`, `courses/pricing.ts`, `lang-rules.ts`,
+`paths.ts`, `quiz-grade.ts`, `crypto.ts`, `content-routes.mjs`. The wrappers around them (`access.ts`,
+`lang.ts`, pages, API routes) only gather facts (cookies, database rows) and call the pure function.
+When you add a rule, put it in a pure file and add a test beside the others.
+
+A test is a plain `.mjs` file in `tests/`:
+
+```js
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { safeLocalPath } from '../src/lib/paths.ts';
+
+test('blocks other sites', () => {
+  assert.equal(safeLocalPath('//evil.com', '/'), '/');
+});
+```
+
+Keep imports inside pure files to other pure files with the `.ts`/`.mjs` extension, or to nothing at all.
 
 ## Languages
 

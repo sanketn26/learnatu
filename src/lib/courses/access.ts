@@ -2,25 +2,22 @@ import { isAuthor } from '../auth/roles';
 import type { User } from '../db/users';
 import { isEnrolled } from '../db/enrollments';
 import type { Course, LessonRef } from './catalog';
+import { decideAccess, type Access } from './access-rules';
 
-export type Access =
-  | { ok: true; enrolled: boolean; author?: boolean }
-  | { ok: false; reason: 'login' | 'enroll' };
+export type { Access };
 
 /**
- * The one place that decides who may read a lesson.
- *  - free courses are open to everyone (progress is only saved for signed-in, enrolled learners);
- *  - paid courses need a signed-in user;
- *  - authors (ADMIN_EMAILS) read everything, including drafts — preview mode;
- *  - enrolled users read everything;
- *  - signed-in users who are not enrolled may read lessons marked `preview: true`.
+ * The one place that decides who may read a lesson. It gathers the facts (sign-in, author, enrolment)
+ * and hands them to `decideAccess` in access-rules.ts, where the rules are written down and tested.
  */
 export async function lessonAccess(user: User | null, course: Course, lesson: LessonRef): Promise<Access> {
-  if (!user) return course.isFree ? { ok: true, enrolled: false } : { ok: false, reason: 'login' };
-  if (isAuthor(user)) return { ok: true, enrolled: true, author: true };
-  const enrolled = await isEnrolled(user.id, course.slug);
-  if (enrolled) return { ok: true, enrolled };
-  return lesson.preview || course.isFree ? { ok: true, enrolled } : { ok: false, reason: 'enroll' };
+  return decideAccess({
+    signedIn: !!user,
+    isAuthor: isAuthor(user),
+    enrolled: user ? await isEnrolled(user.id, course.slug) : false,
+    courseIsFree: course.isFree,
+    lessonIsPreview: lesson.preview
+  });
 }
 
 /** Free courses are enrolled in one click; paid ones go through checkout. */

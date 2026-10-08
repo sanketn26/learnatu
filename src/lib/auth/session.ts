@@ -2,6 +2,7 @@ import type { AstroCookies } from 'astro';
 import { randomToken } from '../crypto';
 import { createSession, deleteSession, findUserBySession, SESSION_TTL_SECONDS } from '../db/sessions';
 import type { User } from '../db/users';
+import { safeLocalPath } from '../paths';
 
 export const SESSION_COOKIE = 'learnatu_session';
 const NEXT_COOKIE = 'learnatu_next';
@@ -27,9 +28,7 @@ export async function endSession(cookies: AstroCookies) {
 }
 
 /** Only same-site relative paths are allowed as post-login destinations. */
-export function safeNext(value: string | null | undefined) {
-  return value && value.startsWith('/') && !value.startsWith('//') && !value.includes('\\') ? value : '/dashboard/';
-}
+export const safeNext = (value: string | null | undefined) => safeLocalPath(value, '/dashboard/');
 
 export function rememberLogin(cookies: AstroCookies, url: URL, state: string, next: string) {
   const options = { ...baseOptions(url), maxAge: 600 };

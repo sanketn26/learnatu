@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { isLocale, setLangCookie } from '../../lib/lang';
+import { safeLocalPath } from '../../lib/paths';
 
 export const prerender = false;
 
@@ -7,6 +8,5 @@ export const prerender = false;
 export const GET: APIRoute = ({ url, cookies, redirect }) => {
   const set = url.searchParams.get('set');
   if (isLocale(set)) setLangCookie(cookies, set);
-  const next = url.searchParams.get('next');
-  return redirect(next && next.startsWith('/') && !next.startsWith('//') && !next.includes('\\') ? next : '/', 303);
+  return redirect(safeLocalPath(url.searchParams.get('next')), 303);
 };
