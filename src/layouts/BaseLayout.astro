@@ -1,4 +1,5 @@
 ---
+import '../styles/themes.css';
 import '../styles/global.css';
 import '../styles/platform.css';
 import { ui } from '../i18n/ui';
@@ -15,6 +16,7 @@ const t = ui(lang);
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#087f6b" />
+    <script is:inline>try{var m=document.cookie.match(/(?:^|; )theme=(original|white|dark)/);if(m)document.documentElement.dataset.theme=m[1]}catch(e){}</script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title === 'Learnatu' ? title : `${title} · Learnatu`}</title>
   </head>
@@ -27,6 +29,12 @@ const t = ui(lang);
         <a href="/guides/">{t.library}</a>
         <a href="/dashboard/">{t.myLearning}</a>
       </nav>
+      <details class="theme-menu">
+        <summary aria-label={t.theme}><span aria-hidden="true">◐</span></summary>
+        <div class="theme-list" role="group" aria-label={t.theme}>
+          {(['system', 'original', 'white', 'dark'] as const).map((choice) => <button type="button" data-theme-choice={choice}>{t[choice]}</button>)}
+        </div>
+      </details>
       <a class="auth-link" id="auth-link" href="/login/" data-signed-out={t.signIn} data-signed-in={t.myLearning}>{t.signIn}</a>
     </div></header>
     <main id="content"><slot /></main>
@@ -37,5 +45,6 @@ const t = ui(lang);
       <a href="/guides/"><span>●</span>{t.library}</a>
     </nav>
     <script src="../scripts/auth-link.ts"></script>
+    <script src="../scripts/theme.ts"></script>
   </body>
 </html>

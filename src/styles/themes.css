@@ -1,0 +1,48 @@
+/*
+ * Colour themes. Every colour on the site is one of these variables, so a theme is just a set of values.
+ *   (no data-theme)        "System": Original, switching to Dark when the device is in dark mode
+ *   data-theme="original"  the original warm-green look
+ *   data-theme="white"     clean white
+ *   data-theme="dark"      dark
+ * The theme picker in the header (src/scripts/theme.ts) sets data-theme and remembers it in the `theme` cookie.
+ */
+:root {
+  --ink: #17332e; --muted: #60706c; --paper: #fbfdf8; --surface: #fff;
+  --brand: #087f6b; --brand-dark: #075d50; --brand-soft: #dcf5eb; --on-brand: #fff; --line: #dfe8e3;
+  --shadow: 0 10px 30px rgb(24 65 55 / 9%); --shadow-strong: 0 8px 35px rgb(24 65 55 / 18%); --glass: rgb(255 255 255 / 96%);
+  --brand-line: #bce7d7; --code-bg: #eaf0ed;
+  --danger: #c62839; --danger-bg: #fdeaec; --danger-ink: #a01d2b;
+  --warn: #b8790a; --warn-bg: #fff2da; --warn-ink: #8f5c04; --notice-line: #e8c95b; --notice-bg: #fff6d8;
+  --ok: #1b8a5a; --ok-bg: #dff6e9; --ring: #b9cec7; --track: #c4ded5;
+  --panel-muted: #cce7df; --panel-fill: #55d6ae; --preview: #6d4bd8; --preview-bg: #efeaff;
+  color-scheme: light;
+}
+:root[data-theme="white"] {
+  --ink: #111827; --muted: #4b5563; --paper: #fff; --surface: #fff;
+  --brand-soft: #eef7f5; --line: #e5e7eb; --brand-line: #cfe6e0; --code-bg: #f1f5f9; --ring: #cbd5e1; --track: #dbe4e1;
+  --shadow: 0 10px 30px rgb(17 24 39 / 7%); --shadow-strong: 0 8px 35px rgb(17 24 39 / 14%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --ink: #e8f2ef; --muted: #a5b7b2; --paper: #0e1715; --surface: #16221f;
+    --brand: #35c7ae; --brand-dark: #7fe3d0; --brand-soft: #17352f; --on-brand: #06241e; --line: #2b3b37;
+    --shadow: 0 10px 30px rgb(0 0 0 / 35%); --shadow-strong: 0 8px 35px rgb(0 0 0 / 55%); --glass: rgb(22 34 31 / 94%);
+    --brand-line: #2a5a4e; --code-bg: #24332f;
+    --danger: #ff7a8a; --danger-bg: #3d1a22; --danger-ink: #ff9aa6;
+    --warn: #ffc267; --warn-bg: #3a2c12; --warn-ink: #ffd49a; --notice-line: #6b5a1f; --notice-bg: #2f2912;
+    --ok: #4fd39b; --ok-bg: #12372a; --ring: #3f524d; --track: #2b3b37;
+    --panel-muted: #35524b; --panel-fill: #0b6b5a; --preview: #b494ff; --preview-bg: #2a2250;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #e8f2ef; --muted: #a5b7b2; --paper: #0e1715; --surface: #16221f;
+  --brand: #35c7ae; --brand-dark: #7fe3d0; --brand-soft: #17352f; --on-brand: #06241e; --line: #2b3b37;
+  --shadow: 0 10px 30px rgb(0 0 0 / 35%); --shadow-strong: 0 8px 35px rgb(0 0 0 / 55%); --glass: rgb(22 34 31 / 94%);
+  --brand-line: #2a5a4e; --code-bg: #24332f;
+  --danger: #ff7a8a; --danger-bg: #3d1a22; --danger-ink: #ff9aa6;
+  --warn: #ffc267; --warn-bg: #3a2c12; --warn-ink: #ffd49a; --notice-line: #6b5a1f; --notice-bg: #2f2912;
+  --ok: #4fd39b; --ok-bg: #12372a; --ring: #3f524d; --track: #2b3b37;
+  --panel-muted: #35524b; --panel-fill: #0b6b5a; --preview: #b494ff; --preview-bg: #2a2250;
+  color-scheme: dark;
+}
