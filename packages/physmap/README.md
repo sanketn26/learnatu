@@ -1,12 +1,15 @@
 # @learnatu/physmap
 
-Visual physics scenes, written as text. Declare bodies, gravity, springs and rods, say how long to run, and readers get a
-time slider, Play, graphs with a moving cursor, and any sliders you declare (mass, stiffness, gravity...).
+Visual physics scenes, written as text. A teacher writes a fenced `phys` block in a lesson; readers get a picture they can
+play, scrub through and change with sliders. Eight kinds of scene share one set of rules.
 
 The goal is **visual understanding**, not computation. It draws idealised models clearly; it is not a physics engine.
 
 - **Units are checked.** Every number carries a unit. `mass=3m` is a mistake with a line number, not a wrong picture.
-- **Honest.** `assume "..."` is printed under the figure. A scene that runs away (a very light mass on a very stiff spring) or squashes a spring through its anchor fails the check.
+- **Honest.** `assume "..."` is printed under the figure. The language knows what each kind of scene cannot do and refuses
+  to draw it: polarised sound, a worldline faster than light, two entangled qubits, a moving source of light.
+- **Numbers from the laws.** Each scene computes from the real formulas (Newton, Snell, Coulomb, ideal gas, Ohm, Lorentz),
+  and the tests check them against textbook answers.
 - **No dependencies.** Plain TypeScript. The core runs anywhere (build, server, browser, tests); only `dom.ts` needs a browser.
 - **Helpful mistakes.** Every problem comes with its line number and often a "Did you mean ...?".
 
@@ -25,53 +28,104 @@ note 0s "Pulled out to the right and let go."
 predict "What happens if the mass doubles?" answer="The swing takes about 41% longer."
 ```
 
-## The language
+## The eight scenes
+
+Every block starts with `scene <kind>`. The playground (`/author/playground/`) has a working example of each.
+
+| Scene | Shows | Cannot do |
+|---|---|---|
+| `mechanics` | Bodies, gravity, springs, rods, drag, floors, ramps with friction, collisions; free-body diagrams; plots of position, velocity, energy, momentum | Rotation of extended bodies, fluids, speed-dependent friction, 3D |
+| `wave` | Rings from point sources, interference, the Doppler effect and shock cones, probes; fringes from slits. Light and sound, by `medium` | Polarisation, reflection from surfaces, 3D waves |
+| `ray` | An object with a thin lens or a mirror: principal rays and the image; a beam crossing a boundary: Snell's law, total internal reflection | Thick lenses, aberrations, dispersion |
+| `field` | Electric field of point charges or gravitational field of point masses: arrows, field lines, potential, a probe | Moving charges, magnetism, mixing the two |
+| `cycle` | An ideal gas through isothermal, isobaric, isochoric and adiabatic processes on a p-V diagram; Q, W, ΔU per process; efficiency | Real gases, phase changes, irreversible processes |
+| `circuit` | A battery with resistors in series and parallel, current as moving dots, a charging capacitor | Several loops, inductors, AC |
+| `spacetime` | Events, worldlines, light cones, a moving observer (boost slider), simultaneity, time dilation, the interval | Gravity, acceleration, curved spacetime |
+| `bloch` | One qubit on the Bloch sphere, gates as rotations, measurement odds | More than one qubit |
+
+## Rules every scene shares
 
 One statement per line. `#` starts a comment. Spaces inside brackets are fine: `(0m, 1m)`.
-Everything is in SI after reading: metres, kilograms, seconds. Positions are `(x,y)` with y up.
+Everything is converted to SI (metres, kilograms, seconds, amperes, kelvin) when read.
 
 | Line | Meaning |
 |---|---|
-| `scene mechanics` | First line. Other scenes (`wave`, `ray`, `spacetime`...) are planned and say so if you try them. |
+| `scene <kind>` | First line. |
 | `title "..."`, `assume "..."` | Caption, and what the picture leaves out (repeatable). |
 | `param name lo..hi unit start=N label="..."` | A slider. Use it anywhere a number goes, as `$name`. Declare it before using it. |
-| `body id mass= at=(x,y) [v=(vx,vy)] [speed= angle=] [radius=] [sprite="img"]` | A point mass. `speed`+`angle` replace `v`. |
+| `predict "question" answer="..."` | The reader guesses first; the answer is revealed on request. |
+| `note <time> "..."` | A caption that follows the motion (in mechanics, wave and cycle). |
+
+Units: `m kg g s N J W Hz A C V ohm F K Pa L rad deg yr ly AU c`, with `G M k c m u n p` in front of the ones that take a
+prefix (`kg`, `cm`, `ms`, `uF`, `nm`, `kohm`, `MHz` ...). Compound: `m/s`, `m/s2`, `N/m`, `kg*m/s2`. `c` is the speed of
+light (`0.6c`), `ly` and `yr` are for spacetime scenes.
+
+## Mechanics
+
+| Line | Meaning |
+|---|---|
+| `body id mass= at=(x,y) [v=(vx,vy)] [speed= angle=] [slide=] [radius=] [sprite="img"]` | A point mass or disc. `speed`+`angle` replace `v`. `slide=` starts it on the first ramp. |
 | `gravity earth` / `moon` / `mars` / `jupiter` / `9.8m/s2` / `$g` | Downwards. Without it there is no gravity. |
 | `spring k= from= to= rest=` | Ends are `(x,y)` points or body names; at least one is a body. |
-| `rod from= to=` | Keeps a body at a fixed distance from a point (a pendulum). A very stiff spring underneath. |
+| `rod from= to=` | Keeps a body at a fixed distance from a point (a pendulum). |
 | `drag body c=0.2kg/s` | Force against velocity. |
-| `ground [y=0m] [bounce=0..1]` | A floor. No friction. |
+| `ground [y=0m] [bounce=] [friction=]` | An endless floor. |
+| `incline from=(x,y) angle= length= [bounce=] [friction=]` | A ramp. |
+| `collide [bounce=1]` | Discs bounce off each other (needs `radius` on every body). |
 | `run 10s` | How long. Required. |
-| `plot b.x` `plot ke pe energy` | A graph per line. Everything on one line must share a unit. Quantities: `x y vx vy speed ke` per body (`ke` also for the whole scene) and `pe energy` for the scene. |
-| `show velocity [bodies]` / `show force [bodies]` | Arrows, scaled to the largest value over the run. |
-| `trail [bodies]` | The path so far. |
-| `note 2s "..."` | The caption from that moment on. |
-| `predict "question" answer="..."` | Reader guesses first; the answer is revealed on request. |
-| `backdrop "img.png" from=(x,y) size=(w,h)` | The author's picture behind the physics, placed in metres. |
+| `plot b.x` `plot ke pe energy` | A graph per line; everything on one line must share a unit. Per body: `x y vx vy speed ke px py normal friction`; scene-wide: `ke px py pe energy`. |
+| `show velocity weight normal friction force [bodies]` | Lettered arrows (v, W, N, f, F) on one shared scale. |
+| `trail [bodies]`, `backdrop "img" from=(x,y) size=(w,h)` | The path so far; the author's picture behind the physics. |
 
-Units: `m kg g s N J W Hz rad deg`, with `k`, `c` or `m` in front of `m s N J W g`. Compound: `m/s`, `m/s2`, `N/m`, `kg*m/s2`.
+## Waves
 
-## What it can and cannot do
+`medium air|water|steel|vacuum|glass`, then either point sources or slits.
+`source s at=(x,y) f=440Hz [phase=] [v=(vx,vy)]`, `probe p at=(x,y)`, `plot p`, `run 6periods`,
+or `slits d=0.2mm [width=0.02mm] wavelength=550nm`, `screen at=1.5m`.
 
-Can: point masses, gravity, springs, rods, linear drag, a bouncing ground, in a plane; energy, position, velocity and force
-over time; sliders that re-run the scene.
+## Rays
 
-Cannot (by design): collisions between bodies, ground friction, rotation of extended bodies, fluids, fields, waves, light,
-relativity, quantum states. Several of these are planned as their own scenes. It integrates with fixed small steps
-(Runge-Kutta, 1 ms) and is for pictures of idealised systems, not engineering answers.
+`object at=-20cm height=3cm`, then `lens at=0cm f=8cm` or `mirror at=0cm f=6cm` (negative `f`: diverging or convex),
+optionally `screen at=…`. Or `beam angle=30deg n1=1 n2=1.5`.
+
+## Fields
+
+`charge q1 at=(x,y) q=2nC` or `mass m1 at=(x,y) m=5.97e24kg`, `probe p at=(x,y)`, `show lines arrows potential`, `window 3m`.
+
+## Cycles
+
+`gas moles=1 p=100kPa T=300K [gamma=1.4]` (any two of p, v, T), then `process isothermal|isobaric|isochoric|adiabatic v=… | p=… | T=…`.
+
+## Circuits
+
+`battery 9V`, `resistor R1 100ohm`, `lamp L1 50ohm`, `capacitor C1 10uF`, groups between `parallel` and `end`, `run 5ms`.
+
+## Spacetime
+
+`event A at=(0yr,0ly)` (time, place), `worldline W from=A to=B`, `clock C from=A v=0.6c ticks=1yr`, `frame S2 v=$v`,
+`show lightcone|simultaneity A`, `measure A B`.
+
+## One qubit
+
+`state |0>` (also `|1> |+> |-> |i> |-i>` or `theta=60deg phi=30deg`), `step "caption"`, `gate H` (also `X Y Z S T Sdg Tdg`,
+and `Rx Ry Rz angle=90deg`), `measure z|x|y`.
 
 ## Use it
 
 ```ts
-import { parse, check, simulate, renderSvg, describe } from '@learnatu/physmap';
+import { parse, check } from '@learnatu/physmap';
 
 check(text);                          // [] when the scene is fine, otherwise [{ line, message }]
-const model = parse(text);            // throws PhysSyntaxError (with .problems) when it is not
-const sim = simulate(model, { k: 60 }); // sliders by name, in SI units
-sim.samples;                          // { t, b: [[x, y, vx, vy, fx, fy, ke], ...], pe, energy }
-const svg = renderSvg(model, sim, 120, { idPrefix: 'one', resolveImage: (ref) => `/media/${ref}` });
-describe(model, sim, 120);            // the same moment in plain words, for screen readers
+const scene = parse(text);            // throws PhysSyntaxError (with .problems) when it is not
+const run = scene.run({ k: 60 });     // sliders by name, in SI units; left out ones use their start value
+run.count;                            // how many moments the time slider has (1 = does not change with time)
+const svg = run.svg(120, { idPrefix: 'one', resolveImage: (ref) => `/media/${ref}` });
+run.caption(120);                     // the words under the picture
+run.describe(120);                    // the same moment in plain words, for screen readers
 ```
 
-Pass `{ hasImage }` to `check` to confirm that backdrops and sprites exist.
-In a browser: `import { mountPhysmap } from '@learnatu/physmap/dom'; mountPhysmap(element, text);`
+Pass `{ hasImage }` to `check` to confirm that backdrops and sprites exist. `EXAMPLES` lists a working scene for each kind,
+`KIND_INFO` the one-line summary, limits and words of each. The raw mechanics numbers (`simulate`, `renderSvg`) are in
+`@learnatu/physmap/mechanics`.
+In a browser: `import { mountPhysmap } from '@learnatu/physmap/dom'; const m = mountPhysmap(element, text);` and `m.destroy()`
+before reusing the element.

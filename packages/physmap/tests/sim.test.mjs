@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parse, simulate, renderSvg, describe, captionAt } from '../src/index.ts';
+import { parseModel as parse, simulate, renderSvg, describe, captionAt } from '../src/mechanics-api.ts';
 import { SPRING, THROW, BOUNCE, PENDULUM } from './fixtures.mjs';
 
 const near = (a, b, tol, what) => assert.ok(Math.abs(a - b) <= tol, `${what}: ${a} is not within ${tol} of ${b}`);

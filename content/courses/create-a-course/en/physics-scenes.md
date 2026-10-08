@@ -148,9 +148,11 @@ The checker gives the line and what to do about it.
 - `body b mas=1kg …` → *"body" has no property "mas". Did you mean "mass"?*
 - A spring pulled so far that it would pass through its own anchor → *this spring gets squashed to almost nothing, which a real spring cannot do.*
 
-## What a scene can and cannot do
+## What a mechanics scene can and cannot do
 
-It shows point masses, gravity, springs, rods, drag and a bouncing ground, in a flat plane. It does **not** model collisions between bodies, friction on the ground, fluids, rotation of a body, or anything solved with calculus on the page. When your model leaves something out, say so with `assume`.
+It shows point masses and discs, gravity, springs, rods, drag, floors, ramps with friction, and collisions, in a flat plane. It does **not** model rotation of extended bodies, fluids, friction that depends on speed, or anything solved with calculus on the page. When your model leaves something out, say so with `assume`.
+
+The next lessons add ramps, friction and collisions, and then other kinds of scene: waves, rays, fields, heat, circuits, relativity and a single qubit. They all start with `scene …`, and they all share the rules you have just used: units, sliders with `param`, and `predict`.
 
 ## What to remember
 

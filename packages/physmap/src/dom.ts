@@ -1,14 +1,14 @@
 import { parsePhys } from './parse.ts';
-import { simulate, startParams } from './sim.ts';
-import { captionAt, describe, num, renderSvg } from './render.ts';
-import type { Model, Simulation } from './types.ts';
+import { startValues } from './scene.ts';
+import type { Run, Scene } from './scene.ts';
+import { num } from './draw.ts';
 
 /**
  * Browser side: turns the text of a phys block into a live figure.
- *   Play / Restart, a time slider, a caption that follows the author's notes, one slider for each `param`,
+ *   Play / Replay and a time slider (when the scene changes with time), a caption, one slider for each `param`,
  *   and the author's `predict` questions with an answer to reveal.
  *   Import from "@learnatu/physmap/dom". Needs a DOM; the rest of the package does not.
- * Nothing plays by itself. With "reduce motion" on, Play jumps in larger steps instead of animating smoothly.
+ * Nothing plays by itself. With "reduce motion" on, Play steps faster instead of animating smoothly.
  */
 export interface MountOptions {
   idPrefix?: string;
@@ -57,10 +57,13 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, className?: string, t
 
 let counter = 0;
 
-export function mountPhysmap(container: HTMLElement, source: string, options: MountOptions = {}): void {
+/** Handle for a mounted scene: `destroy()` stops any playback, for when the container is about to be reused. */
+export interface Mounted { destroy(): void }
+
+export function mountPhysmap(container: HTMLElement, source: string, options: MountOptions = {}): Mounted {
   injectStyles();
-  const { model, problems } = parsePhys(source);
-  if (!model) {
+  const { scene, problems } = parsePhys(source);
+  if (!scene) {
     const box = el('div', 'pm-error');
     box.setAttribute('role', 'alert');
     box.append(el('strong', undefined, 'This physics scene has a mistake'));
@@ -68,14 +71,15 @@ export function mountPhysmap(container: HTMLElement, source: string, options: Mo
     problems.forEach((p) => list.append(el('li', undefined, `line ${p.line}: ${p.message}`)));
     box.append(list, el('pre', undefined, source));
     container.replaceChildren(box);
-    return;
+    return { destroy() {} };
   }
-  new Player(container, model, options.idPrefix ?? `pm${++counter}`, options.resolveImage);
+  const player = new Player(container, scene, options.idPrefix ?? `pm${++counter}`, options.resolveImage);
+  return { destroy: () => player.destroy() };
 }
 
 class Player {
   private values: Record<string, number>;
-  private sim: Simulation;
+  private run: Run;
   private index = 0;
   private raf = 0;
   private startedAt = 0;
@@ -88,19 +92,24 @@ class Player {
   private pending = 0;
   private reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  constructor(container: HTMLElement, private m: Model, private id: string, private resolveImage?: (ref: string) => string) {
-    this.values = startParams(m);
-    this.sim = simulate(m, this.values);
+  private scene: Scene;
+  private id: string;
+  private resolveImage?: (ref: string) => string;
+
+  constructor(container: HTMLElement, scene: Scene, id: string, resolveImage?: (ref: string) => string) {
+    this.scene = scene;
+    this.id = id;
+    this.resolveImage = resolveImage;
+    this.values = startValues(scene);
+    this.run = scene.run(this.values);
     const figure = el('figure', 'pm-figure');
     figure.tabIndex = 0;
     figure.setAttribute('aria-label', 'Physics scene. Space plays or pauses. Left and right arrow keys move through time.');
     this.caption.setAttribute('aria-live', 'polite');
-    this.caption.hidden = !m.title && !m.notes.length;
 
     this.play.type = 'button';
     this.slider.type = 'range';
     this.slider.min = '0';
-    this.slider.max = String(this.sim.samples.length - 1);
     this.slider.value = '0';
     this.slider.setAttribute('aria-label', 'Time');
     this.slider.addEventListener('input', () => { this.pause(); this.go(Number(this.slider.value)); });
@@ -112,17 +121,20 @@ class Player {
       if (e.key === 'ArrowLeft') { this.pause(); this.go(this.index - 1); e.preventDefault(); }
     });
 
-    const controls = el('div', 'pm-controls');
-    controls.setAttribute('role', 'group');
-    controls.setAttribute('aria-label', 'Time controls');
-    controls.append(this.play, this.slider, this.time);
-    figure.append(this.stage, this.caption, controls);
+    figure.append(this.stage, this.caption);
+    if (scene.playSeconds > 0) {
+      const controls = el('div', 'pm-controls');
+      controls.setAttribute('role', 'group');
+      controls.setAttribute('aria-label', 'Time controls');
+      controls.append(this.play, this.slider, this.time);
+      figure.append(controls);
+    }
 
-    if (m.params.length) {
+    if (scene.params.length) {
       const box = el('div', 'pm-params');
       box.setAttribute('role', 'group');
       box.setAttribute('aria-label', 'Change the scene');
-      for (const p of m.params) {
+      for (const p of scene.params) {
         const label = el('label');
         const out = el('output');
         const input = el('input');
@@ -139,8 +151,8 @@ class Player {
       }
       figure.append(box);
     }
-    if (m.assumptions.length) figure.append(el('p', 'pm-assume', `Assumes: ${m.assumptions.join('; ')}.`));
-    for (const q of m.predicts) {
+    if (scene.assumptions.length) figure.append(el('p', 'pm-assume', `Assumes: ${scene.assumptions.join('; ')}.`));
+    for (const q of scene.predicts) {
       const box = el('div', 'pm-predict');
       const details = el('details');
       details.append(el('summary', undefined, 'Show the answer'), el('p', undefined, q.answer));
@@ -148,28 +160,36 @@ class Player {
       figure.append(box);
     }
     container.replaceChildren(figure);
+    this.slider.max = String(this.run.count - 1);
     this.go(0);
   }
 
-  /** A slider moved: run the scene again, and stay at the same moment. At most once per frame. */
+  /** A slider moved: work the scene out again, and stay at the same moment. At most once per frame. */
   private changed() {
     if (this.pending) return;
     this.pending = requestAnimationFrame(() => {
       this.pending = 0;
-      const fraction = this.index / (this.sim.samples.length - 1);
-      this.sim = simulate(this.m, this.values);
-      this.go(Math.round(fraction * (this.sim.samples.length - 1)));
+      const fraction = this.run.count > 1 ? this.index / (this.run.count - 1) : 0;
+      this.run = this.scene.run(this.values);
+      this.slider.max = String(this.run.count - 1);
+      this.go(Math.round(fraction * (this.run.count - 1)));
     });
   }
 
   private go(i: number) {
-    this.index = Math.min(Math.max(Math.round(i), 0), this.sim.samples.length - 1);
-    this.stage.innerHTML = renderSvg(this.m, this.sim, this.index, { idPrefix: this.id, resolveImage: this.resolveImage });
-    this.caption.textContent = captionAt(this.m, this.sim.samples[this.index].t);
+    this.index = Math.min(Math.max(Math.round(i), 0), this.run.count - 1);
+    this.stage.innerHTML = this.run.svg(this.index, { idPrefix: this.id, resolveImage: this.resolveImage });
+    this.caption.textContent = this.run.ok ? this.run.caption(this.index) : (this.run.problem ?? '');
+    this.caption.hidden = !this.caption.textContent;
     this.slider.value = String(this.index);
-    this.time.textContent = `${num(this.sim.samples[this.index].t)} / ${num(this.m.run)} s`;
-    if (!this.sim.ok) this.caption.textContent = 'These slider settings make the scene run away. Move a slider back.';
-    this.stage.firstElementChild?.setAttribute('aria-label', describe(this.m, this.sim, this.index));
+    this.time.textContent = this.run.clock(this.index);
+    this.stage.firstElementChild?.setAttribute('aria-label', this.run.describe(this.index));
+  }
+
+  destroy() {
+    this.pause();
+    if (this.pending) cancelAnimationFrame(this.pending);
+    this.pending = 0;
   }
 
   private toggle() {
@@ -178,16 +198,17 @@ class Player {
   }
 
   private start() {
-    const last = this.sim.samples.length - 1;
+    const last = this.run.count - 1;
+    if (last < 1) return;
     if (this.index >= last) this.go(0);
     this.play.textContent = 'Pause';
     this.startedAt = performance.now();
-    this.from = this.sim.samples[this.index].t;
+    this.from = this.index / last;
+    const seconds = this.scene.playSeconds / (this.reduced ? 3 : 1);
     const frame = (now: number) => {
-      const t = this.from + ((now - this.startedAt) / 1000) * (this.reduced ? 3 : 1);
-      const i = (t / this.m.run) * last;
-      this.go(i);
-      if (i >= last) { this.pause(); return; }
+      const fraction = this.from + (now - this.startedAt) / 1000 / seconds;
+      this.go(fraction * last);
+      if (fraction >= 1) { this.pause(); return; }
       this.raf = requestAnimationFrame(frame);
     };
     this.raf = requestAnimationFrame(frame);
@@ -196,6 +217,6 @@ class Player {
   private pause() {
     if (this.raf) cancelAnimationFrame(this.raf);
     this.raf = 0;
-    this.play.textContent = this.index >= this.sim.samples.length - 1 ? 'Replay' : 'Play';
+    this.play.textContent = this.index >= this.run.count - 1 ? 'Replay' : 'Play';
   }
 }

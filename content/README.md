@@ -174,9 +174,11 @@ upload check) with the file, the diagram number and the line.
 
 ## Physics scenes (physmap)
 
-Fence a physics scene with `phys`. You declare bodies, gravity, springs or rods, say how long to run, and readers get
-Play, a time slider, graphs with a moving cursor, and the sliders you declare. Every number has a unit and the checker
-rejects mixed-up units (`mass=3m`) with the line number. It draws idealised models; say what is left out with `assume`.
+Fence a physics scene with `phys`. The first line says which kind: `mechanics`, `wave`, `ray`, `field`, `cycle`,
+`circuit`, `spacetime` or `bloch`. Readers get Play, a time slider where it makes sense, graphs, and the sliders you
+declare with `param`. Every number has a unit and the checker rejects mixed-up units (`mass=3m`) with the line number.
+The numbers come from the real formulas, and each scene refuses what it cannot draw honestly (a moving source of light,
+a worldline faster than light, two entangled qubits). Say what is left out with `assume`.
 
 ````markdown
 ```phys
@@ -194,8 +196,11 @@ predict "What if k doubles?" answer="The swing is about 29% faster."
 
 Scenes can use your own pictures: `backdrop "images/ramp.png" from=(0m,0m) size=(4m,2m)` places an image behind the
 physics, and `sprite="images/cart.png"` on a body draws it as a picture. Paths work like Markdown images, and a missing
-picture fails the upload check. Point masses, gravity, springs, rods, drag and a bouncing ground are supported.
-Language: `packages/physmap/README.md`, and the lesson "Physics scenes" in the Create a Learnatu Course course.
+picture fails the upload check.
+
+Try scenes live, starting from an example of each kind, in the **Physics playground** (`/author/playground/`), which
+shows the checker's messages as you type and copies the scene as a lesson block.
+Language: `packages/physmap/README.md`, and the "Show physics" lessons in the Create a Learnatu Course course.
 
 ## Mathematical formulas
 

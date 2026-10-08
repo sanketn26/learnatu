@@ -222,6 +222,18 @@ pre.phys { margin: 1.5rem 0; padding: 1rem; overflow-x: auto; border: 1px solid 
 .physmap-host { margin: 1.5rem 0; clear: both; }
 .physmap-host .pm-figure { margin: 0; }
 
+/* Physics playground (author tool) */
+.playground { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 1.4rem; align-items: start; margin: 1.4rem 0 2rem; }
+@media (max-width: 62rem) { .playground { grid-template-columns: minmax(0, 1fr); } }
+.playground-bar { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: 0 0 .7rem; }
+.playground-bar select { flex: 1 1 14rem; min-width: 0; min-height: 2.5rem; padding: 0 .6rem; border: 1px solid var(--line); border-radius: .6rem; background: var(--surface); color: var(--ink); font: inherit; }
+.playground-text { width: 100%; box-sizing: border-box; padding: .8rem 1rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: var(--ink); font: .88rem/1.55 ui-monospace, monospace; resize: vertical; tab-size: 2; }
+.playground-problems ul { margin: .7rem 0 0; padding: 0; list-style: none; display: grid; gap: .35rem; }
+.playground-problems li { padding: .5rem .8rem; border: 1px solid var(--bad, #c2314f); border-radius: .7rem; font-size: .9rem; }
+.playground-line { border: 0; background: none; padding: 0; color: var(--brand); font: 700 .85rem ui-monospace, monospace; text-decoration: underline; cursor: pointer; }
+.playground-help { margin-top: .8rem; font-size: .92rem; }
+.playground-view { position: sticky; top: 1rem; min-width: 0; }
+
 /* ---- Rich blocks: info blocks, collapsible blocks, figures, galleries (see src/lib/remark-blocks.mjs) ---- */
 .block { --bc: var(--brand); margin: 1.5rem 0; padding: .85rem 1.1rem; border: 1px solid color-mix(in srgb, var(--bc) 35%, var(--line)); border-left: .32rem solid var(--bc); border-radius: .9rem; background: color-mix(in srgb, var(--bc) 8%, var(--surface)); clear: both; }
 .block > :first-child { margin-top: 0; }

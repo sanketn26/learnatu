@@ -38,9 +38,9 @@ function remarkCourseLinks({ slug, fromPath, assets }) {
     }
     // pictures named inside a ```phys scene (backdrop, sprite) get the same /media/ addresses as Markdown images
     if (node.type === 'code' && node.lang === 'phys') {
-      const { model } = parsePhys(node.value);
+      const { scene } = parsePhys(node.value);
       const images = {};
-      for (const { ref } of model?.images ?? []) {
+      for (const { ref } of scene?.images ?? []) {
         if (/^(https?:|data:|\/)/.test(ref)) continue;
         const found = resolveAsset(ref, fromPath, assets);
         if (found) images[ref] = `/media/${slug}/${found}`;

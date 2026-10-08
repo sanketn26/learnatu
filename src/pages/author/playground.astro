@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { isAuthor } from '../../lib/auth/roles';
+import { loginUrl } from '../../lib/auth/session';
+import { notFound } from '../../lib/routing';
+import { EXAMPLES, KIND_INFO } from '@learnatu/physmap';
+export const prerender = false;
+
+const user = await Astro.locals.getUser();
+if (!user) return Astro.redirect(loginUrl('/author/playground/'));
+if (!isAuthor(user)) return notFound();
+const kinds = Object.keys(KIND_INFO);
+---
+<BaseLayout title="Physics playground">
+  <div class="shell landing">
+    <a class="back-link" href="/author/">← Author hub</a>
+    <section class="hero"><p class="eyebrow">Author tools</p><h1>Physics playground</h1>
+      <p class="hero-copy">Write a physics scene and watch it appear as you type. Start from an example, change it, then copy it into a lesson as a <code>phys</code> block.</p>
+    </section>
+
+    <div class="playground">
+      <div class="playground-edit">
+        <p class="playground-bar">
+          <label for="pg-example"><strong>Start from</strong></label>
+          <select id="pg-example">
+            {kinds.map((kind) => <optgroup label={KIND_INFO[kind].title}>
+              {EXAMPLES.filter((e) => e.kind === kind).map((e) => <option value={e.id}>{e.title}</option>)}
+            </optgroup>)}
+          </select>
+          <button class="btn btn-secondary" type="button" id="pg-copy">Copy as lesson block</button>
+        </p>
+        <textarea id="pg-text" class="playground-text" spellcheck="false" aria-label="Scene text" rows="22"></textarea>
+        <div id="pg-problems" class="playground-problems" aria-live="polite"></div>
+        <details class="playground-help" id="pg-help"><summary>What this kind of scene can do</summary><div id="pg-help-body"></div></details>
+      </div>
+      <div class="playground-view"><div id="pg-preview" aria-live="polite"></div></div>
+    </div>
+    <script id="pg-kinds" type="application/json" set:html={JSON.stringify(KIND_INFO)} />
+    <script id="pg-examples" type="application/json" set:html={JSON.stringify(EXAMPLES)} />
+  </div>
+</BaseLayout>
+
+<script>
+  import { check, parsePhys } from '@learnatu/physmap';
+  import { mountPhysmap } from '@learnatu/physmap/dom';
+  import type { Mounted } from '@learnatu/physmap/dom';
+
+  interface Info { title: string; summary: string; cannot: string; words: string[] }
+  const read = <T,>(id: string): T => JSON.parse(document.getElementById(id)?.textContent ?? 'null') as T;
+  const kinds = read<Record<string, Info>>('pg-kinds');
+  const examples = read<{ id: string; kind: string; title: string; text: string }[]>('pg-examples');
+
+  const text = document.getElementById('pg-text') as HTMLTextAreaElement;
+  const select = document.getElementById('pg-example') as HTMLSelectElement;
+  const preview = document.getElementById('pg-preview') as HTMLElement;
+  const problems = document.getElementById('pg-problems') as HTMLElement;
+  const helpBody = document.getElementById('pg-help-body') as HTMLElement;
+  const copy = document.getElementById('pg-copy') as HTMLButtonElement;
+  const KEY = 'physics-playground';
+
+  const remembered = (() => { try { return localStorage.getItem(KEY); } catch { return null; } })();
+  const fromHash = examples.find((e) => `#${e.id}` === location.hash);
+  text.value = fromHash?.text ?? remembered ?? examples[0].text;
+  if (fromHash) select.value = fromHash.id;
+
+  let mounted: Mounted | null = null;
+  let timer = 0;
+
+  function lineOf(n: number) {
+    const lines = text.value.split('\n');
+    const start = lines.slice(0, n - 1).join('\n').length + (n > 1 ? 1 : 0);
+    text.focus();
+    text.setSelectionRange(start, start + (lines[n - 1]?.length ?? 0));
+  }
+
+  function showHelp() {
+    const kind = /^\s*scene\s+(\w+)/m.exec(text.value)?.[1] ?? '';
+    const info = kinds[kind];
+    helpBody.replaceChildren();
+    if (!info) return;
+    const p1 = document.createElement('p'); p1.textContent = info.summary;
+    const p2 = document.createElement('p'); p2.append(Object.assign(document.createElement('strong'), { textContent: 'Cannot do: ' }), info.cannot);
+    const p3 = document.createElement('p'); p3.append(Object.assign(document.createElement('strong'), { textContent: 'Words: ' }), info.words.join(', '));
+    helpBody.append(p1, p2, p3);
+  }
+
+  function render() {
+    try { localStorage.setItem(KEY, text.value); } catch { /* storage may be blocked */ }
+    const found = check(text.value);
+    problems.replaceChildren();
+    if (found.length) {
+      const list = document.createElement('ul');
+      for (const p of found) {
+        const li = document.createElement('li');
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'playground-line'; b.textContent = `line ${p.line}`;
+        b.addEventListener('click', () => lineOf(p.line));
+        li.append(b, ` ${p.message}`);
+        list.append(li);
+      }
+      problems.append(list);
+    }
+    // keep showing the last good picture while there are mistakes, so the page does not jump around while typing
+    if (!parsePhys(text.value).scene) { if (!mounted) preview.replaceChildren(); return; }
+    mounted?.destroy();
+    mounted = mountPhysmap(preview, text.value, { idPrefix: 'pg' });
+    showHelp();
+  }
+
+  text.addEventListener('input', () => { window.clearTimeout(timer); timer = window.setTimeout(render, 250); });
+  select.addEventListener('change', () => {
+    const e = examples.find((x) => x.id === select.value);
+    if (!e) return;
+    text.value = e.text;
+    history.replaceState(null, '', `#${e.id}`);
+    render();
+  });
+  copy.addEventListener('click', async () => {
+    const block = '```phys\n' + text.value.replace(/\n+$/, '') + '\n```\n';
+    try { await navigator.clipboard.writeText(block); copy.textContent = 'Copied'; } catch { text.select(); copy.textContent = 'Press Ctrl+C to copy'; }
+    window.setTimeout(() => { copy.textContent = 'Copy as lesson block'; }, 1800);
+  });
+  showHelp();
+  render();
+</script>

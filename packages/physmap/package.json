@@ -7,7 +7,11 @@
   "license": "UNLICENSED",
   "exports": {
     ".": "./src/index.ts",
-    "./dom": "./src/dom.ts"
+    "./dom": "./src/dom.ts",
+    "./mechanics": "./src/mechanics-api.ts"
   },
-  "files": ["src", "README.md"]
+  "files": [
+    "src",
+    "README.md"
+  ]
 }
