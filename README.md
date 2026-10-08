@@ -33,6 +33,12 @@ npm run course:validate                # checks course.md, lesson files and ever
 
 Preview it at `/author/`, then set `status: published` in `course.md` and push. Publishing = commit and deploy.
 
+## Everyday commands (`make`)
+
+Run `make` to list them. The ones you will use most: `make dev`, `make test`, `make lint-fix`, `make ci` (everything a
+change must pass), `make package` (build + worker size check + `release/*.tar.gz`), `make update` (update
+dependencies, then re-run `ci`) and `make outdated`. Each is a wrapper around an `npm run` script.
+
 ## Tests, build, deploy
 
 ```bash

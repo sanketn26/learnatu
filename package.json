@@ -13,7 +13,10 @@
     "deploy": "npm run build && wrangler deploy",
     "test": "node --test \"tests/*.test.mjs\"",
     "course:new": "node scripts/course.mjs new",
-    "course:validate": "node scripts/course.mjs validate"
+    "course:validate": "node scripts/course.mjs validate",
+    "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.6",
@@ -31,6 +34,11 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261007.1",
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-plugin-astro": "^1.7.0",
+    "globals": "^17.13.0",
+    "typescript-eslint": "^8.71.1",
     "wrangler": "^4.148.0"
   }
 }

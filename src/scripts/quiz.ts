@@ -29,7 +29,7 @@ function build(quiz: Quiz): { body: HTMLElement; read: () => Response | null; lo
 
   if (quiz.type === 'order') {
     // Show the items shuffled; the learner reorders with ↑ ↓.
-    let order = quiz.options.map((_, i) => i).sort(() => Math.random() - 0.5);
+    const order = quiz.options.map((_, i) => i).sort(() => Math.random() - 0.5);
     const list = el('ol', 'quiz-options');
     const paint = (locked = false) => {
       list.replaceChildren(...order.map((optionIndex, position) => {
@@ -61,7 +61,8 @@ function build(quiz: Quiz): { body: HTMLElement; read: () => Response | null; lo
     button.type = 'button'; button.setAttribute('aria-pressed', 'false');
     button.addEventListener('click', () => {
       if (!multiple) { selected.clear(); buttons.forEach((b) => b.setAttribute('aria-pressed', 'false')); }
-      selected.has(index) ? selected.delete(index) : selected.add(index);
+      if (selected.has(index)) selected.delete(index);
+      else selected.add(index);
       button.setAttribute('aria-pressed', String(selected.has(index)));
     });
     const item = el('li'); item.append(button); list.append(item);

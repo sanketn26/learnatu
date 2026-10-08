@@ -20,7 +20,7 @@ const isHome = path === '/';
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#087f6b" />
-    <script is:inline>try{var m=document.cookie.match(/(?:^|; )theme=(original|white|dark)/);if(m)document.documentElement.dataset.theme=m[1];var z=document.cookie.match(/(?:^|; )size=([23])/);if(z)document.documentElement.dataset.size=z[1]}catch(e){}</script>
+    <script is:inline>try{const m=document.cookie.match(/(?:^|; )theme=(original|white|dark)/);if(m)document.documentElement.dataset.theme=m[1];const z=document.cookie.match(/(?:^|; )size=([23])/);if(z)document.documentElement.dataset.size=z[1]}catch{/* cookies blocked: keep the defaults */}</script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title === 'Learnatu' ? title : `${title} · Learnatu`}</title>
   </head>

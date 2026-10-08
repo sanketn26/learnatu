@@ -35,3 +35,4 @@ AGENTS.md
 # local Cloudflare state and secrets
 .dev.vars
 .wrangler/
+release/
