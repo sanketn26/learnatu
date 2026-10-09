@@ -222,6 +222,11 @@ pre.phys { margin: 1.5rem 0; padding: 1rem; overflow-x: auto; border: 1px solid 
 .physmap-host { margin: 1.5rem 0; clear: both; }
 .physmap-host .pm-figure { margin: 0; }
 
+/* Runnable Python (pyrun): plain text until drawn */
+pre.pyrun { margin: 1.5rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: var(--ink); font: .88rem/1.55 ui-monospace, monospace; white-space: pre-wrap; }
+.pyrun-host { margin: 1.5rem 0; clear: both; }
+.pyrun-host .pr-figure { margin: 0; }
+
 /* Physics playground (author tool) */
 .playground { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 1.4rem; align-items: start; margin: 1.4rem 0 2rem; }
 @media (max-width: 62rem) { .playground { grid-template-columns: minmax(0, 1fr); } }

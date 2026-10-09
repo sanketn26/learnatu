@@ -14,7 +14,7 @@ modules:
   - title: The basics
     lessons: [how-courses-work, course-settings, write-a-lesson]
   - title: Make lessons interactive
-    lessons: [quizzes, code-blocks, images-and-blocks, write-formulas]
+    lessons: [quizzes, code-blocks, run-python, images-and-blocks, write-formulas]
   - title: Draw diagrams
     lessons: [mermaid-diagrams, sequence-diagrams, class-diagrams, flow-diagrams, network-diagrams, algorithm-diagrams, algorithm-structures]
   - title: Show physics

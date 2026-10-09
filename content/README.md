@@ -172,6 +172,22 @@ panel for counters. `tag` writes a small note on a cell, and `paint` colours it 
 upload check) with the file, the diagram number and the line.
 
 
+## Runnable Python (pyrun)
+
+Fence code with `pyrun` instead of `python` and learners can edit and run it on the page. It runs in their browser
+(nothing is sent to our servers), in a sandbox, with a time limit.
+
+```pyrun
+#@ title "Squares"
+#@ timeout 5
+for n in range(5):
+    print(n, n * n)
+```
+
+Options go on the first lines, starting with `#@`: `title`, `timeout`, `packages` (`numpy pandas scipy sympy networkx`),
+`stdin` (answers for `input()`), `readonly`, `shared`. Language and safety notes: `packages/pyrun/README.md`, and the
+"Run Python in a lesson" lesson in the Create a Learnatu Course course.
+
 ## Physics scenes (physmap)
 
 Fence a physics scene with `phys`. The first line says which kind: `mechanics`, `wave`, `ray`, `field`, `cycle`,

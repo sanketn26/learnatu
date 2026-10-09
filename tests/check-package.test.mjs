@@ -89,3 +89,11 @@ test('images and rich blocks are checked with the lesson and line', () => {
   assert.match(found, /en\/one\.md: line \d+: an image needs alt text/);
   assert.match(found, /en\/one\.md: line \d+: unknown block/);
 });
+
+test('a pyrun block with a mistake is reported with its number and line', () => {
+  const files = good();
+  files.set('en/one.md', lesson('One', '\n\n```pyrun\nprint(1)\n```\n\n```pyrun\n#@ packages requests\nprint(2)\n```\n'));
+  const out = messages(check(files));
+  assert.equal(out.length, 1);
+  assert.match(out[0], /en\/one\.md: Python block #2, line 1: "requests" is not available here/);
+});

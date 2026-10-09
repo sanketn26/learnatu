@@ -138,3 +138,10 @@ test('a time like 10:30 or a stray :word stays plain text', async () => {
   const html = await render('Meet at 10:30 and see :tip here.');
   assert.match(html, /Meet at 10:30 and see :tip here\./);
 });
+
+test('a pyrun block keeps its text in a pre for the browser to upgrade, and bad options fail the render', async () => {
+  const html = await render('```pyrun\n#@ title "Squares"\nprint(1 < 2)\n```');
+  assert.match(html, /<pre class="pyrun">/);
+  assert.match(html, /print\(1 &#x3C; 2\)|print\(1 &lt; 2\)/);
+  await assert.rejects(() => render('```pyrun\n#@ timeout 999\nprint(1)\n```'), /Python block #1, line 1: timeout is a number of seconds/);
+});

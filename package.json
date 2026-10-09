@@ -25,6 +25,7 @@
     "@learnatu/algomap": "*",
     "@learnatu/flowmap": "*",
     "@learnatu/physmap": "*",
+    "@learnatu/pyrun": "*",
     "@learnatu/textmap-core": "*",
     "@shikijs/core": "^4.5.0",
     "@shikijs/engine-javascript": "^4.5.0",
