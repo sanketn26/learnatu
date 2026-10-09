@@ -2,13 +2,13 @@
 title: Create a Learnatu Course
 icon: 🛠️
 category: authoring
-summary: Write a course as plain Markdown files, add quizzes, code, images, info blocks, formulas, Mermaid diagrams and animated flow diagrams, network diagrams, step-by-step algorithm diagrams, physics scenes (mechanics, waves, optics, fields, heat, circuits, relativity, qubits), then upload it as a zip, preview it and publish.
+summary: Write a course as plain Markdown files, add quizzes, code, runnable Python, images, info blocks, formulas, Mermaid diagrams and animated flow diagrams, network diagrams, step-by-step algorithm diagrams, physics scenes (mechanics, waves, optics, fields, heat, circuits, relativity, qubits), then upload it as a zip, preview it and publish.
 outcome: I can build a complete course, check it, preview it as a learner would see it, and publish it.
 level: Beginner
 status: published
 featured: false
 order: 20
-tags: [authoring, markdown, mermaid, flowmap, algomap, physmap, maths]
+tags: [authoring, markdown, mermaid, flowmap, algomap, physmap, pyrun, maths]
 prerequisites: [A text editor, A Learnatu author account]
 modules:
   - title: The basics
