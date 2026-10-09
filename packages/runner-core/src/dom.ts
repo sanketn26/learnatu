@@ -1,7 +1,7 @@
 import { sandboxDocument } from './sandbox.ts';
 import type { SandboxSpec } from './sandbox.ts';
 import { Session } from './session.ts';
-import type { RunResult } from './types.ts';
+import type { RenderedImage, RunResult } from './types.ts';
 
 /**
  * Browser side, shared by every language: an editor with Run, Stop and Reset, the output, and the one hidden sandbox
@@ -15,6 +15,8 @@ export interface RunnerSpec {
   key: string;
   sandbox: SandboxSpec;
   block: { title?: string; code: string; readonly: boolean; timeout: number };
+  /** Show a picture area under the editor, this big (CSS pixels), for code that draws or produces HTML. */
+  render?: { width: number; height: number };
   /** Sent to the worker with every run, besides the code (packages, input, options...). */
   request: Record<string, unknown>;
   /** What to show for each status word the worker reports. */
@@ -34,6 +36,10 @@ pre.rn-code{overflow:auto}
 .rn-bar button:disabled{opacity:.45;cursor:default}
 .rn-bar .rn-main{background:var(--rn-ink,var(--tm-ink,var(--ink,#17332e)));color:var(--rn-card,var(--tm-card,var(--surface,#fff)));border-color:transparent;min-width:5.6rem}
 .rn-status{font-size:.84rem;opacity:.75}
+.rn-render{padding:.7rem 1rem;border-top:1px solid var(--rn-line,var(--tm-line,var(--line,#dfe8e3)));background:var(--rn-card,var(--tm-card,var(--surface,#fff)))}
+.rn-render[hidden]{display:none}
+.rn-render iframe{display:block;width:100%;border:0;background:#fff;border-radius:.5rem}
+.rn-render canvas{display:block;max-width:100%;height:auto;border-radius:.5rem;background:#fff}
 .rn-out{margin:0;padding:.7rem 1rem;border-top:1px solid var(--rn-line,var(--tm-line,var(--line,#dfe8e3)));font:.85rem/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;min-height:2.6rem;max-height:20rem;overflow:auto}
 .rn-out:empty::before{content:"No output yet";opacity:.5;font-family:system-ui,sans-serif}
 .rn-err{color:var(--rn-bad,var(--tm-bad,var(--bad,#c2314f)))}
@@ -58,6 +64,32 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, className?: string, t
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text;
   return node;
+}
+
+const DROP = ['script', 'meta', 'base', 'link', 'iframe', 'frame', 'frameset', 'object', 'embed', 'form', 'input', 'button', 'textarea', 'select', 'audio', 'video', 'source', 'track', 'portal', 'template', 'noscript'];
+const ADDRESSES = ['href', 'src', 'xlink:href', 'action', 'formaction', 'poster', 'background', 'srcset', 'data', 'ping'];
+
+/**
+ * HTML from a run, made safe to show: no scripts, no frames or forms, no <meta> (a refresh could send the frame to
+ * another site), no event handlers, and no address that points anywhere but inside the picture (#id) or at an
+ * inline image. The frame it goes into also has no scripts, a policy that allows nothing but inline styles and
+ * data: images, and no permissions, so this is a second lock, not the only one.
+ */
+export function sanitizeHtml(html: string): string {
+  const doc = new DOMParser().parseFromString(`<body>${html}`, 'text/html');
+  doc.querySelectorAll(DROP.join(',')).forEach((node) => node.remove());
+  doc.body.querySelectorAll('*').forEach((node) => {
+    for (const attribute of Array.from(node.attributes)) {
+      const name = attribute.name.toLowerCase();
+      // browsers ignore control characters and spaces inside an address, so compare without them
+      const value = Array.from(attribute.value).filter((c) => c.charCodeAt(0) > 32).join('').toLowerCase();
+      if (name.startsWith('on')) node.removeAttribute(attribute.name);
+      else if (ADDRESSES.includes(name) && !(value.startsWith('#') || /^data:image\/(png|jpeg|gif|webp);/.test(value))) node.removeAttribute(attribute.name);
+      else if (name === 'style' && /url\(|@import|expression\(/i.test(attribute.value)) node.removeAttribute(attribute.name);
+    }
+  });
+  doc.querySelectorAll('style').forEach((node) => { if (/@import|url\(/i.test(node.textContent ?? '')) node.remove(); });
+  return doc.body.innerHTML;
 }
 
 /** What a block shows when its text has mistakes. */
@@ -122,6 +154,7 @@ class View {
   private code: HTMLTextAreaElement | HTMLPreElement;
   private out = el('pre', 'rn-out');
   private note = el('details', 'rn-note');
+  private pane = el('div', 'rn-render');
   private status = el('span', 'rn-status');
   private run = el('button', 'rn-main', 'Run');
   private stop = el('button', undefined, 'Stop');
@@ -168,7 +201,11 @@ class View {
     bar.append(this.run, this.stop);
     if (!block.readonly) bar.append(this.reset);
     bar.append(this.status);
-    figure.append(this.code, bar, this.out, this.note);
+    this.pane.hidden = true;
+    this.pane.setAttribute('aria-label', 'What the code drew');
+    figure.append(this.code, bar);
+    if (spec.render) figure.append(this.pane);
+    figure.append(this.out, this.note);
     container.replaceChildren(figure);
   }
 
@@ -179,10 +216,13 @@ class View {
     this.running = true;
     this.session ??= sessionFor(this.spec.key, this.spec.sandbox);
     this.out.replaceChildren();
+    this.pane.replaceChildren();
+    this.pane.hidden = true;
     this.note.hidden = true;
     this.run.disabled = true;
     this.stop.hidden = false;
     const result = await this.session.run({ ...this.spec.request, code: this.text(), timeout: this.spec.block.timeout }, {
+      render: (drawing) => this.draw(drawing),
       status: (s) => { this.status.textContent = this.spec.statusWords[s] ?? ''; },
       output: (stream, text) => {
         if (stream === 'stderr') this.out.append(el('span', 'rn-err', text));
@@ -193,6 +233,31 @@ class View {
     this.run.disabled = false;
     this.stop.hidden = true;
     if (!this.gone) this.finish(result);
+  }
+
+  /** Shows what the code drew. HTML goes in a frame that cannot run scripts, load anything or leave the box. */
+  private draw(drawing: { html?: string; image?: RenderedImage }) {
+    const size = this.spec.render;
+    if (!size) return;
+    this.pane.hidden = false;
+    this.pane.replaceChildren();
+    if (drawing.html !== undefined) {
+      const frame = document.createElement('iframe');
+      frame.setAttribute('sandbox', ''); // no scripts, no forms, no navigation, no same-origin
+      frame.title = 'What the code drew';
+      frame.style.height = `${size.height}px`;
+      frame.srcdoc = `<!doctype html><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:"><body style="margin:0;font:15px/1.5 system-ui,sans-serif">${sanitizeHtml(drawing.html)}`;
+      this.pane.append(frame);
+    } else if (drawing.image) {
+      const { width, height, data } = drawing.image;
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      canvas.setAttribute('role', 'img');
+      canvas.setAttribute('aria-label', 'A picture drawn by the code');
+      canvas.getContext('2d')?.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
+      this.pane.append(canvas);
+    }
   }
 
   private finish(result: RunResult) {

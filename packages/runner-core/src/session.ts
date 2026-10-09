@@ -1,5 +1,5 @@
-import { LOADING_MS, OUTPUT_LIMIT, STATUS_MAX } from './types.ts';
-import type { FromSandbox, RunError, RunResult, ToSandbox } from './types.ts';
+import { LOADING_MS, OUTPUT_LIMIT, RENDER_LIMITS, STATUS_MAX } from './types.ts';
+import type { FromSandbox, RenderedImage, RunError, RunResult, ToSandbox } from './types.ts';
 
 /**
  * Everything about running a block that does not need a browser: counting output, the time limit, ignoring messages
@@ -16,6 +16,8 @@ export interface Timers { set(fn: () => void, ms: number): unknown; clear(handle
 export interface RunHandlers {
   status?(text: string): void;
   output?(stream: 'stdout' | 'stderr', text: string): void;
+  /** The code drew something: HTML to show in a locked-down frame, or pixels. */
+  render?(drawing: { html?: string; image?: RenderedImage }): void;
 }
 
 
@@ -34,6 +36,18 @@ export function readMessage(raw: unknown): FromSandbox | null {
       if (!e || typeof e.kind !== 'string' || typeof e.message !== 'string' || typeof e.traceback !== 'string') return null;
       const error: RunError = { kind: e.kind, message: e.message, traceback: e.traceback, ...(typeof e.line === 'number' ? { line: e.line } : {}) };
       return { type: 'done', id, error };
+    }
+    case 'render': {
+      if (id === undefined) return null;
+      if (typeof m.html === 'string') return m.html.length <= RENDER_LIMITS.html ? { type: 'render', id, html: m.html } : null;
+      const i = m.image as Record<string, unknown> | undefined;
+      if (!i || !Number.isInteger(i.width) || !Number.isInteger(i.height)) return null;
+      const w = i.width as number, h = i.height as number;
+      if (w < 1 || h < 1 || w * h > RENDER_LIMITS.pixels) return null;
+      // a typed array or an ArrayBuffer from the sandbox: only the bytes are kept, and only if the size is exactly right
+      const data = i.data as ArrayBuffer | undefined;
+      if (Object.prototype.toString.call(data) !== '[object ArrayBuffer]' || (data as ArrayBuffer).byteLength !== w * h * 4) return null;
+      return { type: 'render', id, image: { width: w, height: h, data: data as ArrayBuffer } };
     }
     case 'crash': return typeof m.message === 'string' ? { type: 'crash', message: m.message, ...(id !== undefined ? { id } : {}) } : null;
     default: return null;
@@ -84,6 +98,8 @@ export class Session {
           size += message.text.length;
           if (size > OUTPUT_LIMIT) { finish({ outcome: 'too-much-output', message: 'Stopped: the program printed too much.' }, true); return; }
           handlers.output?.(message.stream, message.text);
+        } else if (message.type === 'render') {
+          handlers.render?.({ html: message.html, image: message.image });
         } else if (message.type === 'done') {
           finish(message.error ? { outcome: 'error', error: message.error } : { outcome: 'ok' }, false);
         }

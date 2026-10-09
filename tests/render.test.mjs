@@ -145,3 +145,9 @@ test('a pyrun block keeps its text in a pre for the browser to upgrade, and bad 
   assert.match(html, /print\(1 &#x3C; 2\)|print\(1 &lt; 2\)/);
   await assert.rejects(() => render('```pyrun\n#@ timeout 999\nprint(1)\n```'), /Python block #1, line 1: timeout is a number of seconds/);
 });
+
+test('a tsrun block keeps its text for the browser, and bad options fail the render', async () => {
+  const html = await render('```tsrun\n//@ mode render\nrender("<b>hi</b>");\n```');
+  assert.match(html, /<pre class="tsrun">/);
+  await assert.rejects(() => render('```tsrun\n//@ size 5 5\nlet x = 1;\n```'), /TypeScript block #1, line 1: size is only for mode render|TypeScript block #1, line 1: size is the width/);
+});

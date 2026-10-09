@@ -2,6 +2,8 @@
 export const OUTPUT_LIMIT = 200_000;
 /** The longest a language may take to load (Python, a compiler, packages). */
 export const LOADING_MS = 90_000;
+/** What a run may draw: the most characters of HTML, and the most pixels of canvas (4 bytes each). */
+export const RENDER_LIMITS = { html: 100_000, pixels: 1_000_000 } as const;
 /** Longest a status word may be; anything longer coming out of the sandbox is dropped. */
 export const STATUS_MAX = 40;
 
@@ -24,7 +26,11 @@ export type FromSandbox =
   | { type: 'status'; id: number; text: string }
   | { type: 'out'; id: number; stream: 'stdout' | 'stderr'; text: string }
   | { type: 'done'; id: number; error?: RunError }
+  | { type: 'render'; id: number; html?: string; image?: RenderedImage }
   | { type: 'crash'; id?: number; message: string };
+
+/** Pixels drawn by the code: RGBA, row by row, 4 bytes each. */
+export interface RenderedImage { width: number; height: number; data: ArrayBuffer }
 
 /** How a run ended, as the page reports it. */
 export type Outcome = 'ok' | 'error' | 'timeout' | 'stopped' | 'too-much-output' | 'crashed';

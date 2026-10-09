@@ -10,5 +10,5 @@ export { Session, readMessage } from './session.ts';
 export type { Channel, RunHandlers, Timers } from './session.ts';
 export { sandboxDocument, contentSecurityPolicy } from './sandbox.ts';
 export type { SandboxSpec } from './sandbox.ts';
-export { OUTPUT_LIMIT, LOADING_MS } from './types.ts';
-export type { FromSandbox, ToSandbox, RunRequest, RunError, RunResult, Outcome } from './types.ts';
+export { OUTPUT_LIMIT, LOADING_MS, RENDER_LIMITS } from './types.ts';
+export type { FromSandbox, ToSandbox, RunRequest, RunError, RunResult, Outcome, RenderedImage } from './types.ts';

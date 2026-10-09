@@ -188,6 +188,14 @@ Options go on the first lines, starting with `#@`: `title`, `timeout`, `packages
 `stdin` (answers for `input()`), `readonly`, `shared`. Language and safety notes: `packages/pyrun/README.md`, and the
 "Run Python in a lesson" lesson in the Create a Learnatu Course course.
 
+## Runnable TypeScript (tsrun)
+
+Fence code with `tsrun` and learners can edit, type-check and run it on the page, in a sandbox, with a time limit. Options
+go on the first lines, starting with `//@`: `title`, `timeout`, `typecheck on|off`, `strict on|off`, `readonly`,
+`mode run|render` and `size W H`. In render mode the code gets a `canvas` to draw on and `render(html)`; the picture is
+shown in a frame that cannot run scripts. Language and safety notes: `packages/tsrun/README.md`, and the "Run TypeScript
+in a lesson" lesson in the Create a Learnatu Course course.
+
 ## Physics scenes (physmap)
 
 Fence a physics scene with `phys`. The first line says which kind: `mechanics`, `wave`, `ray`, `field`, `cycle`,

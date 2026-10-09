@@ -1,0 +1,14 @@
+{
+  "name": "@learnatu/tsrun",
+  "version": "0.1.0",
+  "description": "Runnable TypeScript in a lesson: a ```tsrun block becomes an editor with a Run button. The code is type-checked and run in the reader's browser, inside a sandboxed iframe and worker, with a time limit.",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "dependencies": { "@learnatu/runner-core": "*", "@learnatu/textmap-core": "*" },
+  "exports": {
+    ".": "./src/index.ts",
+    "./dom": "./src/dom.ts"
+  },
+  "files": ["src", "README.md"]
+}

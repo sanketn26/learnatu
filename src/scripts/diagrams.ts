@@ -1,6 +1,6 @@
 export {};
 /**
- * Draws ```flow, ```algo, ```phys and ```pyrun blocks (<pre class="flow|algo|phys|pyrun">) as live figures. Each package's code is
+ * Draws ```flow, ```algo, ```phys, ```pyrun and ```tsrun blocks (<pre class="flow|algo|phys|pyrun|tsrun">) as live figures. Each package's code is
  * only downloaded on pages that actually contain one of its blocks. If it fails to load, or one block fails to
  * draw, the text stays visible and the other blocks carry on.
  */
@@ -11,6 +11,7 @@ const KINDS: Kind[] = [
   { lang: 'flow', prefix: 'fm', host: 'flowmap-host', what: 'flow diagrams', load: async () => (await import('@learnatu/flowmap/dom')).mountFlowmap },
   { lang: 'algo', prefix: 'am', host: 'algomap-host', what: 'algorithm diagrams', load: async () => (await import('@learnatu/algomap/dom')).mountAlgomap },
   { lang: 'pyrun', prefix: 'pr', host: 'pyrun-host', what: 'Python blocks', load: async () => (await import('@learnatu/pyrun/dom')).mountPyrun },
+  { lang: 'tsrun', prefix: 'tr', host: 'tsrun-host', what: 'TypeScript blocks', load: async () => (await import('@learnatu/tsrun/dom')).mountTsrun },
   { lang: 'phys', prefix: 'pm', host: 'physmap-host', what: 'physics scenes', load: async () => (await import('@learnatu/physmap/dom')).mountPhysmap }
 ];
 

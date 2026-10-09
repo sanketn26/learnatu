@@ -1,7 +1,7 @@
 import { diagramKind } from './diagram-kinds.mjs';
 
 /**
- * Turns ```flow, ```algo, ```phys and ```pyrun fenced blocks into <pre class="flow|algo|phys|pyrun">…source…</pre>.
+ * Turns ```flow, ```algo, ```phys, ```pyrun and ```tsrun fenced blocks into <pre class="flow|algo|phys|pyrun|tsrun">…source…</pre>.
  * The text stays in the page (readable without JavaScript); src/scripts/diagrams.ts draws it in the browser,
  * and only loads each package's code on pages that have one. Mistakes in the text fail the build (or the upload
  * check) with the file name, the diagram number and the line, like quizzes do.

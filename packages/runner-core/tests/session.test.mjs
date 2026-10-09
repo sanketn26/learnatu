@@ -122,3 +122,27 @@ test('the sandbox page can only reach the addresses the language names', () => {
   const evil = sandboxDocument({ ...spec, workerSource: 'x = "</script><script>alert(1)</script>"' });
   assert.equal((evil.match(/<\/script>/g) ?? []).length, 1);
 });
+
+test('drawings from the sandbox are checked for size and shape', () => {
+  assert.deepEqual(readMessage({ type: 'render', id: 1, html: '<b>hi</b>' }), { type: 'render', id: 1, html: '<b>hi</b>' });
+  assert.equal(readMessage({ type: 'render', id: 1, html: 'x'.repeat(100_001) }), null);
+  assert.equal(readMessage({ type: 'render', id: 1 }), null);
+  const image = (w, h, bytes) => ({ type: 'render', id: 1, image: { width: w, height: h, data: new ArrayBuffer(bytes) } });
+  assert.equal(readMessage(image(2, 2, 16)).image.width, 2);
+  assert.equal(readMessage(image(2, 2, 15)), null);        // wrong number of bytes
+  assert.equal(readMessage(image(2000, 2000, 16_000_000)), null); // too many pixels
+  assert.equal(readMessage(image(0, 5, 0)), null);
+  assert.equal(readMessage({ type: 'render', id: 1, image: { width: 1, height: 1, data: 'AAAA' } }), null);
+});
+
+test('a drawing reaches the handler of the current run only', async () => {
+  const { session, posted, emit } = rig();
+  const seen = [];
+  const done = session.run(block, { render: (d) => seen.push(d) });
+  const id = posted[0].id;
+  emit({ type: 'render', id: id + 99, html: 'old' });
+  emit({ type: 'render', id, html: '<p>new</p>' });
+  emit({ type: 'done', id });
+  await done;
+  assert.deepEqual(seen, [{ html: '<p>new</p>', image: undefined }]);
+});

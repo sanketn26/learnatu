@@ -97,3 +97,11 @@ test('a pyrun block with a mistake is reported with its number and line', () => 
   assert.equal(out.length, 1);
   assert.match(out[0], /en\/one\.md: Python block #2, line 1: "requests" is not available here/);
 });
+
+test('a tsrun block with a mistake is reported with its number and line', () => {
+  const files = good();
+  files.set('en/one.md', lesson('One', '\n\n```tsrun\nlet a = 1;\n```\n\n```tsrun\n//@ mode sparkle\nlet b = 2;\n```\n'));
+  const out = messages(check(files));
+  assert.equal(out.length, 1);
+  assert.match(out[0], /en\/one\.md: TypeScript block #2, line 1: mode is run or render/);
+});

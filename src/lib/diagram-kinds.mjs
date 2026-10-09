@@ -2,6 +2,7 @@ import { check as checkFlow } from '@learnatu/flowmap';
 import { check as checkAlgo } from '@learnatu/algomap';
 import { check as checkPhys, parsePhys } from '@learnatu/physmap';
 import { check as checkPy } from '@learnatu/pyrun';
+import { check as checkTs } from '@learnatu/tsrun';
 
 /**
  * Every kind of text diagram a lesson can hold, in one place. To add a package, add one entry here and one in
@@ -15,6 +16,7 @@ import { check as checkPy } from '@learnatu/pyrun';
  */
 export const DIAGRAM_KINDS = [
   { lang: 'pyrun', label: 'Python block', check: (text) => checkPy(text) },
+  { lang: 'tsrun', label: 'TypeScript block', check: (text) => checkTs(text) },
   { lang: 'flow', label: 'flow diagram', check: (text) => checkFlow(text) },
   { lang: 'algo', label: 'algorithm diagram', check: (text) => checkAlgo(text) },
   {
