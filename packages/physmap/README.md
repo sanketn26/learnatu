@@ -60,6 +60,22 @@ Units: `m kg g s N J W Hz A C V ohm F K Pa L rad deg yr ly AU c`, with `G M k c 
 prefix (`kg`, `cm`, `ms`, `uF`, `nm`, `kohm`, `MHz` ...). Compound: `m/s`, `m/s2`, `N/m`, `kg*m/s2`. `c` is the speed of
 light (`0.6c`), `ly` and `yr` are for spacetime scenes.
 
+## Taking control of the picture
+
+The package works out a sensible picture (the part of the world to show, the words under it). Where a scene allows it,
+the text can say exactly what it wants instead. These lines are only accepted by the scenes that list them; any other
+scene says it does not know the word.
+
+| Line | Scenes | Meaning |
+| --- | --- | --- |
+| `view x=0m..10m y=0m..4m` | mechanics, ray (lens and mirror) | The part of the world to draw. Either axis may be left out and is then worked out. For a ray scene the axis runs through the middle, so `y` is the larger of the two numbers either side |
+| `caption "text"` | ray | Your words under the picture, in place of the generated ones |
+| `allow squashed` | mechanics | Turn off the check that stops a spring being squeezed to almost nothing, when you want that on purpose |
+
+`check` tries every slider at its low end, its high end, and every mix of the two (up to four sliders; a fixed spread
+of sixteen beyond that). A problem is reported on the `param` line of the slider that was moved, with the setting that
+caused it.
+
 ## Mechanics
 
 | Line | Meaning |
@@ -123,6 +139,9 @@ const svg = run.svg(120, { idPrefix: 'one', resolveImage: (ref) => `/media/${ref
 run.caption(120);                     // the words under the picture
 run.describe(120);                    // the same moment in plain words, for screen readers
 ```
+
+Add a kind of scene with one entry: write `scene-<name>.ts` (a parser and an `INFO`), add it to the list in
+`src/kinds.ts`, and add an example. `registerKind` adds one at run time.
 
 Pass `{ hasImage }` to `check` to confirm that backdrops and sprites exist. `EXAMPLES` lists a working scene for each kind,
 `KIND_INFO` the one-line summary, limits and words of each. The raw mechanics numbers (`simulate`, `renderSvg`) are in

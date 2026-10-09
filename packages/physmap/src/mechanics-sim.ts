@@ -303,7 +303,10 @@ function viewOf(model: Model, r: Rules, samples: Sample[], params: Record<string
   const pad = Math.max(x1 - x0, y1 - y0, 1e-3) * 0.12;
   // a floor is the bottom of the picture: a little room under it, not a band of empty space
   const bottom = Number.isFinite(floor) ? Math.min(y0, floor) - pad * 0.35 : y0 - pad;
-  return { x0: x0 - pad, y0: bottom, x1: x1 + pad, y1: y1 + pad };
+  const auto = { x0: x0 - pad, y0: bottom, x1: x1 + pad, y1: y1 + pad };
+  // a `view` line in the text wins, axis by axis
+  const { x, y } = model.view ?? {};
+  return { x0: x ? x[0] : auto.x0, x1: x ? x[1] : auto.x1, y0: y ? y[0] : auto.y0, y1: y ? y[1] : auto.y1 };
 }
 
 /** The shortest a spring gets during the run, in metres. Rods and links without a rest length are skipped (Infinity). */

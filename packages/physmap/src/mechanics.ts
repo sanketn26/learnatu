@@ -1,8 +1,16 @@
 import type { Model, Problem } from './types.ts';
-import type { Scene } from './scene.ts';
+import type { KindInfo, Scene } from './scene.ts';
 import { captionAt, describe, renderSvg } from './mechanics-render.ts';
 import { shortestSpring, simulate } from './mechanics-sim.ts';
 import { num } from './draw.ts';
+
+/** What this kind is for and the words it understands: shown in the playground's field guide. */
+export const INFO: KindInfo = {
+  title: 'Mechanics',
+  summary: 'Bodies, gravity, springs, rods, drag, floors, ramps with friction, and collisions, moving over time.',
+  cannot: 'Rotation of extended bodies, fluids, friction that depends on speed, more than a flat 2D plane.',
+  words: ['body', 'gravity', 'spring', 'rod', 'drag', 'ground', 'incline', 'collide', 'run', 'plot', 'show', 'trail', 'note', 'backdrop', 'view', 'allow']
+};
 
 /** Turns a parsed mechanics model into the generic Scene the player and the checker use. */
 export function mechanicsScene(m: Model): Scene {
@@ -22,7 +30,7 @@ export function mechanicsScene(m: Model): Scene {
     },
     verify(values) {
       const sim = simulate(m, values);
-      if (!sim.ok) return [];
+      if (!sim.ok || m.allowSquashed) return [];
       const out: Problem[] = [];
       const squashed = m.links.find((l) => {
         const rest = l.rest === undefined ? 0 : typeof l.rest === 'number' ? l.rest : sim.params[l.rest.param];

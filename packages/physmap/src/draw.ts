@@ -1,3 +1,4 @@
+import { esc } from '@learnatu/textmap-core';
 /**
  * Small drawing helpers every scene shares, so they all look and theme the same way.
  * Colours come from CSS variables with fallbacks. Set --pm-ink, --pm-muted, --pm-card, --pm-line, --pm-brand and
@@ -6,7 +7,7 @@
  */
 export const WIDTH = 720;
 
-export const esc = (text: string) => text.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
+export { esc };
 export const f1 = (v: number) => (Math.round(v * 10) / 10).toString();
 export const f2 = (v: number) => (Math.round(v * 100) / 100).toString();
 /** Three significant figures, no trailing zeros: 0.0123, 12.3, 1.23e+6. */

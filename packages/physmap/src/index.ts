@@ -11,14 +11,14 @@
  * In a browser, `mountPhysmap(element, text)` from '@learnatu/physmap/dom' adds Play, a time slider and the sliders
  * the author declared. Mechanics also exposes its parts (simulate, renderSvg) from '@learnatu/physmap/mechanics'.
  */
-export { parse, parsePhys, check, registerScene } from './parse.ts';
-export { SCENE_KINDS, startValues, extremeValues } from './scene.ts';
-export type { Scene, Run, SceneKind, ParseResult, CheckOptions, RenderOptions } from './scene.ts';
-export { tokenize } from './tokenize.ts';
+export { parse, parsePhys, check, registerKind } from './parse.ts';
+export { SCENE_KINDS, KIND_INFO } from './kinds.ts';
+export type { KindDef } from './kinds.ts';
+export { startValues, extremeValues, settingsToTry } from './scene.ts';
+export type { Setting, Scene, Run, SceneKind, KindInfo, Builder, ParseResult, CheckOptions, RenderOptions } from './scene.ts';
+export { tokenize } from '@learnatu/textmap-core';
 export { parseQuantity, parseUnit, dimName, dimSymbol } from './units.ts';
 export { PhysSyntaxError } from './types.ts';
 export type { Param, Predict, Problem, Dim, Val } from './types.ts';
 export { EXAMPLES } from './examples.ts';
 export type { Example } from './examples.ts';
-export { KIND_INFO } from './reference.ts';
-export type { KindInfo } from './reference.ts';

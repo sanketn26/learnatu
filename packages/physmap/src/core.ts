@@ -1,7 +1,7 @@
 import type { Dim, Param, Predict, Problem, Val, Vec } from './types.ts';
-import { tokenize } from './tokenize.ts';
-import type { Token } from './tokenize.ts';
-import { NO_DIM, dimName, dimSymbol, isNone, parseQuantity, sameDim } from './units.ts';
+import { list, suggest, tokenize } from '@learnatu/textmap-core';
+import type { Token } from '@learnatu/textmap-core';
+import { NO_DIM, dim, dimName, dimSymbol, isNone, parseQuantity, sameDim } from './units.ts';
 
 /**
  * What every scene's parser shares: reading numbers with units, sliders, `key=value` properties, and the lines that
@@ -10,32 +10,7 @@ import { NO_DIM, dimName, dimSymbol, isNone, parseQuantity, sameDim } from './un
 export interface Statement { line: number; command: string; rest: Token[] }
 export interface Args { words: string[]; props: Map<string, { text: string }> }
 
-function distance(a: string, b: string): number {
-  const row = Array.from({ length: b.length + 1 }, (_, i) => i);
-  for (let i = 1; i <= a.length; i++) {
-    let previous = row[0];
-    row[0] = i;
-    for (let j = 1; j <= b.length; j++) {
-      const keep = row[j];
-      row[j] = Math.min(row[j] + 1, row[j - 1] + 1, previous + (a[i - 1] === b[j - 1] ? 0 : 1));
-      previous = keep;
-    }
-  }
-  return row[b.length];
-}
-
-/** ` Did you mean "mass"?` when one of `choices` is close to `word`. */
-export function suggest(word: string, choices: readonly string[]): string {
-  let best = '';
-  let bestDistance = 3;
-  for (const choice of choices) {
-    const d = distance(word.toLowerCase(), choice.toLowerCase());
-    if (d < bestDistance) { best = choice; bestDistance = d; }
-  }
-  return best ? ` Did you mean "${best}"?` : '';
-}
-
-export const list = (items: readonly string[]) => items.map((i) => `"${i}"`).join(', ');
+export { list, suggest };
 
 /** Spaces inside (...) are dropped, so "(0m, 1m)" is one word. Quoted text is left alone. */
 export function tightenParens(line: string): string {
@@ -72,6 +47,17 @@ export interface Ctx {
   assumptions: string[];
   images: { line: number; ref: string }[];
   title?: string;
+  /** The words of `title`, `assume`... that this kind of scene also understands: 'view', 'caption', 'allow'. A scene turns them on with `enable`. */
+  enabled: Set<string>;
+  enable(...words: string[]): void;
+  /** What `allow` can be followed by in this kind of scene. */
+  allowChoices?: string[];
+  /** Set by `view x=0m..10m y=0m..4m`: the part of the world to draw, instead of one worked out from the scene. */
+  view?: { x?: [number, number]; y?: [number, number] };
+  /** Set by `caption "…"`: replaces the words the scene would write under its picture. */
+  captionText?: string;
+  /** Set by `allow squashed`...: checks the author has turned off on purpose. */
+  allowed: Set<string>;
   problem(line: number, message: string): void;
   /** A number with a unit in `dim`, or `$slider`. Records a problem and returns null when it is not. */
   value(text: string, dim: Dim, what: string, line: number, needUnit?: boolean): Val | null;
@@ -88,6 +74,7 @@ export function makeCtx(): Ctx {
   const problem = (line: number, message: string) => { problems.push({ line, message }); };
   const ctx: Ctx = {
     problems, params: new Map(), predicts: [], assumptions: [], images: [], problem,
+    enabled: new Set(), allowed: new Set(), enable(...words) { words.forEach((w) => ctx.enabled.add(w)); },
     value(text, dim, what, line, needUnit = false) {
       if (text.startsWith('$')) {
         const p = ctx.params.get(text.slice(1));
@@ -145,6 +132,38 @@ export function makeCtx(): Ctx {
           if (!rest[0]?.quoted) problem(line, 'assume needs the text in quotes: assume "no air resistance"');
           else ctx.assumptions.push(rest[0].text);
           return true;
+        case 'caption':
+          if (!ctx.enabled.has('caption')) return false;
+          if (!rest[0]?.quoted) problem(line, 'caption needs the text in quotes: caption "A real, inverted image"');
+          else ctx.captionText = rest[0].text;
+          return true;
+        case 'view': {
+          if (!ctx.enabled.has('view')) return false;
+          const a = ctx.args(rest, ['x', 'y'], line, 'view');
+          if (!a.props.size || a.words.length) { problem(line, 'view needs a range for x or y or both: view x=0m..10m y=0m..4m'); return true; }
+          const view: NonNullable<Ctx['view']> = {};
+          for (const axis of ['x', 'y'] as const) {
+            const text = a.props.get(axis)?.text;
+            if (text === undefined) continue;
+            const range = /^(.+?)\.\.(.+)$/.exec(text);
+            const lo = range ? ctx.fixed(range[1], dim(1, 0, 0), `view ${axis} (from)`, line) : null;
+            const hi = range ? ctx.fixed(range[2], dim(1, 0, 0), `view ${axis} (to)`, line) : null;
+            if (!range) problem(line, `view ${axis} needs a range from smaller to bigger, like ${axis}=0m..10m`);
+            else if (lo !== null && hi !== null) {
+              if (lo >= hi) problem(line, `view ${axis} must run from smaller to bigger`);
+              else view[axis] = [lo, hi];
+            }
+          }
+          ctx.view = view;
+          return true;
+        }
+        case 'allow': {
+          if (!ctx.enabled.has('allow')) return false;
+          const choices = ctx.allowChoices ?? [];
+          if (!rest[0] || !choices.includes(rest[0].text)) { problem(line, `allow turns off a check you chose to ignore. Write: allow ${choices[0] ?? 'something'}${rest[0] ? `.${suggest(rest[0].text, choices)}` : ''}`); return true; }
+          ctx.allowed.add(rest[0].text);
+          return true;
+        }
         case 'predict': {
           const a = ctx.args(rest, ['answer'], line, 'predict');
           if (!a.words[0] || !rest.find((t) => t.quoted && !t.key)) { problem(line, 'predict needs a question in quotes and answer="…": predict "What happens if the mass doubles?" answer="The swing takes about 41% longer."'); return true; }

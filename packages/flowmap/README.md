@@ -57,13 +57,17 @@ One statement per line. `#` starts a comment.
 | `direction right` / `down` | Reading direction. Default `right` |
 | `speed slow` / `normal` / `fast` | Dot speed |
 | `group id "Label" kind [in=group] [cidr=10.0.0.0/24]` | A group. Kinds: `vpc subnet cluster namespace region layer zone lan dmz vlan`. Zones are tags, not boxes. `cidr=` shows an address range beside the name |
-| `node id "Label" kind [replicas=N] [capacity=N] [in=group] [zones=a,b] [sidecar=text] [ip=addr,addr] [ports=443,8000-8100] [sub="text"]` | A block. Kinds: `client service gateway cache database document storage disk queue stream worker external ingress egress proxy`, and for networks `server router switch firewall loadbalancer dns vpn accesspoint internet` (default `service`). `ip=` and `ports=` show under the name; write IPv6 in quotes (`ip="2001:db8::1"`). Also accepted: `kafka kinesis eventstream topic` (stream), `mongodb documentdb docstore` (document), `s3 bucket files fileserver objectstore` (storage), `volume drive ssd nfs` (disk), `laptop phone mobile pc device` (client), `host vm webserver` (server), `gw modem nat` (router), `fw waf` (firewall), `lb alb nlb` (loadbalancer), `nameserver resolver` (dns), `wifi ap wap` (accesspoint), `wan web` (internet) |
+| `node id "Label" kind [replicas=N] [capacity=N] [in=group] [zones=a,b] [sidecar=text] [ip=addr,addr] [ports=443,8000-8100] [sub="text"] [rank=N] [order=N] [width=px]` | A block. Kinds: `client service gateway cache database document storage disk queue stream worker external ingress egress proxy`, and for networks `server router switch firewall loadbalancer dns vpn accesspoint internet` (default `service`). `ip=` and `ports=` show under the name; write IPv6 in quotes (`ip="2001:db8::1"`). Also accepted: `kafka kinesis eventstream topic` (stream), `mongodb documentdb docstore` (document), `s3 bucket files fileserver objectstore` (storage), `volume drive ssd nfs` (disk), `laptop phone mobile pc device` (client), `host vm webserver` (server), `gw modem nat` (router), `fw waf` (firewall), `lb alb nlb` (loadbalancer), `nameserver resolver` (dns), `wifi ap wap` (accesspoint), `wan web` (internet) |
 | `a -> b -> c`, `a <-> b`, `a <- b` | Links. Unknown names become blocks. After a link: `"label"` or `via=proxy` |
 | `flow id "Label" [rate=N] [color=1-6]: a -> b <-> c` | Traffic along links that exist. `<->` sends a reply back |
 | `spof id "reason"` | Mark a single point of failure |
 | `chokepoint id "reason" [badge="text"]` | Mark a chokepoint on a block |
 | `chokepoint a -> b "reason" [badge="text"]` | Mark a chokepoint on a link |
 | `whatif "Label" fail=group [stops=flow,flow]` | A button that fails a group: blocks that live only there fade, listed flows stop |
+
+**Placing blocks yourself.** The layout puts blocks in columns by how far they are from the start of the flow. To
+take over, write `rank=N` (the column, or row when `direction down`, counting from 0), `order=N` (the place in that
+column, counting from 0) and `width=px` on a block. Blocks without them are placed as before, around the ones you fixed.
 
 `via=proxy` on a link inserts the proxy block between the two ends, and flows follow it. A flow may only use links
 that exist; `<->` in a flow needs a `<->` link.

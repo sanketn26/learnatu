@@ -23,7 +23,7 @@ const FORCE: Dim = dim(1, 1, -2);
 
 
 const COMMON = ['title', 'assume', 'param', 'predict'];
-const KEYWORDS = [...COMMON, 'body', 'gravity', 'spring', 'rod', 'drag', 'ground', 'incline', 'collide', 'run', 'plot', 'show', 'trail', 'note', 'backdrop'];
+const KEYWORDS = [...COMMON, 'body', 'gravity', 'spring', 'rod', 'drag', 'ground', 'incline', 'collide', 'run', 'plot', 'show', 'trail', 'note', 'backdrop', 'view', 'allow'];
 const SHOWS = ['velocity', 'force', 'weight', 'normal', 'friction'];
 /** body: whether the quantity belongs to a body (yes), to the whole scene (no), or can be either (kinetic energy). */
 const QUANTITIES: Record<string, { dim: Dim; body: 'yes' | 'no' | 'either' }> = {
@@ -39,6 +39,8 @@ export function parseMechanics(ctx: Ctx, stmts: Statement[]): Model | null {
     scene: 'mechanics', assumptions: [], params: [], bodies: [], links: [], drags: [], gravity: 0, run: 0,
     surfaces: [], plots: [], showVelocity: [], showForce: [], showWeight: [], showNormal: [], showFriction: [], trails: [], notes: [], predicts: [], images: []
   };
+  ctx.enable('view', 'allow');
+  ctx.allowChoices = ['squashed'];
   const deferred: (() => void)[] = [];
   let sawRun = false;
   let allVelocity = false, allForce = false, allTrails = false, allWeight = false, allNormal = false, allFriction = false;
@@ -255,5 +257,7 @@ export function parseMechanics(ctx: Ctx, stmts: Statement[]): Model | null {
   m.assumptions = ctx.assumptions;
   m.params = [...ctx.params.values()];
   m.predicts = ctx.predicts;
+  if (ctx.view) m.view = ctx.view;
+  if (ctx.allowed.has('squashed')) m.allowSquashed = true;
   return m;
 }

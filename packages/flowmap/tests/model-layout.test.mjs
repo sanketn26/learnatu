@@ -72,3 +72,15 @@ test('several links leaving one side use different points', () => {
 test('same text gives the same picture', () => {
   assert.deepEqual(layout(parse(SAMPLE)).view, layout(parse(SAMPLE)).view);
 });
+
+test('rank, order and width put a block exactly where the author says', () => {
+  const plain = layout(parse('a -> b -> c\na -> d'));
+  const d = parse('a -> b -> c\na -> d\nnode d "D" rank=2 order=0 width=300\nnode c "C" rank=2 order=1');
+  const placed = layout(d);
+  assert.equal(placed.nodes.get('d').x, placed.nodes.get('c').x); // same column
+  assert.ok(placed.nodes.get('d').y < placed.nodes.get('c').y);   // d first, then c
+  assert.equal(placed.nodes.get('d').w, 300);
+  assert.notEqual(plain.nodes.get('d').x, placed.nodes.get('d').x);
+  assert.throws(() => parse('node a rank=-1'), /whole number/);
+  assert.throws(() => parse('node a width=10'), /pixels/);
+});

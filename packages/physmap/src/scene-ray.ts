@@ -1,8 +1,16 @@
-import type { Run, Scene } from './scene.ts';
+import type { Run, Scene, KindInfo } from './scene.ts';
 import { NONE, list, suggest, val } from './core.ts';
 import type { Ctx, Statement } from './core.ts';
 import { dim } from './units.ts';
 import { WIDTH, arrow, f1, makePlot, num, siLength, svgWrap } from './draw.ts';
+
+/** What this kind is for and the words it understands: shown in the playground's field guide. */
+export const INFO: KindInfo = {
+  title: 'Rays and lenses',
+  summary: 'An object, a thin lens or a mirror, the three principal rays and the image; or a beam crossing a boundary.',
+  cannot: 'Thick lenses, aberrations, colour spreading (dispersion), wave effects.',
+  words: ['object', 'lens', 'mirror', 'screen', 'beam', 'view', 'caption']
+};
 
 /**
  * `scene ray`: geometric optics.
@@ -12,7 +20,7 @@ import { WIDTH, arrow, f1, makePlot, num, siLength, svgWrap } from './draw.ts';
  * Rays are straight lines. Waves, diffraction and colour spreading are not part of this scene (see `scene wave`).
  */
 const L = dim(1, 0, 0);
-const KEYWORDS = ['title', 'assume', 'param', 'predict', 'object', 'lens', 'mirror', 'screen', 'beam'];
+const KEYWORDS = ['title', 'assume', 'param', 'predict', 'object', 'lens', 'mirror', 'screen', 'beam', 'view', 'caption'];
 type N = number | { param: string };
 
 interface Element { kind: 'lens' | 'mirror'; line: number; at: N; f: N; aperture?: N }
@@ -30,6 +38,7 @@ const STYLE = `
 
 export function parseRay(ctx: Ctx, stmts: Statement[]): Scene | null {
   const { problem, args } = ctx;
+  ctx.enable('view', 'caption');
   let object: Obj | undefined;
   let element: Element | undefined;
   let screenAt: N | undefined;
@@ -89,16 +98,17 @@ export function parseRay(ctx: Ctx, stmts: Statement[]): Scene | null {
     if (element && typeof element.f === 'number' && element.f === 0) problem(element.line, 'f cannot be zero');
     if (object && typeof object.height === 'number' && object.height <= 0) problem(object.line, 'the object height must be above zero');
   }
+  if (beam && ctx.view) problem(beam.line, 'view applies to a lens or mirror scene, not to a beam');
   if (ctx.problems.length) return null;
 
   const base = { kind: 'ray' as const, title: ctx.title, assumptions: ctx.assumptions, params: [...ctx.params.values()], predicts: ctx.predicts, images: [], playSeconds: 0 };
-  if (beam) return { ...base, run: (values) => beamRun(ctx.title, beam as Beam, values) };
-  return { ...base, run: (values) => imagingRun(ctx.title, object as Obj, element as Element, screenAt, values) };
+  if (beam) return { ...base, run: (values) => beamRun(ctx.title, beam as Beam, ctx.captionText, values) };
+  return { ...base, run: (values) => imagingRun(ctx.title, object as Obj, element as Element, screenAt, ctx.view, ctx.captionText, values) };
 }
 
 // ---------- imaging ----------
 
-function imagingRun(title: string | undefined, obj: Obj, el: Element, screenAt: N | undefined, values: Record<string, number>): Run {
+function imagingRun(title: string | undefined, obj: Obj, el: Element, screenAt: N | undefined, view: Ctx['view'], captionText: string | undefined, values: Record<string, number>): Run {
   const xo = val(obj.at, values), h = val(obj.height, values), e = val(el.at, values), f = val(el.f, values);
   const mirror = el.kind === 'mirror';
   const u = e - xo;
@@ -116,7 +126,7 @@ function imagingRun(title: string | undefined, obj: Obj, el: Element, screenAt: 
 
   return {
     count: 1, ok, problem: ok ? undefined : 'The object must be in front of the lens or mirror, with a height above zero.',
-    caption: () => `${title ? `${title}. ` : ''}${kind}, f = ${siLength(f)}, object ${siLength(u)} away. ${far ? 'The image is very far away.' : nature}`,
+    caption: () => captionText ?? `${title ? `${title}. ` : ''}${kind}, f = ${siLength(f)}, object ${siLength(u)} away. ${far ? 'The image is very far away.' : nature}`,
     clock: () => '',
     describe: () => `${kind}, focal length ${siLength(f)}, object ${siLength(u)} from it. ${nature}`,
     svg(_i, options) {
@@ -125,7 +135,9 @@ function imagingRun(title: string | undefined, obj: Obj, el: Element, screenAt: 
       let x0 = Math.min(...xs), x1 = Math.max(...xs);
       const span0 = x1 - x0;
       x0 -= span0 * 0.08; x1 += span0 * 0.08;
-      const yMax = Math.max(Math.abs(h) * 1.5, far || atInfinity ? 0 : Math.abs(hi) * 1.3, Math.abs(f) * 0.35, el.aperture !== undefined ? val(el.aperture, values) / 2 : 0) || 1;
+      if (view?.x) [x0, x1] = view.x;
+      let yMax = Math.max(Math.abs(h) * 1.5, far || atInfinity ? 0 : Math.abs(hi) * 1.3, Math.abs(f) * 0.35, el.aperture !== undefined ? val(el.aperture, values) / 2 : 0) || 1;
+      if (view?.y) yMax = Math.max(Math.abs(view.y[0]), Math.abs(view.y[1]));
       const H = 300, M = 24;
       const scale = Math.min((WIDTH - 2 * M) / (x1 - x0), (H - 2 * M) / (2 * yMax));
       const ox = (WIDTH - (x1 - x0) * scale) / 2;
@@ -190,7 +202,7 @@ function imagingRun(title: string | undefined, obj: Obj, el: Element, screenAt: 
 
 // ---------- refraction ----------
 
-function beamRun(title: string | undefined, beam: Beam, values: Record<string, number>): Run {
+function beamRun(title: string | undefined, beam: Beam, captionText: string | undefined, values: Record<string, number>): Run {
   const a1 = val(beam.angle, values), n1 = val(beam.n1, values), n2 = val(beam.n2, values);
   const ok = [a1, n1, n2].every(Number.isFinite) && a1 >= 0 && a1 < Math.PI / 2 && n1 >= 1 && n2 >= 1;
   const s2 = (n1 * Math.sin(a1)) / n2;
@@ -210,7 +222,7 @@ function beamRun(title: string | undefined, beam: Beam, values: Record<string, n
   const plot = ok ? makePlot({ top: 270, height: 150, unit: 'degrees', yFrom: 0, yTo: 90, xFrom: 0, xTo: 90, xFromLabel: '0° incidence', xToLabel: '90°', series: [{ name: 'angle of refraction', xs, ys }] }) : undefined;
   return {
     count: 1, ok, problem: ok ? undefined : 'The angle must be from 0° to just under 90°, and each refractive index must be 1 or more.',
-    caption: () => `${title ? `${title}. ` : ''}${text}`,
+    caption: () => captionText ?? `${title ? `${title}. ` : ''}${text}`,
     clock: () => '',
     describe: () => text,
     svg(_i, options) {

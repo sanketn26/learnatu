@@ -1,8 +1,16 @@
-import type { Run, Scene } from './scene.ts';
+import type { Run, Scene, KindInfo } from './scene.ts';
 import { list, suggest, val } from './core.ts';
 import type { Ctx, Statement } from './core.ts';
 import { dim } from './units.ts';
 import { WIDTH, arrow, f1, num, siLength, svgWrap } from './draw.ts';
+
+/** What this kind is for and the words it understands: shown in the playground's field guide. */
+export const INFO: KindInfo = {
+  title: 'Fields',
+  summary: 'The electric field of point charges, or the gravitational field of point masses: arrows, field lines, potential.',
+  cannot: 'Moving charges, magnetic fields, fields inside matter, mixing electric and gravity.',
+  words: ['charge', 'mass', 'probe', 'show', 'window']
+};
 
 /**
  * `scene field`: the field around point charges (electric) or point masses (gravity), as arrows, field lines and

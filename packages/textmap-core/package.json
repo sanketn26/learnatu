@@ -1,0 +1,12 @@
+{
+  "name": "@learnatu/textmap-core",
+  "version": "0.1.0",
+  "description": "What the text-diagram packages (flowmap, algomap, physmap) share: the line tokenizer, problems with line numbers, did-you-mean suggestions and SVG escaping.",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": ["src"]
+}

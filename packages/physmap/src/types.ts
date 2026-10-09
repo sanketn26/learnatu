@@ -1,7 +1,8 @@
+import { SyntaxProblems } from '@learnatu/textmap-core';
+import type { Problem } from '@learnatu/textmap-core';
+export type { Problem };
 /** The shapes of data physmap works with. Everything here is plain data, so it is easy to print and to test. */
 
-/** A mistake in the text, with the line it is on (1 = first line of the block). */
-export interface Problem { line: number; message: string }
 
 /** Powers of length, mass, time, electric current and temperature. Angles and plain numbers are all zeros. */
 export interface Dim { L: number; M: number; T: number; I: number; K: number }
@@ -67,6 +68,10 @@ export interface Model {
   notes: Note[];
   predicts: Predict[];
   backdrop?: Backdrop;
+  /** Written with `view`: the part of the world to draw, replacing the one worked out from the bodies. */
+  view?: { x?: [number, number]; y?: [number, number] };
+  /** Checks the author turned off with `allow`. */
+  allowSquashed?: boolean;
   /** Every image the text refers to, so the page can check and resolve them. */
   images: { line: number; ref: string }[];
 }
@@ -95,11 +100,6 @@ export interface Simulation {
   ok: boolean;
 }
 
-export class PhysSyntaxError extends Error {
-  problems: Problem[];
-  constructor(problems: Problem[]) {
-    super(problems.map((p) => `line ${p.line}: ${p.message}`).join('\n'));
-    this.name = 'PhysSyntaxError';
-    this.problems = problems;
-  }
+export class PhysSyntaxError extends SyntaxProblems {
+  constructor(problems: Problem[]) { super(problems, 'PhysSyntaxError'); }
 }

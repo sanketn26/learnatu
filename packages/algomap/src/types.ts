@@ -1,10 +1,11 @@
+import { SyntaxProblems } from '@learnatu/textmap-core';
+import type { Problem } from '@learnatu/textmap-core';
+export type { Problem };
 /** The shapes of data algomap works with. Everything here is plain data, so it is easy to print and to test. */
 
 export const STRUCT_KINDS = ['array', 'list', 'stack', 'queue', 'grid', 'hash', 'tree', 'ntree', 'trie', 'graph', 'vars'] as const;
 export type StructKind = (typeof STRUCT_KINDS)[number];
 
-/** A mistake in the text, with the line it is on (1 = first line of the block). */
-export interface Problem { line: number; message: string }
 
 export interface GraphEdge { from: number; to: number; directed: boolean; weight?: string }
 export interface Point { x: number; y: number }
@@ -84,11 +85,6 @@ export interface Diagram {
 }
 
 /** Thrown by `parse` when the text has mistakes. `problems` lists all of them. */
-export class AlgoSyntaxError extends Error {
-  problems: Problem[];
-  constructor(problems: Problem[]) {
-    super(problems.map((p) => `line ${p.line}: ${p.message}`).join('\n'));
-    this.name = 'AlgoSyntaxError';
-    this.problems = problems;
-  }
+export class AlgoSyntaxError extends SyntaxProblems {
+  constructor(problems: Problem[]) { super(problems, 'AlgoSyntaxError'); }
 }

@@ -1,5 +1,6 @@
 import { GROUP_KINDS, NODE_KINDS, NODE_KIND_ALIASES, FlowSyntaxError } from './types.ts';
 import type { Diagram, Flow, FlowEdge, FlowGroup, FlowNode, GroupKind, Mark, NodeKind, Problem, WhatIf } from './types.ts';
+import { suggest } from '@learnatu/textmap-core';
 import { tokenize } from './tokenize.ts';
 import type { Token } from './tokenize.ts';
 import { findEdge } from './model.ts';
@@ -14,32 +15,7 @@ export interface ParseResult { diagram: Diagram | null; problems: Problem[] }
 const ID = /^[A-Za-z_][A-Za-z0-9_-]*$/;
 const SETTINGS = ['title', 'direction', 'speed'];
 const KEYWORDS = [...SETTINGS, 'group', 'node', 'flow', 'spof', 'chokepoint', 'whatif'];
-const NODE_ATTRS = ['replicas', 'capacity', 'in', 'zones', 'sidecar', 'sub', 'label', 'ip', 'ports'];
-
-function distance(a: string, b: string): number {
-  const row = Array.from({ length: b.length + 1 }, (_, i) => i);
-  for (let i = 1; i <= a.length; i++) {
-    let previous = row[0];
-    row[0] = i;
-    for (let j = 1; j <= b.length; j++) {
-      const keep = row[j];
-      row[j] = Math.min(row[j] + 1, row[j - 1] + 1, previous + (a[i - 1] === b[j - 1] ? 0 : 1));
-      previous = keep;
-    }
-  }
-  return row[b.length];
-}
-
-/** ` Did you mean "db"?` when one of `choices` is close to `word`. */
-function suggest(word: string, choices: string[]): string {
-  let best = '';
-  let bestDistance = 3;
-  for (const choice of choices) {
-    const d = distance(word.toLowerCase(), choice.toLowerCase());
-    if (d < bestDistance) { best = choice; bestDistance = d; }
-  }
-  return best ? ` Did you mean "${best}"?` : '';
-}
+const NODE_ATTRS = ['replicas', 'capacity', 'in', 'zones', 'sidecar', 'sub', 'label', 'ip', 'ports', 'rank', 'order', 'width'];
 
 /** True when following `in=` parents from this group leads back to it. */
 function hasParentCycle(groups: Map<string, FlowGroup>, start: string): boolean {
@@ -197,6 +173,14 @@ export function parseFlow(source: string): ParseResult {
             node.ports = value.split(',').map((a) => a.trim()).filter(Boolean);
             const problem = node.ports.map(portProblem).find(Boolean) ?? (node.ports.length ? '' : 'ports needs a number, for example ports=443');
             if (problem) return fail(line, problem);
+          } else if (key === 'rank' || key === 'order') {
+            const n = Number(value);
+            if (!Number.isInteger(n) || n < 0 || n > 30) return fail(line, `${key} must be a whole number from 0 to 30 (counting from 0)`);
+            node[key] = n;
+          } else if (key === 'width') {
+            const n = Number(value);
+            if (!Number.isFinite(n) || n < 80 || n > 600) return fail(line, 'width must be a number of pixels from 80 to 600');
+            node.width = n;
           } else if (key === 'sidecar') node.sidecar = value;
           else if (key === 'sub') node.sub = value;
           else return fail(line, `"${key}" is not a setting of a block. Use: ${NODE_ATTRS.join(', ')}.${suggest(key, NODE_ATTRS)}`);

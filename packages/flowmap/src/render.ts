@@ -1,3 +1,4 @@
+import { esc } from '@learnatu/textmap-core';
 import type { Cubic, Diagram, FlowNode, Flow } from './types.ts';
 import { layout, cubicPoint } from './layout.ts';
 import type { Layout } from './layout.ts';
@@ -17,7 +18,6 @@ export interface RenderOptions {
   idPrefix?: string;
 }
 
-const esc = (text: string) => text.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
 const n1 = (v: number) => (Math.round(v * 10) / 10).toString();
 const pt = (p: { x: number; y: number }) => `${n1(p.x)} ${n1(p.y)}`;
 const cubicD = (c: Cubic) => `M${pt(c.p1)}C${pt(c.c1)} ${pt(c.c2)} ${pt(c.p2)}`;

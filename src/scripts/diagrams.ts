@@ -1,57 +1,35 @@
 export {};
 /**
- * Draws ```mermaid blocks (<pre class="mermaid">). The Mermaid library is big, so it is only downloaded
- * on pages that actually contain a diagram. Colours come from the site's theme tokens and are redrawn when it changes.
- * If a diagram has a mistake, its source text stays visible with a short note instead of a blank space.
+ * Draws ```flow, ```algo and ```phys blocks (<pre class="flow|algo|phys">) as live figures. Each package's code is
+ * only downloaded on pages that actually contain one of its blocks. If it fails to load, or one block fails to
+ * draw, the text stays visible and the other blocks carry on.
  */
-const blocks = Array.from(document.querySelectorAll<HTMLElement>('pre.mermaid'));
+interface Mount { (host: HTMLElement, source: string, options: { idPrefix: string; resolveImage?: (ref: string) => string }): unknown }
+interface Kind { lang: string; prefix: string; host: string; what: string; load: () => Promise<Mount> }
 
-if (blocks.length) {
-  blocks.forEach((block) => { block.dataset.source = block.textContent ?? ''; });
-  const root = document.documentElement;
-  const isDark = () => root.dataset.theme === 'dark' || (!root.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches);
+const KINDS: Kind[] = [
+  { lang: 'flow', prefix: 'fm', host: 'flowmap-host', what: 'flow diagrams', load: async () => (await import('@learnatu/flowmap/dom')).mountFlowmap },
+  { lang: 'algo', prefix: 'am', host: 'algomap-host', what: 'algorithm diagrams', load: async () => (await import('@learnatu/algomap/dom')).mountAlgomap },
+  { lang: 'phys', prefix: 'pm', host: 'physmap-host', what: 'physics scenes', load: async () => (await import('@learnatu/physmap/dom')).mountPhysmap }
+];
 
-  /** Mermaid's colours, taken from the site's own tokens so diagrams match every theme (original, white, dark). */
-  const themeVariables = () => {
-    const css = getComputedStyle(root);
-    const token = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback;
-    return {
-      darkMode: isDark(),
-      fontFamily: getComputedStyle(document.body).fontFamily,
-      background: token('--surface', '#ffffff'),
-      primaryColor: token('--brand-soft', '#dcf5eb'),
-      primaryBorderColor: token('--brand', '#087f6b'),
-      primaryTextColor: token('--ink', '#17332e'),
-      secondaryColor: token('--surface', '#ffffff'),
-      tertiaryColor: token('--paper', '#fbfdf8'),
-      lineColor: token('--muted', '#60706c'),
-      textColor: token('--ink', '#17332e'),
-      noteBkgColor: token('--warn-bg', '#fff2da'),
-      noteTextColor: token('--ink', '#17332e'),
-      noteBorderColor: token('--warn', '#b8790a')
-    };
-  };
-
-  const draw = async () => {
-    const { default: mermaid } = await import('mermaid');
-    mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'base', themeVariables: themeVariables() });
-    for (const [index, block] of blocks.entries()) {
-      const source = block.dataset.source!;
+for (const kind of KINDS) {
+  const blocks = Array.from(document.querySelectorAll<HTMLElement>(`pre.${kind.lang}`));
+  if (!blocks.length) continue;
+  kind.load().then((mount) => {
+    blocks.forEach((pre, index) => {
+      let images: Record<string, string> = {};
+      try { images = JSON.parse(pre.dataset.images ?? '{}'); } catch { /* no pictures */ }
+      const host = document.createElement('div');
+      host.className = kind.host;
+      pre.after(host);
       try {
-        const { svg } = await mermaid.render(`diagram-${index}-${Date.now()}`, source);
-        block.innerHTML = svg;
-        block.classList.add('is-drawn');
-        block.classList.remove('has-error');
-        block.removeAttribute('title');
-      } catch {
-        block.textContent = source;
-        block.classList.add('has-error');
-        block.setAttribute('title', 'This diagram could not be drawn. Check its syntax.');
+        mount(host, pre.textContent ?? '', { idPrefix: `${kind.prefix}${index + 1}`, resolveImage: (ref) => images[ref] ?? ref });
+        pre.remove();
+      } catch (error) {
+        host.remove();
+        console.error(`Could not draw ${kind.what}`, error);
       }
-    }
-  };
-
-  draw();
-  new MutationObserver(draw).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+    });
+  }).catch((error) => console.error(`Could not load ${kind.what}`, error));
 }

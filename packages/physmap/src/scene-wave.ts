@@ -1,9 +1,17 @@
 import type { Vec } from './types.ts';
-import type { Run, Scene } from './scene.ts';
+import type { Run, Scene, KindInfo } from './scene.ts';
 import { NONE, list, suggest, val } from './core.ts';
 import type { Ctx, Statement } from './core.ts';
 import { dim } from './units.ts';
 import { WIDTH, arrow, colour, f1, makePlot, nice, num, siLength, siTime, svgWrap, wavelengthColour } from './draw.ts';
+
+/** What this kind is for and the words it understands: shown in the playground's field guide. */
+export const INFO: KindInfo = {
+  title: 'Waves: light and sound',
+  summary: 'Rings from point sources, interference, the Doppler effect and shock cones, probes, and fringes from slits.',
+  cannot: 'Polarisation, reflection from surfaces, 3D waves, anything that needs solving Maxwell\'s equations.',
+  words: ['medium', 'source', 'slits', 'screen', 'probe', 'plot', 'run', 'note']
+};
 
 /**
  * `scene wave`: light and sound as waves. Two modes.

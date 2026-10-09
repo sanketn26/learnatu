@@ -1,15 +1,17 @@
 import type { Param, Predict, Problem } from './types.ts';
 
 /**
- * What every kind of scene (mechanics, wave, ray, field, cycle, circuit, spacetime, bloch) turns into.
+ * What every kind of scene turns into (the kinds are registered in kinds.ts).
  * The browser player only knows this shape, so a new kind of scene needs no new player code.
  *
  * A scene is a recipe with sliders. `run(values)` does the work for one setting of the sliders and returns a Run:
  * a row of moments the reader can scrub through (one moment for a scene that does not change with time),
  * each of which can be drawn as an SVG.
  */
-export const SCENE_KINDS = ['mechanics', 'wave', 'ray', 'field', 'cycle', 'circuit', 'spacetime', 'bloch'] as const;
-export type SceneKind = (typeof SCENE_KINDS)[number];
+export type SceneKind = string;
+
+/** What a kind is for, what it cannot do, and the words it understands. The playground shows it as a field guide. */
+export interface KindInfo { title: string; summary: string; cannot: string; words: string[] }
 
 export interface RenderOptions {
   /** Makes ids unique when several scenes share a page. Default "pm". */
@@ -48,12 +50,40 @@ export interface Scene {
   verify?(values: Record<string, number>): Problem[];
 }
 
+/** Reads the statements of one kind of scene. Records mistakes in `ctx`; returns null when it cannot build a scene. */
+export type Builder = (ctx: import('./core.ts').Ctx, stmts: import('./core.ts').Statement[]) => Scene | null;
+
 export interface ParseResult { scene: Scene | null; problems: Problem[] }
 export interface CheckOptions { /** Say whether an image the text names exists in the course. When left out, image names are not checked. */ hasImage?: (ref: string) => boolean }
 
 export const startValues = (scene: Pick<Scene, 'params'>): Record<string, number> => Object.fromEntries(scene.params.map((p) => [p.name, p.start]));
-/** The slider settings that are most likely to break a scene: the start and both ends of every slider. */
-export function extremeValues(scene: Pick<Scene, 'params'>): Record<string, number>[] {
-  const pick = (f: (p: Param) => number) => Object.fromEntries(scene.params.map((p) => [p.name, f(p)]));
-  return [pick((p) => p.start), pick((p) => p.min), pick((p) => p.max)];
+/** One setting of the sliders to try, with a plain-words description and the sliders that are away from their start. */
+export interface Setting { values: Record<string, number>; words: string; moved: Param[] }
+
+/**
+ * The slider settings most likely to break a scene: the start, every slider at its low end, every slider at its high
+ * end, then every mix of low and high ends. With more than four sliders the mixes are a fixed spread of 16, so the
+ * same text always gets the same checks.
+ */
+export function settingsToTry(scene: Pick<Scene, 'params'>): Setting[] {
+  const { params } = scene;
+  const make = (pick: (p: Param, i: number) => number): Setting => {
+    const values = Object.fromEntries(params.map((p, i) => [p.name, pick(p, i)]));
+    const moved = params.filter((p) => values[p.name] !== p.start);
+    const words = moved.length ? moved.map((p) => `"${p.name}" at ${values[p.name] === p.min ? 'its low end' : 'its high end'}`).join(' and ') : 'the starting settings';
+    return { values, words, moved };
+  };
+  const out: Setting[] = [make((p) => p.start), make((p) => p.min), make((p) => p.max)];
+  const mixes = params.length <= 4 ? 1 << params.length : 16;
+  if (params.length > 1) {
+    for (let m = 0; m < mixes; m++) {
+      const bits = params.length <= 4 ? m : (m * 2654435761) >>> 0;
+      out.push(make((p, i) => ((bits >> i) & 1 ? p.max : p.min)));
+    }
+  }
+  const seen = new Set<string>();
+  return out.filter((s) => { const key = JSON.stringify(s.values); if (seen.has(key)) return false; seen.add(key); return true; });
 }
+
+/** The same settings, as plain values. */
+export const extremeValues = (scene: Pick<Scene, 'params'>): Record<string, number>[] => settingsToTry(scene).map((s) => s.values);

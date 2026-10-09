@@ -11,25 +11,25 @@ import type { Diagram } from './types.ts';
 export interface MountOptions { idPrefix?: string }
 
 const CSS = `
-.fm-figure{margin:1.5rem 0;border:1px solid var(--fm-line,var(--line,#dfe8e3));border-radius:1.2rem;background:var(--fm-card,var(--surface,#fff));overflow:hidden;color:var(--fm-ink,var(--ink,#17332e));font:15px/1.5 system-ui,sans-serif}
-.fm-controls{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;padding:.7rem .9rem;border-bottom:1px solid var(--fm-line,var(--line,#dfe8e3))}
-.fm-controls button{font:600 .88rem system-ui,sans-serif;min-height:2.4rem;padding:0 .9rem;border-radius:999px;border:1.5px solid var(--fm-line,var(--line,#dfe8e3));background:var(--fm-card,var(--surface,#fff));color:inherit;cursor:pointer}
-.fm-controls button[aria-pressed="true"]{border-color:var(--fm-ink,var(--ink,#17332e));background:color-mix(in srgb,var(--fm-muted,var(--muted,#60706c)) 12%,transparent)}
-.fm-controls .fm-main{background:var(--fm-ink,var(--ink,#17332e));color:var(--fm-card,var(--surface,#fff));border-color:transparent}
+.fm-figure{margin:1.5rem 0;border:1px solid var(--fm-line,var(--tm-line,var(--line,#dfe8e3)));border-radius:1.2rem;background:var(--fm-card,var(--tm-card,var(--surface,#fff)));overflow:hidden;color:var(--fm-ink,var(--tm-ink,var(--ink,#17332e)));font:15px/1.5 system-ui,sans-serif}
+.fm-controls{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;padding:.7rem .9rem;border-bottom:1px solid var(--fm-line,var(--tm-line,var(--line,#dfe8e3)))}
+.fm-controls button{font:600 .88rem system-ui,sans-serif;min-height:2.4rem;padding:0 .9rem;border-radius:999px;border:1.5px solid var(--fm-line,var(--tm-line,var(--line,#dfe8e3)));background:var(--fm-card,var(--tm-card,var(--surface,#fff)));color:inherit;cursor:pointer}
+.fm-controls button[aria-pressed="true"]{border-color:var(--fm-ink,var(--tm-ink,var(--ink,#17332e)));background:color-mix(in srgb,var(--fm-muted,var(--tm-muted,var(--muted,#60706c))) 12%,transparent)}
+.fm-controls .fm-main{background:var(--fm-ink,var(--tm-ink,var(--ink,#17332e)));color:var(--fm-card,var(--tm-card,var(--surface,#fff)));border-color:transparent}
 .fm-controls i{display:inline-block;width:.65rem;height:.65rem;border-radius:50%;margin-right:.4rem}
 .fm-controls .fm-sep{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;opacity:.65;margin-left:.4rem}
-.fm-stage{padding:.6rem;background-image:radial-gradient(color-mix(in srgb,var(--fm-muted,var(--muted,#60706c)) 28%,transparent) 1px,transparent 1.2px);background-size:22px 22px}
+.fm-stage{padding:.6rem;background-image:radial-gradient(color-mix(in srgb,var(--fm-muted,var(--tm-muted,var(--muted,#60706c))) 28%,transparent) 1px,transparent 1.2px);background-size:22px 22px}
 .fm-stage{overflow-x:auto}.fm-stage svg{overflow:visible}
-.fm-controls:empty,.fm-legend[hidden],.fm-note[hidden]{display:none}.fm-legend{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;padding:.7rem .9rem;border-top:1px solid var(--fm-line,var(--line,#dfe8e3));font-size:.88rem;opacity:.85}
+.fm-controls:empty,.fm-legend[hidden],.fm-note[hidden]{display:none}.fm-legend{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;padding:.7rem .9rem;border-top:1px solid var(--fm-line,var(--tm-line,var(--line,#dfe8e3)));font-size:.88rem;opacity:.85}
 .fm-legend span{display:inline-flex;gap:.45rem;align-items:center}.fm-legend svg{width:1.7rem;height:1rem}
-.fm-note{margin:0;padding:.7rem .9rem;background:color-mix(in srgb,var(--fm-bad,var(--bad,#c2314f)) 14%,transparent);font-size:.92rem}
+.fm-note{margin:0;padding:.7rem .9rem;background:color-mix(in srgb,var(--fm-bad,var(--tm-bad,var(--bad,#c2314f))) 14%,transparent);font-size:.92rem}
 .fm-findings{list-style:none;margin:0;padding:0 .9rem .9rem;display:grid;gap:.45rem}
 .fm-findings li{display:grid;grid-template-columns:auto 1fr;gap:.2rem .7rem;padding:.6rem .8rem;border-radius:.8rem;font-size:.92rem}
-.fm-findings .fm-bad{background:color-mix(in srgb,var(--fm-bad,var(--bad,#c2314f)) 14%,transparent)}
-.fm-findings .fm-warn{background:color-mix(in srgb,var(--fm-warn,var(--warn,#b36b00)) 16%,transparent)}
+.fm-findings .fm-bad{background:color-mix(in srgb,var(--fm-bad,var(--tm-bad,var(--bad,#c2314f))) 14%,transparent)}
+.fm-findings .fm-warn{background:color-mix(in srgb,var(--fm-warn,var(--tm-warn,var(--warn,#b36b00))) 16%,transparent)}
 .fm-findings b{font:800 .7rem system-ui,sans-serif;letter-spacing:.05em;padding-top:.25rem}
 .fm-findings em{display:block;font:500 .7rem ui-monospace,monospace;font-style:normal;opacity:.6;text-transform:uppercase;letter-spacing:.04em}
-.fm-error{margin:1.5rem 0;padding:1rem 1.2rem;border:1.5px solid var(--fm-bad,var(--bad,#c2314f));border-radius:1rem;font-size:.92rem}
+.fm-error{margin:1.5rem 0;padding:1rem 1.2rem;border:1.5px solid var(--fm-bad,var(--tm-bad,var(--bad,#c2314f)));border-radius:1rem;font-size:.92rem}
 .fm-error pre{margin:.6rem 0 0;overflow:auto;white-space:pre-wrap;font:.82rem/1.5 ui-monospace,monospace}
 `;
 
@@ -169,7 +169,7 @@ class Figure {
   private legend() {
     const box = el('div', 'fm-legend');
     const item = (svg: string, text: string) => { const s = el('span'); s.innerHTML = svg; s.append(text); box.append(s); };
-    const bad = 'var(--fm-bad,var(--bad,#c2314f))', warn = 'var(--fm-warn,var(--warn,#b36b00))', mut = 'var(--fm-muted,var(--muted,#60706c))';
+    const bad = 'var(--fm-bad,var(--tm-bad,var(--bad,#c2314f)))', warn = 'var(--fm-warn,var(--tm-warn,var(--warn,#b36b00)))', mut = 'var(--fm-muted,var(--tm-muted,var(--muted,#60706c)))';
     if (this.d.marks.some((m) => m.kind === 'spof')) item(`<svg viewBox="0 0 30 18"><rect x="2" y="3" width="26" height="12" rx="4" fill="none" stroke="${bad}" stroke-width="2.4" stroke-dasharray="5 3"/></svg>`, 'Single point of failure');
     if (this.d.marks.some((m) => m.kind === 'chokepoint')) item(`<svg viewBox="0 0 30 18"><rect x="2" y="3" width="26" height="12" rx="4" fill="none" stroke="${warn}" stroke-width="3"/></svg>`, 'Chokepoint');
     if (this.d.edges.some((e) => e.twoWay)) item(`<svg viewBox="0 0 30 18"><path d="M3 9h24M8 5 3 9l5 4M22 5l5 4-5 4" fill="none" stroke="${mut}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`, 'Two-way flow');

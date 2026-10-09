@@ -86,3 +86,47 @@ test('a spring squashed through its own anchor is reported', () => {
   const text = wrap('body b mass=1kg at=(0.5m,0m)\nspring k=40N/m from=(0m,0m) to=b rest=0.2m').replace('run 1s', 'run 3s');
   assert.match(messages(text), /squashed to almost nothing/);
 });
+
+test('check tries mixes of slider ends and points at the slider that causes the trouble', () => {
+  // a lens with the object slider able to reach the lens only when "gap" is small and "f" is large? use ray: object must be in front of the lens
+  const text = `scene ray
+param x -30..-2 cm start=-20
+param f 5..40 cm start=10
+object at=$x height=2cm
+lens at=0cm f=$f
+`;
+  assert.deepEqual(check(text), []);
+  const bad = `scene ray
+param x -30..5 cm start=-20
+object at=$x height=2cm
+lens at=0cm f=10cm
+`;
+  const problems = check(bad);
+  assert.equal(problems.length, 1);
+  assert.equal(problems[0].line, 2);
+  assert.match(problems[0].message, /"x" at its high end/);
+});
+
+test('view pins the picture, caption replaces the words, allow turns a check off', () => {
+  const ray = `scene ray
+lens at=0cm f=10cm
+object at=-30cm height=2cm
+caption "My own words"
+view x=-40cm..40cm y=-5cm..5cm
+`;
+  assert.deepEqual(check(ray), []);
+  const run = parse(ray).run({});
+  assert.equal(run.caption(0), 'My own words');
+  const wide = parse(ray.replace('x=-40cm..40cm', 'x=-400cm..400cm')).run({}).svg(0);
+  assert.notEqual(run.svg(0), wide);
+  assert.match(check('scene ray\nlens at=0cm f=10cm\nobject at=-30cm height=2cm\nview x=5cm..1cm\n')[0].message, /smaller to bigger/);
+  assert.match(check('scene field\nview x=0m..1m\n')[0].message, /don't know "view"/);
+  const squashed = `scene mechanics
+param x 0.01..0.6 m start=0.3
+body b mass=1kg at=($x,0m)
+spring k=100N/m from=(0m,0m) to=b rest=0.4m
+run 2s
+`;
+  assert.ok(check(squashed).length > 0);
+  assert.deepEqual(check(squashed + 'allow squashed\n'), []);
+});

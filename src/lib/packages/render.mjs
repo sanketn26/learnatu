@@ -12,10 +12,8 @@ import remarkQuiz from '../remark-quiz.mjs';
 import rehypeHighlight from './highlight.mjs';
 import remarkCodeExtras from '../remark-code-extras.mjs';
 import remarkMermaid from '../remark-mermaid.mjs';
-import remarkFlow from '../remark-flow.mjs';
-import remarkAlgo from '../remark-algo.mjs';
-import remarkPhys from '../remark-phys.mjs';
-import { parsePhys } from '@learnatu/physmap';
+import remarkDiagrams from '../remark-diagrams.mjs';
+import { diagramKind } from '../diagram-kinds.mjs';
 import rewriteMarkdownLinks from '../rewrite-markdown-links.mjs';
 import { resolveAsset } from './assets.mjs';
 
@@ -36,16 +34,16 @@ function remarkCourseLinks({ slug, fromPath, assets }) {
       const match = node.url.match(/^(?!https?:|\/)(.*?)([^/]+)\.md(#[^\s]*)?$/);
       if (match) node.url = `/courses/${slug}/${match[2]}/${match[3] ?? ''}`;
     }
-    // pictures named inside a ```phys scene (backdrop, sprite) get the same /media/ addresses as Markdown images
-    if (node.type === 'code' && node.lang === 'phys') {
-      const { scene } = parsePhys(node.value);
+    // pictures named inside a diagram (a physics backdrop or sprite) get the same /media/ addresses as Markdown images
+    const kind = node.type === 'code' ? diagramKind(node.lang) : undefined;
+    if (kind?.images) {
       const images = {};
-      for (const { ref } of scene?.images ?? []) {
+      for (const ref of kind.images(node.value)) {
         if (/^(https?:|data:|\/)/.test(ref)) continue;
         const found = resolveAsset(ref, fromPath, assets);
         if (found) images[ref] = `/media/${slug}/${found}`;
       }
-      node.data = { ...node.data, physImages: images };
+      node.data = { ...node.data, diagramImages: images };
     }
     node.children?.forEach(walk);
   };
@@ -63,9 +61,7 @@ export async function renderMarkdown(markdown, { slug, fromPath = 'course.md', a
     .use(rewriteMarkdownLinks)
     .use(remarkQuiz)
     .use(remarkMermaid)
-    .use(remarkFlow)
-    .use(remarkAlgo)
-    .use(remarkPhys)
+    .use(remarkDiagrams)
     .use(remarkCodeExtras)
     .use(remarkRehype)
     .use(rehypeKatex)

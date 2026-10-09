@@ -17,6 +17,7 @@
   --panel-muted: #cce7df; --panel-fill: #55d6ae; --preview: #6d4bd8; --preview-bg: #efeaff;
   --cat-ai: #7b4fd6; --cat-digital-life: #1790c4; --cat-money: #d6446f; --cat-security: #0b8f7a; --cat-careers: #c47c00; --cat-physics: #4152e0; --cat-authoring: #0e7490;
   /* Flow diagrams (flowmap) take their colours from these */
+  --tm-ink: var(--ink); --tm-muted: var(--muted); --tm-card: var(--surface); --tm-line: var(--line); --tm-bad: var(--danger); --tm-warn: var(--warn); --tm-brand: var(--brand);
   --fm-ink: var(--ink); --fm-muted: var(--muted); --fm-card: var(--surface); --fm-line: var(--line); --fm-bad: var(--danger); --fm-warn: var(--warn); --fm-brand: var(--brand);
   --fm-flow-1: var(--cat-physics); --fm-flow-2: var(--cat-money); --fm-flow-3: var(--cat-careers); --fm-flow-4: var(--cat-security); --fm-flow-5: var(--cat-ai); --fm-flow-6: var(--cat-digital-life);
   color-scheme: light;

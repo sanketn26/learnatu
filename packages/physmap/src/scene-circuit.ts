@@ -1,8 +1,16 @@
-import type { Run, Scene } from './scene.ts';
+import type { Run, Scene, KindInfo } from './scene.ts';
 import { list, suggest, val } from './core.ts';
 import type { Ctx, Statement } from './core.ts';
 import { dim } from './units.ts';
 import { f1, makePlot, num, siTime, svgWrap } from './draw.ts';
+
+/** What this kind is for and the words it understands: shown in the playground's field guide. */
+export const INFO: KindInfo = {
+  title: 'Circuits',
+  summary: 'A battery with resistors in series and parallel, and a capacitor charging through them.',
+  cannot: 'Circuits with several loops, inductors, alternating current, real batteries.',
+  words: ['battery', 'resistor', 'lamp', 'capacitor', 'parallel', 'end', 'run']
+};
 
 /**
  * `scene circuit`: one loop with a battery, resistors in series, groups of resistors in parallel, and at most one

@@ -1,3 +1,4 @@
+import { esc } from '@learnatu/textmap-core';
 import type { Diagram, Point, Structure, StructState } from './types.ts';
 import { layout, CELL_W, CELL_H, LIST_W, STACK_W, STACK_H, GRID_W, GRID_H, HEAD, HASH_ITEM_W } from './layout.ts';
 import type { StructLayout } from './layout.ts';
@@ -15,7 +16,6 @@ export interface RenderOptions {
   idPrefix?: string;
 }
 
-const esc = (text: string) => text.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
 const n1 = (v: number) => (Math.round(v * 10) / 10).toString();
 
 const PAINT_FILL: Record<string, string> = { red: '#d6335a', black: '#1d2a27', blue: '#3b5bdb', green: '#2f9e44', orange: '#e8890c', purple: '#7b4fd6', gray: '#8a9a95' };

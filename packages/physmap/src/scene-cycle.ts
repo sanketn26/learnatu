@@ -1,8 +1,16 @@
-import type { Run, Scene } from './scene.ts';
+import type { Run, Scene, KindInfo } from './scene.ts';
 import { NONE, list, suggest, val } from './core.ts';
 import type { Ctx, Statement } from './core.ts';
 import { dim } from './units.ts';
 import { WIDTH, colour, f1, num, svgWrap } from './draw.ts';
+
+/** What this kind is for and the words it understands: shown in the playground's field guide. */
+export const INFO: KindInfo = {
+  title: 'Heat and cycles',
+  summary: 'An ideal gas taken through isothermal, isobaric, isochoric and adiabatic steps, on a pressure-volume diagram.',
+  cannot: 'Real gases, phase changes, irreversible processes.',
+  words: ['gas', 'process', 'note']
+};
 
 /**
  * `scene cycle`: an ideal gas taken through processes, drawn on a pressure-volume diagram.

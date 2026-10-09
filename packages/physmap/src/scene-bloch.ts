@@ -1,7 +1,15 @@
-import type { Run, Scene } from './scene.ts';
+import type { Run, Scene, KindInfo } from './scene.ts';
 import { NONE, list, suggest, val } from './core.ts';
 import type { Ctx, Statement } from './core.ts';
 import { WIDTH, arrow, f1, num, svgWrap } from './draw.ts';
+
+/** What this kind is for and the words it understands: shown in the playground's field guide. */
+export const INFO: KindInfo = {
+  title: 'Quantum: one qubit',
+  summary: 'A single qubit on the Bloch sphere, with gates drawn as rotations and measurement odds.',
+  cannot: 'More than one qubit (entanglement has no honest picture), noise, the wave function in space.',
+  words: ['state', 'step', 'gate', 'measure']
+};
 
 /**
  * `scene bloch`: one qubit on the Bloch sphere. Every single-qubit gate is a rotation of the sphere about an axis,

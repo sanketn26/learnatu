@@ -5,9 +5,7 @@ import rewriteMarkdownLinks from './src/lib/rewrite-markdown-links.mjs';
 import remarkQuiz from './src/lib/remark-quiz.mjs';
 import remarkCodeExtras from './src/lib/remark-code-extras.mjs';
 import remarkMermaid from './src/lib/remark-mermaid.mjs';
-import remarkFlow from './src/lib/remark-flow.mjs';
-import remarkAlgo from './src/lib/remark-algo.mjs';
-import remarkPhys from './src/lib/remark-phys.mjs';
+import remarkDiagrams from './src/lib/remark-diagrams.mjs';
 import remarkMath from 'remark-math';
 import remarkDirective from 'remark-directive';
 import remarkBlocks from './src/lib/remark-blocks.mjs';
@@ -25,5 +23,5 @@ export default defineConfig({
   redirects: legacyRedirects,
   security: { checkOrigin: true },
   // The shared processor converts legacy callouts, internal links, ```quiz, ```mermaid and ```flow and ```phys blocks, $math$, :::blocks and figures and code-block titles / tabs.
-  markdown: { processor: unified({ remarkPlugins: [remarkMath, remarkDirective, remarkBlocks, rewriteMarkdownLinks, remarkQuiz, remarkMermaid, remarkFlow, remarkAlgo, remarkPhys, remarkCodeExtras], rehypePlugins: [rehypeKatex, rehypeMathErrors] }) }
+  markdown: { processor: unified({ remarkPlugins: [remarkMath, remarkDirective, remarkBlocks, rewriteMarkdownLinks, remarkQuiz, remarkMermaid, remarkDiagrams, remarkCodeExtras], rehypePlugins: [rehypeKatex, rehypeMathErrors] }) }
 });

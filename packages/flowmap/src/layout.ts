@@ -25,6 +25,7 @@ const MARGIN = 34;
 
 /** Width of a block from its text: icon + the longer of name and sub-label. */
 export function nodeWidth(d: Diagram, n: FlowNode): number {
+  if (n.width !== undefined) return n.width;
   return Math.max(150, 62 + Math.max(n.label.length * 8.6, subLabel(d, n).length * 6.4) + 14);
 }
 
@@ -67,6 +68,7 @@ const groupKey = (d: Diagram, n: FlowNode) => groupChain(d, n.group).reverse().j
 export function layout(d: Diagram): Layout {
   const down = d.direction === 'down';
   const rank = rankNodes(d);
+  for (const n of d.nodes) if (n.rank !== undefined) rank.set(n.id, n.rank); // placed by the author
   const widths = new Map(d.nodes.map((n) => [n.id, nodeWidth(d, n)]));
   // "main" runs along the flow, "cross" across it
   const mainSize = (n: FlowNode) => (down ? NODE_HEIGHT : widths.get(n.id)!);
@@ -92,6 +94,21 @@ export function layout(d: Diagram): Layout {
       columns[r].sort((a, b) => groupKey(d, a).localeCompare(groupKey(d, b)) || score(a) - score(b) || declared.get(a.id)! - declared.get(b.id)!);
       columns[r].forEach((n, i) => position.set(n.id, i));
     }
+  }
+
+  // Blocks the author gave an `order` go to that place in their column; the others keep the order worked out above.
+  for (const col of columns) {
+    const pinned = col.filter((n) => n.order !== undefined).sort((a, b) => a.order! - b.order!);
+    if (!pinned.length) continue;
+    const free = col.filter((n) => n.order === undefined);
+    const result: FlowNode[] = [];
+    for (let i = 0; result.length < col.length; i++) {
+      const pin = pinned.find((n) => n.order === i);
+      if (pin) result.push(pin);
+      else if (free.length) result.push(free.shift()!);
+      else result.push(...pinned.filter((n) => !result.includes(n)));
+    }
+    col.splice(0, col.length, ...result);
   }
 
   // Positions (centres). main = along the flow.

@@ -9,5 +9,11 @@
     ".": "./src/index.ts",
     "./dom": "./src/dom.ts"
   },
-  "files": ["src", "README.md"]
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "dependencies": {
+    "@learnatu/textmap-core": "*"
+  }
 }
