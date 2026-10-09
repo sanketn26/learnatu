@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Session, readMessage, sandboxDocument, contentSecurityPolicy, PYODIDE_BASE, LIMITS } from '../src/index.ts';
+import { Session, readMessage, sandboxDocument, contentSecurityPolicy, OUTPUT_LIMIT } from '../src/index.ts';
 
 function rig() {
   const posted = [];
@@ -59,7 +59,7 @@ test('too much output stops the run', async () => {
   const { session, posted, emit } = rig();
   const done = session.run(block);
   const id = posted[0].id;
-  emit({ type: 'out', id, stream: 'stdout', text: 'x'.repeat(LIMITS.output + 1) });
+  emit({ type: 'out', id, stream: 'stdout', text: 'x'.repeat(OUTPUT_LIMIT + 1) });
   assert.equal((await done).outcome, 'too-much-output');
   assert.deepEqual(posted.at(-1), { type: 'kill' });
 });
@@ -94,21 +94,31 @@ test('messages from the sandbox are checked, not trusted', () => {
   assert.equal(readMessage('hi'), null);
   assert.equal(readMessage({ type: 'out', id: 1, stream: 'stdin', text: 'x' }), null);
   assert.equal(readMessage({ type: 'out', id: '1', stream: 'stdout', text: 'x' }), null);
-  assert.equal(readMessage({ type: 'status', id: 1, text: 'exploding' }), null);
+  assert.equal(readMessage({ type: 'status', id: 1, text: 'x'.repeat(500) }), null);
+  assert.equal(readMessage({ type: 'status', id: 1, text: 42 }), null);
+  assert.deepEqual(readMessage({ type: 'status', id: 1, text: 'loading-compiler' }), { type: 'status', id: 1, text: 'loading-compiler' });
   assert.equal(readMessage({ type: 'done', id: 1, error: { kind: 1 } }), null);
   assert.equal(readMessage({ type: 'launch-missiles' }), null);
   assert.deepEqual(readMessage({ type: 'done', id: 1, error: { kind: 'E', message: 'm', traceback: 't', line: 2, extra: 'dropped' } }), { type: 'done', id: 1, error: { kind: 'E', message: 'm', traceback: 't', line: 2 } });
 });
 
-test('the sandbox page can only reach the Pyodide address', () => {
-  const csp = contentSecurityPolicy(PYODIDE_BASE);
+test('extra options travel to the worker but the time limit stays on the page', async () => {
+  const { session, posted } = rig();
+  void session.run({ code: 'x', timeout: 7, packages: ['numpy'], flavour: 'plain' });
+  assert.deepEqual({ ...posted[0], id: 0 }, { type: 'run', id: 0, code: 'x', packages: ['numpy'], flavour: 'plain' });
+});
+
+test('the sandbox page can only reach the addresses the language names', () => {
+  const spec = { base: 'https://cdn.example.test/rt/', workerSource: 'self.onmessage = 1', origins: ['https://cdn.example.test'], wasm: false };
+  const csp = contentSecurityPolicy(spec);
   assert.match(csp, /default-src 'none'/);
-  assert.match(csp, /connect-src https:\/\/cdn\.jsdelivr\.net(;|$)/);
+  assert.match(csp, /connect-src https:\/\/cdn\.example\.test(;|$)/);
   assert.match(csp, /worker-src blob:/);
-  assert.doesNotMatch(csp, /\*/);
-  const html = sandboxDocument(PYODIDE_BASE);
+  assert.doesNotMatch(csp, /wasm-unsafe-eval|\*/);
+  assert.match(contentSecurityPolicy({ ...spec, wasm: true }), /wasm-unsafe-eval/);
+  const html = sandboxDocument(spec);
   assert.ok(html.includes(csp));
   // the worker text is embedded safely, however it is written
-  const evil = sandboxDocument(PYODIDE_BASE, 'x = "</script><script>alert(1)</script>"');
+  const evil = sandboxDocument({ ...spec, workerSource: 'x = "</script><script>alert(1)</script>"' });
   assert.equal((evil.match(/<\/script>/g) ?? []).length, 1);
 });

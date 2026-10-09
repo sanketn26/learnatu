@@ -12,8 +12,6 @@ export const LIMITS = {
   code: 20_000,
   /** Seconds the code may run (not counting the time it takes to load Python). */
   timeout: { min: 1, max: 60, default: 10 },
-  /** Characters of output kept; past this the run is stopped. */
-  output: 200_000,
   stdinLines: 50
 } as const;
 
@@ -39,27 +37,3 @@ export interface Block {
 export class PyrunSyntaxError extends SyntaxProblems {
   constructor(problems: Problem[]) { super(problems, 'PyrunSyntaxError'); }
 }
-
-// ---- messages between the page and the sandbox. Everything coming back from the sandbox is untrusted data. ----
-
-export interface RunRequest { type: 'run'; id: number; code: string; packages: string[]; stdin: string[]; shared: boolean }
-export type ToSandbox = RunRequest | { type: 'kill' } | { type: 'reset' };
-
-export interface RunError {
-  /** "NameError", "SyntaxError"... */
-  kind: string;
-  message: string;
-  /** Line in the code the reader sees, when Python gave one. */
-  line?: number;
-  /** The traceback, trimmed to the reader's own code. */
-  traceback: string;
-}
-export type FromSandbox =
-  | { type: 'status'; id: number; text: 'loading-python' | 'loading-packages' | 'running' }
-  | { type: 'out'; id: number; stream: 'stdout' | 'stderr'; text: string }
-  | { type: 'done'; id: number; error?: RunError }
-  | { type: 'crash'; id?: number; message: string };
-
-/** How a run ended, as the page reports it. */
-export type Outcome = 'ok' | 'error' | 'timeout' | 'stopped' | 'too-much-output' | 'crashed';
-export interface RunResult { outcome: Outcome; error?: RunError; message?: string }

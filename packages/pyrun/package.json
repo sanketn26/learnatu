@@ -5,10 +5,16 @@
   "type": "module",
   "private": true,
   "license": "UNLICENSED",
-  "dependencies": { "@learnatu/textmap-core": "*" },
+  "dependencies": {
+    "@learnatu/runner-core": "*",
+    "@learnatu/textmap-core": "*"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./dom": "./src/dom.ts"
   },
-  "files": ["src", "README.md"]
+  "files": [
+    "src",
+    "README.md"
+  ]
 }
