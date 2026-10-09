@@ -1,6 +1,6 @@
 import { esc } from '@learnatu/textmap-core';
 import type { Diagram, Point, Structure, StructState } from './types.ts';
-import { layout, CELL_W, CELL_H, LIST_W, STACK_W, STACK_H, GRID_W, GRID_H, HEAD, HASH_ITEM_W } from './layout.ts';
+import { layout, CELL_W, CELL_H, STACK_W, STACK_H, GRID_W, GRID_H, HEAD, HASH_ITEM_W } from './layout.ts';
 import type { StructLayout } from './layout.ts';
 import { hashKey, isAlive, layoutNTree, NT_H, pathKey } from './model.ts';
 
@@ -101,9 +101,9 @@ function drawPointers(st: StructState, l: StructLayout, y: (at: number) => numbe
 /** Arrays, queues and variables: boxes in a row with a label under each. */
 function drawRow(s: Structure, st: StructState, l: StructLayout, out: string[]) {
   l.centres.forEach((c, i) => {
-    const x = l.x + c.x - l.cw / 2, y = l.y + c.y - CELL_H / 2;
-    if (s.kind !== 'vars' && i >= st.values.length) { out.push(`<rect class="am-empty" x="${n1(x + 2)}" y="${n1(y + 2)}" width="${l.cw - 4}" height="${CELL_H - 4}" rx="5"/>`); return; }
-    out.push(cell(st, i, rect(x, y, l.cw, CELL_H, 5), st.values[i], l.x + c.x, l.y + c.y, s.kind === 'vars'));
+    const x = l.x + c.x - l.cw / 2, y = l.y + c.y - l.ch / 2;
+    if (s.kind !== 'vars' && i >= st.values.length) { out.push(`<rect class="am-empty" x="${n1(x + 2)}" y="${n1(y + 2)}" width="${l.cw - 4}" height="${l.ch - 4}" rx="5"/>`); return; }
+    out.push(cell(st, i, rect(x, y, l.cw, l.ch, 5), st.values[i], l.x + c.x, l.y + c.y, s.kind === 'vars'));
     out.push(tagAbove(st, i, l.x + c.x, y));
     const last = st.values.length - 1;
     const label = s.kind === 'vars' ? String(s.values[i]) : s.kind === 'queue' ? (i === 0 && last === 0 ? 'front, back' : i === 0 ? 'front' : i === last ? 'back' : String(i)) : String(i);
@@ -113,15 +113,15 @@ function drawRow(s: Structure, st: StructState, l: StructLayout, out: string[]) 
 }
 
 function drawList(st: StructState, l: StructLayout, out: string[]) {
-  const half = LIST_W / 2;
+  const half = l.cw / 2;
   st.values.forEach((v, i) => {
     const c = l.centres[i];
-    const x = l.x + c.x - half, y = l.y + c.y - CELL_H / 2;
+    const x = l.x + c.x - half, y = l.y + c.y - l.ch / 2;
     const last = i === st.values.length - 1;
     const next = last ? l.tail! : l.centres[i + 1];
     const ax = l.x + c.x + half, bx = l.x + next.x - (last ? 0 : half) - 2;
     out.push(`<path class="am-link" d="M${n1(ax)} ${n1(l.y + c.y)}H${n1(bx - 6)}"/><path class="am-arrow" d="M${n1(bx)} ${n1(l.y + c.y)}l-8 -5v10z"/>`);
-    out.push(cell(st, i, rect(x, y, LIST_W, CELL_H, 23), v, l.x + c.x, l.y + c.y));
+    out.push(cell(st, i, rect(x, y, l.cw, l.ch, Math.min(23, l.ch / 2)), v, l.x + c.x, l.y + c.y));
     out.push(tagAbove(st, i, l.x + c.x, y));
     out.push(`<text class="am-idx" x="${n1(l.x + c.x)}" y="${n1(l.y + l.indexY)}">${i === 0 ? 'head' : i}</text>`);
   });
@@ -131,26 +131,26 @@ function drawList(st: StructState, l: StructLayout, out: string[]) {
 
 function drawStack(st: StructState, l: StructLayout, out: string[]) {
   const baseY = l.y + l.h - 6;
-  out.push(`<path class="am-base" d="M${n1(l.x + l.gutter - 6)} ${n1(baseY)}H${n1(l.x + l.gutter + STACK_W + 6)}"/>`);
+  out.push(`<path class="am-base" d="M${n1(l.x + l.gutter - 6)} ${n1(baseY)}H${n1(l.x + l.gutter + l.cw + 6)}"/>`);
   l.centres.forEach((c, i) => {
-    const x = l.x + c.x - STACK_W / 2, y = l.y + c.y - STACK_H / 2;
+    const x = l.x + c.x - l.cw / 2, y = l.y + c.y - l.ch / 2;
     if (i >= st.values.length) return;
-    out.push(cell(st, i, rect(x + 1, y + 1, STACK_W - 2, STACK_H - 2, 4), st.values[i], l.x + c.x, l.y + c.y));
-    out.push(tagInside(st, i, x + STACK_W, y));
+    out.push(cell(st, i, rect(x + 1, y + 1, l.cw - 2, l.ch - 2, 4), st.values[i], l.x + c.x, l.y + c.y));
+    out.push(tagInside(st, i, x + l.cw, y));
     out.push(`<text class="am-idx am-end" x="${n1(l.x + l.gutter - 10)}" y="${n1(l.y + c.y + 4)}">${i}</text>`);
-    if (i === st.values.length - 1) out.push(`<text class="am-top" x="${n1(x + STACK_W + 8)}" y="${n1(l.y + c.y)}">◂ top</text>`);
+    if (i === st.values.length - 1) out.push(`<text class="am-top" x="${n1(x + l.cw + 8)}" y="${n1(l.y + c.y)}">◂ top</text>`);
   });
   if (!st.values.length) out.push(`<text class="am-top" x="${n1(l.x + l.gutter + 6)}" y="${n1(baseY - 14)}">empty</text>`);
 }
 
 function drawGrid(s: Structure, st: StructState, l: StructLayout, out: string[]) {
   const rows = s.rows!, cols = s.cols!;
-  for (let c = 0; c < cols; c++) out.push(`<text class="am-idx" x="${n1(l.x + l.gutter + c * GRID_W + GRID_W / 2)}" y="${n1(l.y + HEAD + 15)}">${esc(s.colNames?.[c] ?? String(c))}</text>`);
-  for (let r = 0; r < rows; r++) out.push(`<text class="am-idx am-end" x="${n1(l.x + l.gutter - 8)}" y="${n1(l.y + HEAD + l.topGutter + r * GRID_H + GRID_H / 2 + 4)}">${esc(s.rowNames?.[r] ?? String(r))}</text>`);
+  for (let c = 0; c < cols; c++) out.push(`<text class="am-idx" x="${n1(l.x + l.gutter + c * l.cw + l.cw / 2)}" y="${n1(l.y + HEAD + 15)}">${esc(s.colNames?.[c] ?? String(c))}</text>`);
+  for (let r = 0; r < rows; r++) out.push(`<text class="am-idx am-end" x="${n1(l.x + l.gutter - 8)}" y="${n1(l.y + HEAD + l.topGutter + r * l.ch + l.ch / 2 + 4)}">${esc(s.rowNames?.[r] ?? String(r))}</text>`);
   l.centres.forEach((c, i) => {
-    const x = l.x + c.x - GRID_W / 2, y = l.y + c.y - GRID_H / 2;
-    out.push(cell(st, i, rect(x, y, GRID_W, GRID_H, 3), st.values[i], l.x + c.x, l.y + c.y));
-    out.push(tagInside(st, i, x + GRID_W, y));
+    const x = l.x + c.x - l.cw / 2, y = l.y + c.y - l.ch / 2;
+    out.push(cell(st, i, rect(x, y, l.cw, l.ch, 3), st.values[i], l.x + c.x, l.y + c.y));
+    out.push(tagInside(st, i, x + l.cw, y));
   });
 }
 

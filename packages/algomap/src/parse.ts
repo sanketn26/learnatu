@@ -21,7 +21,7 @@ const FLASH_OPS: Record<string, Flash> = { compare: 'compare', focus: 'focus' };
 const KEEP_OPS: Record<string, Kept> = { done: 'done', visit: 'visit' };
 const OPS = ['compare', 'focus', 'done', 'visit', 'unmark', 'swap', 'set', 'clear', 'append', 'remove', 'push', 'pop', 'enqueue', 'dequeue',
   'insert', 'add', 'move', 'detach', 'rotate', 'paint', 'tag', 'weight', 'pointer', 'unpointer', 'path', 'reset'];
-const KEYWORDS = ['title', 'step', 'place', ...DECLARATIONS, ...OPS];
+const KEYWORDS = ['title', 'step', 'place', 'size', ...DECLARATIONS, ...OPS];
 const LINEAR = ['array', 'list', 'stack', 'queue', 'tree'];
 const POINTABLE = ['array', 'list', 'queue', 'tree'];
 const NODE_TREES = ['ntree', 'trie'];
@@ -283,6 +283,12 @@ export function parseAlgo(source: string): ParseResult {
       return;
     }
 
+    if (word === 'size') {
+      if (started) { fail(line, 'size goes before the first step, with the declarations'); return; }
+      size(args, line);
+      return;
+    }
+
     if (word === 'step') {
       startFrames();
       finishStep();
@@ -465,6 +471,22 @@ export function parseAlgo(source: string): ParseResult {
     g.positions ??= [];
     while (g.positions.length < g.values.length) g.positions.push(null);
     g.positions[at] = { x, y };
+  }
+
+  /** `size a w=70 h=50`: how big one cell is, for the structures drawn as boxes. */
+  function size(args: Token[], line: number) {
+    const { attrs, rest } = settings(args, ['w', 'h'], line, 'size');
+    const s = structures.get(rest[0]?.text ?? '');
+    if (!s || rest.length !== 1 || !Object.keys(attrs).length) { fail(line, `size needs a structure and a width or height: size a w=70 h=50${rest[0] && !s ? `. There is no structure called "${rest[0].text}" above this line.${suggest(rest[0].text, [...structures.keys()])}` : ''}`); return; }
+    if (!['array', 'queue', 'vars', 'list', 'stack', 'grid'].includes(s.kind)) { fail(line, `size works on arrays, queues, vars, lists, stacks and grids; "${s.id}" is a ${s.kind}`); return; }
+    const cell: { w?: number; h?: number } = {};
+    for (const [key, text] of Object.entries(attrs)) {
+      const n = Number(text);
+      const [lo, hi] = key === 'w' ? [28, 200] : [22, 120];
+      if (!Number.isFinite(n) || n < lo || n > hi) { fail(line, `${key} is a number of pixels from ${lo} to ${hi}`); return; }
+      cell[key as 'w' | 'h'] = n;
+    }
+    s.cell = cell;
   }
 
   function operate(word: string, args: Token[], line: number) {

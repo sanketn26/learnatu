@@ -69,7 +69,8 @@ scene says it does not know the word.
 | Line | Scenes | Meaning |
 | --- | --- | --- |
 | `view x=0m..10m y=0m..4m` | mechanics, ray (lens and mirror) | The part of the world to draw. Either axis may be left out and is then worked out. For a ray scene the axis runs through the middle, so `y` is the larger of the two numbers either side |
-| `caption "text"` | ray | Your words under the picture, in place of the generated ones |
+| `caption "text"` | every scene | Your words under the picture, in place of the generated ones (for mechanics this also replaces any `note` lines) |
+| `units seconds` | spacetime | The unit of time to draw with (`years days seconds milliseconds microseconds nanoseconds`); distances use the matching light-unit. Left out, the unit that fits the biggest value is chosen |
 | `allow squashed` | mechanics | Turn off the check that stops a spring being squeezed to almost nothing, when you want that on purpose |
 
 `check` tries every slider at its low end, its high end, and every mix of the two (up to four sliders; a fixed spread

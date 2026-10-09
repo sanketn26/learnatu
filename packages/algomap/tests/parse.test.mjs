@@ -182,3 +182,13 @@ test('mistakes in the new kinds say what to write instead', () => {
   assert.match(messages('stack s 1\nstep "x"\n  pointer p s[0]'), /3: .*Pointers sit under/);
   assert.match(messages('vars v sum=0\nstep "x"\n  set v.sun 1'), /3: .*no variable "sun".*Did you mean "sum"/);
 });
+
+test('size sets the cell width and height exactly, and rejects what it cannot size', () => {
+  const base = 'array a 3 1 2\nsize a w=80 h=60\nstep "go"\nswap a[0] a[1]\n';
+  const d = parse(base);
+  assert.deepEqual(d.structures[0].cell, { w: 80, h: 60 });
+  assert.deepEqual(check(base), []);
+  assert.match(check('array a 1 2\nsize a w=5\nstep "x"\n')[0].message, /pixels from 28 to 200/);
+  assert.match(check('graph g: a -- b\nsize g w=60\nstep "x"\n')[0].message, /works on arrays/);
+  assert.match(check('array a 1 2\nstep "x"\nsize a w=60\n')[0].message, /before the first step/);
+});

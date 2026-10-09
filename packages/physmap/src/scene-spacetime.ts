@@ -9,7 +9,7 @@ export const INFO: KindInfo = {
   title: 'Relativity',
   summary: 'Events, worldlines and light cones on a Minkowski diagram, with a moving observer: simultaneity, time dilation, the interval.',
   cannot: 'Gravity, acceleration, curved spacetime, more than one space dimension.',
-  words: ['event', 'worldline', 'clock', 'frame', 'show', 'measure']
+  words: ['event', 'worldline', 'clock', 'frame', 'show', 'measure', 'units']
 };
 
 /**
@@ -22,7 +22,7 @@ const C = 299792458;
 const T = dim(0, 0, 1);
 const L = dim(1, 0, 0);
 const SPEED = dim(1, 0, -1);
-const KEYWORDS = ['title', 'assume', 'param', 'predict', 'event', 'worldline', 'clock', 'frame', 'show', 'measure'];
+const KEYWORDS = ['title', 'assume', 'param', 'predict', 'event', 'worldline', 'clock', 'frame', 'show', 'measure', 'units'];
 const ID = /^[A-Za-z_][A-Za-z0-9_]*$/;
 type N = number | { param: string };
 
@@ -48,6 +48,7 @@ export function parseSpacetime(ctx: Ctx, stmts: Statement[]): Scene | null {
   let frame: { id: string; line: number; v: N } | undefined;
   const shows: { line: number; what: string; at?: string }[] = [];
   let measure: { line: number; a: string; b: string } | undefined;
+  let unitName: string | undefined;
 
   for (const { line, command, rest } of stmts) {
     if (ctx.common({ line, command, rest })) continue;
@@ -97,6 +98,13 @@ export function parseSpacetime(ctx: Ctx, stmts: Statement[]): Scene | null {
         shows.push({ line, what, at: rest[1].text });
         break;
       }
+      case 'units': {
+        if (unitName) { problem(line, 'only one "units" line'); break; }
+        const names = UNITS.map((u) => u[1]);
+        if (rest.length !== 1 || !names.includes(rest[0].text)) { problem(line, `units says which unit of time to draw with (distances use the matching light-unit): units ${names[2]}.${rest[0] ? suggest(rest[0].text, names) : ''} Choose from ${list(names)}`); break; }
+        unitName = rest[0].text;
+        break;
+      }
       case 'measure': {
         if (measure) { problem(line, 'only one "measure" line'); break; }
         if (rest.length !== 2) { problem(line, 'measure needs two events: measure A B'); break; }
@@ -134,19 +142,19 @@ export function parseSpacetime(ctx: Ctx, stmts: Statement[]): Scene | null {
   return {
     kind: 'spacetime', title: ctx.title, assumptions: ['flat spacetime: no gravity, no acceleration', ...ctx.assumptions], params: [...ctx.params.values()], predicts: ctx.predicts, images: [],
     playSeconds: frame ? 6 : 0,
-    run: (values) => spacetimeRun(ctx.title, events, worldlines, clocks, frame, shows, measure, values)
+    run: (values) => spacetimeRun(ctx.title, events, worldlines, clocks, frame, shows, measure, unitName, values)
   };
 }
 
 const STEPS = 61;
 
-function spacetimeRun(title: string | undefined, events: Ev[], worldlines: Wl[], clocks: Clock[], frame: { id: string; v: N } | undefined, shows: { what: string; at?: string }[], measure: { a: string; b: string } | undefined, values: Record<string, number>): Run {
+function spacetimeRun(title: string | undefined, events: Ev[], worldlines: Wl[], clocks: Clock[], frame: { id: string; v: N } | undefined, shows: { what: string; at?: string }[], measure: { a: string; b: string } | undefined, unitName: string | undefined, values: Record<string, number>): Run {
   const E = events.map((e) => ({ id: e.id, t: val(e.t, values), x: val(e.x, values) }));
   const wTarget = frame ? val(frame.v, values) / C : 0;
   const ok = E.every((e) => Number.isFinite(e.t) && Number.isFinite(e.x)) && Math.abs(wTarget) < 1;
-  // pick the units from the biggest time or distance in the scene
+  // the author's `units` line, or else the units that fit the biggest time or distance in the scene
   const big = Math.max(1e-30, ...E.flatMap((e) => [Math.abs(e.t), Math.abs(e.x) / C]));
-  const [tu, tname, xname] = UNITS.find(([f]) => big >= f * 0.9) ?? UNITS[UNITS.length - 1];
+  const [tu, tname, xname] = UNITS.find(([, name]) => name === unitName) ?? UNITS.find(([f]) => big >= f * 0.9) ?? UNITS[UNITS.length - 1];
   const P = E.map((e) => ({ id: e.id, t: e.t / tu, x: e.x / (C * tu) }));       // c = 1: both axes in the same unit
   const count = frame ? STEPS : 1;
   const rapidity = Math.atanh(Math.min(Math.max(wTarget, -0.999999), 0.999999));

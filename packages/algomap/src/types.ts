@@ -43,6 +43,8 @@ export interface Structure {
   init?: (string | null)[];
   /** Fixed node positions for a graph, in grid units. */
   positions?: (Point | null)[];
+  /** Written with `size`: the width and height of one cell in pixels, replacing the default. */
+  cell?: { w?: number; h?: number };
 }
 
 /** Short-lived highlights, cleared at the start of every step. */

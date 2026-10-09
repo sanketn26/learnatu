@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parse, check, parseQuantity, parseUnit, dimName, tokenize, PhysSyntaxError } from '../src/index.ts';
+import { EXAMPLES, parse, check, parseQuantity, parseUnit, dimName, tokenize, PhysSyntaxError } from '../src/index.ts';
 import { parseModel } from '../src/mechanics-api.ts';
 import { SPRING, THROW, BOUNCE, PENDULUM } from './fixtures.mjs';
 
@@ -129,4 +129,21 @@ run 2s
 `;
   assert.ok(check(squashed).length > 0);
   assert.deepEqual(check(squashed + 'allow squashed\n'), []);
+});
+
+test('caption works in every kind of scene', () => {
+  for (const e of EXAMPLES) {
+    const text = e.text.replace(/^(scene \w+)\n/, '$1\ncaption "Said by the teacher"\n');
+    assert.deepEqual(check(text), [], e.id);
+    const run = parse(text).run({});
+    assert.equal(run.caption(0), 'Said by the teacher', e.id);
+  }
+});
+
+test('units pins the unit of time instead of choosing one', () => {
+  const base = 'scene spacetime\nevent A at=(0yr,0ly)\nevent B at=(0yr,3ly)\nframe S2 v=0.6c\nmeasure A B\n';
+  assert.deepEqual(check(base + 'units milliseconds\n'), []);
+  const auto = parse(base).run({}).describe(0), pinned = parse(base + 'units milliseconds\n').run({}).describe(0);
+  assert.notEqual(auto, pinned);
+  assert.match(check(base + 'units fortnights\n')[0].message, /Choose from/);
 });

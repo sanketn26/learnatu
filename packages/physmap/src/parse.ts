@@ -14,6 +14,15 @@ function withDefaults(scene: Scene): void {
   if (verify) scene.verify = (values) => verify({ ...startValues(scene), ...values });
 }
 
+/** `caption "…"` in the text: these words replace the ones the scene would write under its picture. */
+function withCaption(scene: Scene, text: string): void {
+  const run = scene.run.bind(scene);
+  scene.run = (values) => {
+    const r = run(values);
+    return { ...r, caption: () => text };
+  };
+}
+
 export { registerKind };
 
 /**
@@ -39,8 +48,10 @@ export function parsePhys(source: string): ParseResult {
 
   const rest = stmts.slice(1);
   for (const s of rest) if (s.command === 'scene') ctx.problem(s.line, 'only one "scene" line, and it comes first');
+  ctx.enable('caption'); // every kind of scene lets the text replace its generated words
   const scene = (kindDef(kind as string) as KindDef).parse(ctx, rest.filter((s) => s.command !== 'scene'));
   if (scene) withDefaults(scene);
+  if (scene && ctx.captionText !== undefined) withCaption(scene, ctx.captionText);
   return { scene: ctx.problems.length ? null : scene, problems: sorted() };
 }
 

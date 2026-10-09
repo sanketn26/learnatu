@@ -64,6 +64,7 @@ One statement per line. `#` starts a comment. Declare everything first, then wri
 | `trie id word word …` | A trie built from words; the nodes are named by their prefix (`t.ca`) and the top is `t.root` |
 | `graph id: a -- b -> c` | Links between named nodes. `--` is plain, `->` is one-way, `-3-` and `-3>` carry a weight. Repeat the line to add more |
 | `place g.a x y` | Put a graph node at a position (x right, y down, in steps of about one node). Place every node or none |
+| `size a w=70 h=50` | How big one cell is, in pixels (`w` 28 to 200, `h` 22 to 120; either may be left out). For arrays, queues, vars, lists, stacks and grids; before the first step |
 | `vars id sum=0 count=0` | A panel of named variables (up to 12). `name=_` starts one unset |
 
 Values with spaces go in quotes: `array w "to be" "or not"`.

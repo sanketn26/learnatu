@@ -154,9 +154,11 @@ export function layout(d: Diagram): Layout {
   d.edges.forEach((e) => {
     const a = nodes.get(e.from)!, b = nodes.get(e.to)!;
     const s = sideOf(a, b);
-    edgeSides.set(e.id, { from: s, to: opposite[s] });
-    ends.push({ edge: e.id, node: e.from, side: s, other: e.to, end: 'from' });
-    ends.push({ edge: e.id, node: e.to, side: opposite[s], other: e.from, end: 'to' });
+    const fromSide = e.fromSide ?? (e.toSide ? opposite[e.toSide] : s);
+    const toSide = e.toSide ?? (e.fromSide ? opposite[e.fromSide] : opposite[s]);
+    edgeSides.set(e.id, { from: fromSide, to: toSide });
+    ends.push({ edge: e.id, node: e.from, side: fromSide, other: e.to, end: 'from' });
+    ends.push({ edge: e.id, node: e.to, side: toSide, other: e.from, end: 'to' });
   });
   const anchor = new Map<string, Point>(); // key: edge id + end
   const edgeIndex = new Map(d.edges.map((e, i) => [e.id, i]));
@@ -183,12 +185,13 @@ export function layout(d: Diagram): Layout {
   const edges = new Map<string, LayoutEdge>();
   for (const e of d.edges) {
     const p1 = anchor.get(`${e.id}|from`)!, p2 = anchor.get(`${e.id}|to`)!;
-    const side = edgeSides.get(e.id)!.from;
-    const horizontal = side === 'l' || side === 'r';
-    const sign = side === 'r' || side === 'b' ? 1 : -1;
-    const k = (horizontal ? Math.abs(p2.x - p1.x) : Math.abs(p2.y - p1.y)) * 0.5;
-    const c1: Point = horizontal ? { x: p1.x + sign * k, y: p1.y } : { x: p1.x, y: p1.y + sign * k };
-    const c2: Point = horizontal ? { x: p2.x - sign * k, y: p2.y } : { x: p2.x, y: p2.y - sign * k };
+    const { from: fromSide, to: toSide } = edgeSides.get(e.id)!;
+    const horizontal = fromSide === 'l' || fromSide === 'r';
+    const k = Math.max(36, (horizontal ? Math.abs(p2.x - p1.x) : Math.abs(p2.y - p1.y)) * 0.5);
+    // each end's handle points away from its block
+    const away = (side: End['side'], p: Point, length: number): Point =>
+      side === 'r' ? { x: p.x + length, y: p.y } : side === 'l' ? { x: p.x - length, y: p.y } : side === 'b' ? { x: p.x, y: p.y + length } : { x: p.x, y: p.y - length };
+    const c1 = away(fromSide, p1, k), c2 = away(toSide, p2, k);
     const curve: Cubic = { p1, c1, c2, p2 };
     edges.set(e.id, { id: e.id, curve, mid: cubicPoint(curve, 0.5) });
   }

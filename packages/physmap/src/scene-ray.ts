@@ -20,7 +20,7 @@ export const INFO: KindInfo = {
  * Rays are straight lines. Waves, diffraction and colour spreading are not part of this scene (see `scene wave`).
  */
 const L = dim(1, 0, 0);
-const KEYWORDS = ['title', 'assume', 'param', 'predict', 'object', 'lens', 'mirror', 'screen', 'beam', 'view', 'caption'];
+const KEYWORDS = ['title', 'assume', 'param', 'predict', 'object', 'lens', 'mirror', 'screen', 'beam', 'view'];
 type N = number | { param: string };
 
 interface Element { kind: 'lens' | 'mirror'; line: number; at: N; f: N; aperture?: N }
@@ -38,7 +38,7 @@ const STYLE = `
 
 export function parseRay(ctx: Ctx, stmts: Statement[]): Scene | null {
   const { problem, args } = ctx;
-  ctx.enable('view', 'caption');
+  ctx.enable('view');
   let object: Obj | undefined;
   let element: Element | undefined;
   let screenAt: N | undefined;
@@ -102,13 +102,13 @@ export function parseRay(ctx: Ctx, stmts: Statement[]): Scene | null {
   if (ctx.problems.length) return null;
 
   const base = { kind: 'ray' as const, title: ctx.title, assumptions: ctx.assumptions, params: [...ctx.params.values()], predicts: ctx.predicts, images: [], playSeconds: 0 };
-  if (beam) return { ...base, run: (values) => beamRun(ctx.title, beam as Beam, ctx.captionText, values) };
-  return { ...base, run: (values) => imagingRun(ctx.title, object as Obj, element as Element, screenAt, ctx.view, ctx.captionText, values) };
+  if (beam) return { ...base, run: (values) => beamRun(ctx.title, beam as Beam, values) };
+  return { ...base, run: (values) => imagingRun(ctx.title, object as Obj, element as Element, screenAt, ctx.view, values) };
 }
 
 // ---------- imaging ----------
 
-function imagingRun(title: string | undefined, obj: Obj, el: Element, screenAt: N | undefined, view: Ctx['view'], captionText: string | undefined, values: Record<string, number>): Run {
+function imagingRun(title: string | undefined, obj: Obj, el: Element, screenAt: N | undefined, view: Ctx['view'], values: Record<string, number>): Run {
   const xo = val(obj.at, values), h = val(obj.height, values), e = val(el.at, values), f = val(el.f, values);
   const mirror = el.kind === 'mirror';
   const u = e - xo;
@@ -126,7 +126,7 @@ function imagingRun(title: string | undefined, obj: Obj, el: Element, screenAt: 
 
   return {
     count: 1, ok, problem: ok ? undefined : 'The object must be in front of the lens or mirror, with a height above zero.',
-    caption: () => captionText ?? `${title ? `${title}. ` : ''}${kind}, f = ${siLength(f)}, object ${siLength(u)} away. ${far ? 'The image is very far away.' : nature}`,
+    caption: () => `${title ? `${title}. ` : ''}${kind}, f = ${siLength(f)}, object ${siLength(u)} away. ${far ? 'The image is very far away.' : nature}`,
     clock: () => '',
     describe: () => `${kind}, focal length ${siLength(f)}, object ${siLength(u)} from it. ${nature}`,
     svg(_i, options) {
@@ -202,7 +202,7 @@ function imagingRun(title: string | undefined, obj: Obj, el: Element, screenAt: 
 
 // ---------- refraction ----------
 
-function beamRun(title: string | undefined, beam: Beam, captionText: string | undefined, values: Record<string, number>): Run {
+function beamRun(title: string | undefined, beam: Beam, values: Record<string, number>): Run {
   const a1 = val(beam.angle, values), n1 = val(beam.n1, values), n2 = val(beam.n2, values);
   const ok = [a1, n1, n2].every(Number.isFinite) && a1 >= 0 && a1 < Math.PI / 2 && n1 >= 1 && n2 >= 1;
   const s2 = (n1 * Math.sin(a1)) / n2;
@@ -222,7 +222,7 @@ function beamRun(title: string | undefined, beam: Beam, captionText: string | un
   const plot = ok ? makePlot({ top: 270, height: 150, unit: 'degrees', yFrom: 0, yTo: 90, xFrom: 0, xTo: 90, xFromLabel: '0° incidence', xToLabel: '90°', series: [{ name: 'angle of refraction', xs, ys }] }) : undefined;
   return {
     count: 1, ok, problem: ok ? undefined : 'The angle must be from 0° to just under 90°, and each refractive index must be 1 or more.',
-    caption: () => captionText ?? `${title ? `${title}. ` : ''}${text}`,
+    caption: () => `${title ? `${title}. ` : ''}${text}`,
     clock: () => '',
     describe: () => text,
     svg(_i, options) {

@@ -49,33 +49,38 @@ export function layoutStructure(s: Structure, frames: Diagram['frames']): Struct
   const base: StructLayout = { id: s.id, kind: s.kind, x: 0, y: 0, w: 0, h: 0, headY: 14, cw: CELL_W, ch: CELL_H, r: NODE_R, indexY: 0, pointerY: 0, centres: [], gutter: 0, topGutter: 0 };
 
   if (s.kind === 'array' || s.kind === 'queue' || s.kind === 'vars') {
-    const cw = s.kind === 'vars' ? VAR_W : CELL_W;
+    const cw = s.cell?.w ?? (s.kind === 'vars' ? VAR_W : CELL_W);
+    const ch = s.cell?.h ?? CELL_H;
     const count = s.kind === 'vars' ? s.values.length : n;
-    const indexY = HEAD + CELL_H + 16;
+    const indexY = HEAD + ch + 16;
     const pointerY = indexY + 22;
-    return { ...base, cw, w: count * cw, h: pointerY + (pointers ? 18 : -4), indexY, pointerY,
-      centres: Array.from({ length: count }, (_, i) => ({ x: i * cw + cw / 2, y: HEAD + CELL_H / 2 })) };
+    return { ...base, cw, ch, w: count * cw, h: pointerY + (pointers ? 18 : -4), indexY, pointerY,
+      centres: Array.from({ length: count }, (_, i) => ({ x: i * cw + cw / 2, y: HEAD + ch / 2 })) };
   }
   if (s.kind === 'list') {
+    const cw = s.cell?.w ?? LIST_W;
+    const ch = s.cell?.h ?? CELL_H;
     const top = HEAD + 6;
-    const indexY = top + CELL_H + 16;
+    const indexY = top + ch + 16;
     const pointerY = indexY + 22;
-    const step = LIST_W + LIST_GAP;
-    return { ...base, cw: LIST_W, w: n * step + 40, h: pointerY + (pointers ? 18 : -4), indexY, pointerY,
-      centres: Array.from({ length: n }, (_, i) => ({ x: i * step + LIST_W / 2, y: top + CELL_H / 2 })),
-      tail: { x: n * step + 18, y: top + CELL_H / 2 } };
+    const step = cw + LIST_GAP;
+    return { ...base, cw, ch, w: n * step + 40, h: pointerY + (pointers ? 18 : -4), indexY, pointerY,
+      centres: Array.from({ length: n }, (_, i) => ({ x: i * step + cw / 2, y: top + ch / 2 })),
+      tail: { x: n * step + 18, y: top + ch / 2 } };
   }
   if (s.kind === 'stack') {
     const gutter = 34;
     const slots = Math.max(1, maxLength(s, frames));
-    return { ...base, cw: STACK_W, ch: STACK_H, gutter, w: gutter + STACK_W + 48, h: HEAD + slots * STACK_H + 8,
-      centres: Array.from({ length: slots }, (_, i) => ({ x: gutter + STACK_W / 2, y: HEAD + (slots - 1 - i) * STACK_H + STACK_H / 2 })) };
+    const cw = s.cell?.w ?? STACK_W, ch = s.cell?.h ?? STACK_H;
+    return { ...base, cw, ch, gutter, w: gutter + cw + 48, h: HEAD + slots * ch + 8,
+      centres: Array.from({ length: slots }, (_, i) => ({ x: gutter + cw / 2, y: HEAD + (slots - 1 - i) * ch + ch / 2 })) };
   }
   if (s.kind === 'grid') {
     const gutter = 40, topGutter = 24;
     const rows = s.rows!, cols = s.cols!;
-    return { ...base, cw: GRID_W, ch: GRID_H, gutter, topGutter, w: gutter + cols * GRID_W, h: HEAD + topGutter + rows * GRID_H + 4,
-      centres: Array.from({ length: rows * cols }, (_, i) => ({ x: gutter + (i % cols) * GRID_W + GRID_W / 2, y: HEAD + topGutter + Math.floor(i / cols) * GRID_H + GRID_H / 2 })) };
+    const cw = s.cell?.w ?? GRID_W, ch = s.cell?.h ?? GRID_H;
+    return { ...base, cw, ch, gutter, topGutter, w: gutter + cols * cw, h: HEAD + topGutter + rows * ch + 4,
+      centres: Array.from({ length: rows * cols }, (_, i) => ({ x: gutter + (i % cols) * cw + cw / 2, y: HEAD + topGutter + Math.floor(i / cols) * ch + ch / 2 })) };
   }
   if (s.kind === 'hash') {
     const chains = maxChains(s, frames);

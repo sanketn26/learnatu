@@ -57,6 +57,8 @@ export interface FlowNode {
 
 export interface FlowEdge {
   id: string; from: string; to: string; twoWay: boolean; label?: string; line: number;
+  /** Written with exit= / enter=: the side of each block the link leaves from and arrives at. Left out, the layout chooses. */
+  fromSide?: 'l' | 'r' | 't' | 'b'; toSide?: 'l' | 'r' | 't' | 'b';
 }
 
 /** One step of a flow, tied to a link. `from`/`to` say which way the traffic goes along it. */

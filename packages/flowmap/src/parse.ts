@@ -55,7 +55,9 @@ const portProblem = (text: string): string => {
 
 const list = (items: readonly string[]) => items.map((i) => `"${i}"`).join(', ');
 
-interface RawEdge { from: string; to: string; twoWay: boolean; label?: string; via?: string; line: number }
+type Side = 'l' | 'r' | 't' | 'b';
+const SIDES: Record<string, Side> = { left: 'l', right: 'r', top: 't', bottom: 'b' };
+interface RawEdge { from: string; to: string; twoWay: boolean; label?: string; via?: string; fromSide?: Side; toSide?: Side; line: number }
 interface RawHop { from: string; to: string; twoWay: boolean }
 interface RawFlow { id: string; label: string; rate?: number; color?: number; hops: RawHop[]; line: number }
 interface RawMark { kind: 'spof' | 'chokepoint'; node?: string; edgeFrom?: string; edgeTo?: string; reason?: string; badge?: string; line: number }
@@ -287,7 +289,13 @@ export function parseFlow(source: string): ParseResult {
           if (tok.type === 'string' && edge.label === undefined) edge.label = tok.text;
           else if (tok.type === 'attr' && tok.key === 'label') edge.label = tok.value;
           else if (tok.type === 'attr' && tok.key === 'via') edge.via = tok.value;
-          else return fail(line, 'after a link you can add a label in quotes or via=proxyName');
+          else if (tok.type === 'attr' && (tok.key === 'exit' || tok.key === 'enter')) {
+            const side = SIDES[tok.value];
+            if (!side) return fail(line, `${tok.key}= is the side of a block: ${Object.keys(SIDES).join(', ')}`);
+            // exit is the block written first, enter the one written after the arrow, whichever way the arrow points
+            const reversed = op.text === '<-';
+            if ((tok.key === 'exit') !== reversed) edge.fromSide = side; else edge.toSide = side;
+          } else return fail(line, 'after a link you can add a label in quotes, via=proxyName, and exit= / enter= (left, right, top, bottom)');
         }
         rawEdges.push(edge);
         prev = target.text;
@@ -325,9 +333,10 @@ export function parseFlow(source: string): ParseResult {
     if (existing) {
       if (raw.twoWay) existing.twoWay = true;
       if (raw.label !== undefined) existing.label = raw.label;
+      existing.fromSide ??= raw.fromSide; existing.toSide ??= raw.toSide;
       return existing;
     }
-    const edge: FlowEdge = { id: `${raw.from}>${raw.to}`, from: raw.from, to: raw.to, twoWay: raw.twoWay, label: raw.label, line: raw.line };
+    const edge: FlowEdge = { id: `${raw.from}>${raw.to}`, from: raw.from, to: raw.to, twoWay: raw.twoWay, label: raw.label, fromSide: raw.fromSide, toSide: raw.toSide, line: raw.line };
     edges.push(edge);
     return edge;
   };
@@ -337,8 +346,8 @@ export function parseFlow(source: string): ParseResult {
     if (raw.via === undefined) { addEdge(raw); continue; }
     const proxy = nodes.get(raw.via);
     if (!proxy) { fail(raw.line, `via=${raw.via} is not a block.${suggest(raw.via, [...nodes.keys()])}`); continue; }
-    addEdge({ from: raw.from, to: proxy.id, twoWay: raw.twoWay, label: raw.label, line: raw.line });
-    addEdge({ from: proxy.id, to: raw.to, twoWay: raw.twoWay, line: raw.line });
+    addEdge({ from: raw.from, to: proxy.id, twoWay: raw.twoWay, label: raw.label, fromSide: raw.fromSide, line: raw.line });
+    addEdge({ from: proxy.id, to: raw.to, twoWay: raw.twoWay, toSide: raw.toSide, line: raw.line });
     viaOf.set(`${raw.from}>${raw.to}`, proxy.id);
     if (raw.twoWay) viaOf.set(`${raw.to}>${raw.from}`, proxy.id);
   }

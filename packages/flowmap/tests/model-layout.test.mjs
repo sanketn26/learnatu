@@ -84,3 +84,18 @@ test('rank, order and width put a block exactly where the author says', () => {
   assert.throws(() => parse('node a rank=-1'), /whole number/);
   assert.throws(() => parse('node a width=10'), /pixels/);
 });
+
+test('exit and enter choose the side a link leaves and arrives at', () => {
+  const plain = layout(parse('a -> b'));
+  const d = parse('a -> b exit=bottom enter=top');
+  assert.equal(d.edges[0].fromSide, 'b');
+  assert.equal(d.edges[0].toSide, 't');
+  const l = layout(d);
+  const a = l.nodes.get('a');
+  assert.equal(l.edges.get('a>b').curve.p1.y, a.y + a.h / 2);          // leaves the bottom of a
+  assert.equal(l.edges.get('a>b').curve.p2.y, l.nodes.get('b').y - l.nodes.get('b').h / 2); // arrives at the top of b
+  assert.notDeepEqual(plain.edges.get('a>b').curve.p1, l.edges.get('a>b').curve.p1);
+  // the block written first is the exit even when the arrow points back at it
+  assert.equal(parse('a <- b exit=left').edges[0].toSide, 'l');
+  assert.throws(() => parse('a -> b exit=up'), /left, right, top, bottom/);
+});
